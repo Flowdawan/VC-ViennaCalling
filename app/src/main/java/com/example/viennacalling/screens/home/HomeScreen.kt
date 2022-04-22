@@ -1,15 +1,14 @@
 package com.example.viennacalling.screens.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
@@ -19,14 +18,19 @@ import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.VcGrey
 import com.example.viennacalling.widgets.EventRow
-import com.example.viennacalling.widgets.FavoriteIcon
 
 @Composable
 fun HomeScreen(navController: NavController = rememberNavController()) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Home Screen") },
-                backgroundColor = Color.Red,
+            TopAppBar({
+                Image(
+                    painterResource(R.drawable.ic_vc_logo),
+                    contentDescription = "Vienna Calling Logo",
+                    contentScale = ContentScale.Crop
+                )
+            },
+                backgroundColor = VcGrey,
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(route = AppScreens.FavoriteScreen.name )}) {

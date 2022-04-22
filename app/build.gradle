@@ -21,7 +21,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -61,4 +61,11 @@ dependencies {
 
     //Navigation Component
     implementation "androidx.navigation:navigation-compose:$navigation_version"
+
+    //Coil image Loading
+    implementation "io.coil-kt:coil-compose:$coil_version"
+
+    //ViewModel compose
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
+
 }

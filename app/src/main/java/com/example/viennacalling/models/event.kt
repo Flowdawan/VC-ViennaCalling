@@ -1,6 +1,6 @@
 package com.example.viennacalling.models
 
-data class Movie(
+data class Event(
     val id: String,
     val title: String,
     val date: String,
@@ -11,9 +11,9 @@ data class Movie(
     val images: List<String>
 )
 
-fun getMovies(): List<Movie> {
+fun getEvents(): List<Event> {
     return listOf(
-        Movie(
+        Event(
             id = "486640",
             title = "Strandbar Herrmann 2022",
             date = "1.4. bis 30.9",
@@ -29,7 +29,7 @@ fun getMovies(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"
             )
         ),
-        Movie(
+        Event(
             id = "486671",
             title = "90ies Club @ The Loft",
             date = "23.4",
@@ -46,7 +46,7 @@ fun getMovies(): List<Movie> {
             )
         ),
 
-        Movie(
+        Event(
             id = "486871",
             title = "90ies + 2000s Single Party @ The Loft",
             date = "30.4",
@@ -62,7 +62,7 @@ fun getMovies(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"
             )
         ),
-        Movie(
+        Event(
             id = "485729",
             title = "Open Floor",
             date = "7.5",
@@ -78,7 +78,7 @@ fun getMovies(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"
             )
         ),
-        Movie(
+        Event(
             id = "487009",
             title = "Wir sind Wien. Festival der Bezirke 2022",
             date = "1.6. bis 23.6",
@@ -94,7 +94,7 @@ fun getMovies(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"
             )
         ),
-        Movie(
+        Event(
             id = "tt0499549",
             title = "39. Donauinselfest 2022",
             date = "24.6. bis 26.6.",

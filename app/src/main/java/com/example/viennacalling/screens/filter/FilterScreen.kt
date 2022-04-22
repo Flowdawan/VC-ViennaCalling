@@ -1,14 +1,11 @@
-package com.example.viennacalling.screens.home
+package com.example.viennacalling.screens.filter
 
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -17,16 +14,16 @@ import com.example.viennacalling.models.Event
 import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
+import com.example.viennacalling.screens.login.MainContent
 import com.example.viennacalling.ui.theme.VcGrey
-import com.example.viennacalling.widgets.EventRow
-import com.example.viennacalling.widgets.FavoriteIcon
+
 
 @Composable
-fun HomeScreen(navController: NavController = rememberNavController()) {
+fun FilterScreen(navController: NavController = rememberNavController()) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Home Screen") },
-                backgroundColor = Color.Red,
+            TopAppBar(title = { Text(text = "Filter Screen") },
+                backgroundColor = VcGrey,
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(route = AppScreens.FavoriteScreen.name )}) {
@@ -43,16 +40,7 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
 @Composable
 fun MainContent(navController: NavController, events: List<Event> = getEvents(), ) {
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController = navController) }){
-
-    LazyColumn {
-        items(items = events) { event ->
-            EventRow(
-                event = event,
-                onItemClick = { eventId ->
-                    navController.navigate(route = AppScreens.HomeScreen.name)
-                })
-        }
-    }
+        bottomBar = { BottomNavigationBar(navController = navController) }) {
+        Text("Filter Screen")
     }
 }

@@ -1,13 +1,11 @@
-package com.example.viennacalling.screens.login
+package com.example.viennacalling.screens.favorite
 
-import androidx.compose.foundation.background
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -19,15 +17,14 @@ import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.VcGrey
 
 @Composable
-fun LoginScreen(navController: NavController = rememberNavController()) {
+fun FavoriteScreen(navController: NavController = rememberNavController()) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "LoginScreen") },
+            TopAppBar(title = { Text(text = "Favorite Screen") },
                 backgroundColor = VcGrey,
                 actions = {
-                    IconButton(onClick = {
-                        navController.navigate(route = AppScreens.FavoriteScreen.name )}) {
-                        Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "Favorite")
+                    IconButton(onClick = { /* TODO */ }) {
+                        Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorite")
                     }
                 }
             )
@@ -38,9 +35,10 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
 }
 
 @Composable
-fun MainContent(navController: NavController, events: List<Event> = getEvents(), ) {
+fun MainContent(navController: NavController, events: List<Event> = getEvents()) {
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController) }) {
-        Text("Login Screen")
+
+        Text("Favorite Screen")
     }
 }

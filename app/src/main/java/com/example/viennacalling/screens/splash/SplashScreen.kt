@@ -48,8 +48,8 @@ fun SplashScreen(navController: NavController = rememberNavController()) {
     ) {
 
         Image(
-            painter = painterResource(id = R.drawable.ic_logo),
-            contentDescription = "Logo"
+            painter = painterResource(id = R.drawable.ic_vienna_calling_logo_splash_round),
+            contentDescription = "Logo Vienna Calling"
         )
     }
 }

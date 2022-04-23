@@ -35,18 +35,18 @@ fun EventRow(
     Card(
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
         modifier = Modifier
-            .width(323.dp)
+            .fillMaxWidth()
             .height(277.dp)
             .clickable { onItemClick(event.id) },
         backgroundColor = VcEventCard,
-        elevation = 6.dp,
+        elevation = 4.dp,
         ) {
         Column(
             modifier = Modifier.padding(7.dp)
         ) {
             Surface(
                 modifier = Modifier
-                    .width(309.dp)
+                    .fillMaxWidth()
                     .height(188.dp)
                     .padding(2.dp)
                     .clip(RoundedCornerShape(10.dp))
@@ -60,7 +60,7 @@ fun EventRow(
                     contentScale = ContentScale.Crop,
                 )
             }
-            Column {
+            Column (modifier = Modifier.padding(5.dp)){
                 Text(
                     color = Color.White,
                     text = event.title,

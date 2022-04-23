@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "471626492102",
+    "project_id": "viennacalling-d9db9",
+    "storage_bucket": "viennacalling-d9db9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471626492102:android:033eabd6d5d9fb54e3cfc7",
+        "android_client_info": {
+          "package_name": "com.example.viennacalling"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471626492102-r33urmb1nm7hjgjd1dka9o504fime149.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD88aQH36-J5IRQKtj4j63iZr084_isveY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471626492102-r33urmb1nm7hjgjd1dka9o504fime149.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

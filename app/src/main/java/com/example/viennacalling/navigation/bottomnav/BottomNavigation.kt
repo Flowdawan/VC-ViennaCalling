@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.viennacalling.R
@@ -18,19 +17,18 @@ fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Filter,
-        BottomNavItem.Favorites,
-        BottomNavItem.Account
-
+        BottomNavItem.Account,
+        BottomNavItem.Settings,
     )
     BottomNavigation(
-        backgroundColor = colorResource(id = R.color.vc_grey),
+        backgroundColor = colorResource(id = R.color.vc_navigation_top_bottom),
         contentColor = Color.White
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         items.forEach { item ->
             BottomNavigationItem(
-                icon = { Icon(painterResource(id = item.icon), contentDescription = item.title) },
+                icon = { Icon(imageVector = (item.icon), contentDescription = item.title) },
                 label = { Text(text = item.title) },
                 selectedContentColor = Color.White,
                 unselectedContentColor = Color.White.copy(0.4f),

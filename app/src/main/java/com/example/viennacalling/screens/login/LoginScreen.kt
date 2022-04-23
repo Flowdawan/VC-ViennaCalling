@@ -1,16 +1,12 @@
 package com.example.viennacalling.screens.login
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -19,11 +15,14 @@ import com.example.viennacalling.models.Event
 import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
-import com.example.viennacalling.ui.theme.VcGrey
+import com.example.viennacalling.ui.theme.VcNavTopBottom
+import com.example.viennacalling.ui.theme.VcScreenBackground
 
 @Composable
 fun LoginScreen(navController: NavController = rememberNavController()) {
     Scaffold(
+        backgroundColor = VcScreenBackground,
+        bottomBar = { BottomNavigationBar(navController = navController) },
         topBar = {
             TopAppBar({
                 Image(
@@ -32,11 +31,16 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
                     contentScale = ContentScale.Crop
                 )
             },
-                backgroundColor = VcGrey,
+                backgroundColor = VcNavTopBottom,
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate(route = AppScreens.FavoriteScreen.name )}) {
-                        Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "Favorite")
+                        navController.navigate(route = AppScreens.FavoriteScreen.name)
+                    }) {
+                        Icon(
+                            tint = Color.White,
+                            imageVector = Icons.Default.FavoriteBorder,
+                            contentDescription = "Favorite"
+                        )
                     }
                 }
             )
@@ -47,9 +51,6 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
 }
 
 @Composable
-fun MainContent(navController: NavController, events: List<Event> = getEvents(), ) {
-    Scaffold(
-        bottomBar = { BottomNavigationBar(navController = navController) }) {
-        Text("Login Screen")
-    }
+fun MainContent(navController: NavController, events: List<Event> = getEvents()) {
+    Text("Login Screen")
 }

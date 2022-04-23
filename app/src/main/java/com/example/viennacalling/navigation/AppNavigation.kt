@@ -10,6 +10,7 @@ import com.example.viennacalling.screens.filter.FilterScreen
 import com.example.viennacalling.screens.home.HomeScreen
 import com.example.viennacalling.screens.login.LoginScreen
 import com.example.viennacalling.screens.registration.RegistrationScreen
+import com.example.viennacalling.screens.setting.SettingsScreen
 import com.example.viennacalling.screens.splash.SplashScreen
 
 
@@ -25,6 +26,7 @@ fun AppNavigation() {
         composable(route = AppScreens.RegistrationScreen.name) { RegistrationScreen(navController = navController) }
         composable(route = AppScreens.FilterScreen.name) { FilterScreen(navController = navController) }
         composable(route = AppScreens.FavoriteScreen.name) { FavoriteScreen(navController = navController) }
+        composable(route = AppScreens.SettingsScreen.name) { SettingsScreen(navController = navController) }
 
     }
 }

@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -67,5 +68,11 @@ dependencies {
 
     //ViewModel compose
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
+
+    //Firebase
+    implementation 'com.google.firebase:firebase-firestore:21.4.0'
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
 
 }

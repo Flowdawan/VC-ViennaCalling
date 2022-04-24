@@ -29,7 +29,6 @@ fun BottomNavigationBar(navController: NavController) {
         items.forEach { item ->
             BottomNavigationItem(
                 icon = { Icon(imageVector = (item.icon), contentDescription = item.title) },
-                label = { Text(text = item.title) },
                 selectedContentColor = Color.White,
                 unselectedContentColor = Color.White.copy(0.4f),
                 alwaysShowLabel = true,
@@ -47,8 +46,9 @@ fun BottomNavigationBar(navController: NavController) {
                         // Avoid multiple copies of the same destination when
                         // reselecting the same item
                         launchSingleTop = true
+
                         // Restore state when reselecting a previously selected item
-                        restoreState = true
+                        // restoreState = true
                     }
                 }
             )

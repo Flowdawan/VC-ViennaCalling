@@ -9,4 +9,5 @@ enum class AppScreens {
     RegistrationScreen,
     FilterScreen,
     SettingsScreen,
+    AccountScreen,
 }

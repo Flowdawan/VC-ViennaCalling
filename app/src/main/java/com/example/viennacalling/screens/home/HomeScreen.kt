@@ -1,5 +1,6 @@
 package com.example.viennacalling.screens.home
 
+import android.icu.lang.UCharacter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
@@ -30,11 +32,15 @@ import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.VcNavTopBottom
 import com.example.viennacalling.ui.theme.VcScreenBackground
+import com.example.viennacalling.viewmodels.FavoritesViewModel
 import com.example.viennacalling.widgets.EventRow
+import com.example.viennacalling.widgets.FavoriteButton
 
 @Preview
 @Composable
-fun HomeScreen(navController: NavController = rememberNavController()) {
+fun HomeScreen(navController: NavController = rememberNavController(),
+               favoritesViewModel: FavoritesViewModel = viewModel())
+{
     Scaffold(
         backgroundColor = VcScreenBackground,
         bottomBar = { BottomNavigationBar(navController = navController) },
@@ -60,17 +66,20 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
                 }
             )
         }
-    ) {
-        MainContent(navController = navController)
+    ) { padding ->
+        MainContent(navController = navController, padding = padding, favoritesViewModel = favoritesViewModel)
     }
 }
 
 @Composable
-fun MainContent(navController: NavController, events: List<Event> = getEvents()) {
+fun MainContent(navController: NavController,
+                events: List<Event> = getEvents(),
+                padding: PaddingValues,
+                favoritesViewModel: FavoritesViewModel) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp),
+            .padding(PaddingValues(5.dp, 2.dp, padding.calculateTopPadding(), padding.calculateBottomPadding())),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -78,8 +87,24 @@ fun MainContent(navController: NavController, events: List<Event> = getEvents())
             EventRow(
                 event = event,
                 onItemClick = { eventId ->
-                    navController.navigate(route = AppScreens.HomeScreen.name)
-                })
+                    navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
+                }){
+                FavoriteButton(
+                    event = event,
+                    isAlreadyInList = favoritesViewModel.isEventInList(event),
+                    onFavoriteClick = {
+                            event ->
+                        if (favoritesViewModel.isEventInList(event)) {
+                            favoritesViewModel.removeEvent(event)
+
+                        } else {
+                            favoritesViewModel.addEvent(event)
+                        }
+                    }
+
+                )
+            }
         }
     }
 }
+

@@ -1,5 +1,6 @@
 package com.example.viennacalling.widgets
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,9 +12,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +28,7 @@ import coil.request.ImageRequest
 import com.example.viennacalling.models.Event
 import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.ui.theme.VcEventCard
+import com.example.viennacalling.ui.theme.VcLightGrayPopUp
 
 @Preview
 @Composable
@@ -36,19 +41,16 @@ fun EventRow(
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
         modifier = Modifier
             .fillMaxWidth()
-            .height(277.dp)
+            .height(351.dp)
             .clickable { onItemClick(event.id) },
         backgroundColor = VcEventCard,
         elevation = 4.dp,
         ) {
-        Column(
-            modifier = Modifier.padding(7.dp)
-        ) {
+        Column() {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(188.dp)
-                    .padding(2.dp)
                     .clip(RoundedCornerShape(10.dp))
             ) {
                 AsyncImage(
@@ -77,17 +79,20 @@ fun EventRow(
                     style = MaterialTheme.typography.subtitle1,
                 )
             }
-            content()
+            Box(contentAlignment = Alignment.TopEnd){
+                content()
+            }
         }
     }
 }
 
 @Composable
-fun FavoriteIcon(
+fun FavoriteButton(
     event: Event = getEvents()[0],
     onFavoriteClick: (Event) -> Unit = {},
     isAlreadyInList: Boolean = false
 ) {
+
     Icon(imageVector = if (!isAlreadyInList) {
         Icons.Default.FavoriteBorder
     } else {
@@ -101,27 +106,40 @@ fun FavoriteIcon(
     )
 }
 
+
 @Composable
-fun HorizontalScrollableImageView(event: Event = getEvents()[0]) {
-    LazyRow {
-        items(event.images) { movie ->
-            Card(
+fun EventDetails(event: Event = getEvents()[0]) {
+    Card(
+        modifier = Modifier
+            .height(375.dp)
+            .fillMaxWidth()
+            .padding(15.dp)
+        ,
+        shape = RoundedCornerShape(15.dp)
+    ) {
+        Column() {
+            Text(text = event.title)
+
+            Divider(
+                color = VcLightGrayPopUp,
                 modifier = Modifier
-                    .padding(12.dp)
-                    .size(240.dp),
-                elevation = 4.dp
+                    .padding(10.dp)
+                    .alpha(alpha = 0.6F)
             )
-            {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(movie)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Movie Cover",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.clip(RectangleShape)
-                )
-            }
+            Text(text = event.price)
+
+            Divider(
+                color = VcLightGrayPopUp,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .alpha(alpha = 0.6F)
+            )
+
+            Text(text = event.place)
+
         }
+
+
     }
+    
 }

@@ -10,4 +10,6 @@
     <color name="vc_navigation_top_bottom">#080B29</color>
     <color name="vc_screen_background">#211F33</color>
     <color name="vc_event_card">#081729</color>
+    <color name="vc_popups">#1C1B1F</color>
+
 </resources>

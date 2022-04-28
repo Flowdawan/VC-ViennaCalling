@@ -21,13 +21,17 @@ import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.VcNavTopBottom
 import com.example.viennacalling.ui.theme.VcScreenBackground
 import com.example.viennacalling.viewmodels.FavoritesViewModel
+import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.EventRow
 
 @Composable
-fun FavoriteScreen(navController: NavController = rememberNavController(), favoritesViewModel: FavoritesViewModel = viewModel()) {
+fun FavoriteScreen(navController: NavController = rememberNavController(),
+                   favoritesViewModel: FavoritesViewModel = viewModel(),
+                   loginViewModel: LoginViewModel
+                   ) {
     Scaffold(
         backgroundColor = VcScreenBackground,
-        bottomBar = { BottomNavigationBar(navController = navController) },
+        bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
         topBar = {
             TopAppBar({
                 Image(

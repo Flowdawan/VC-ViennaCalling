@@ -1,5 +1,6 @@
 package com.example.viennacalling.navigation.bottomnav
 
+import android.util.Log
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -11,9 +12,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.viennacalling.R
+import com.example.viennacalling.navigation.AppScreens
+import com.example.viennacalling.viewmodels.LoginViewModel
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
+fun BottomNavigationBar(navController: NavController, loginViewModel: LoginViewModel) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Filter,
@@ -34,6 +37,11 @@ fun BottomNavigationBar(navController: NavController) {
                 alwaysShowLabel = true,
                 selected = currentRoute == item.screen_route,
                 onClick = {
+                    if(!loginViewModel.isLoggedIn.value && item.screen_route == "AccountScreen"){
+                        item.screen_route = AppScreens.LoginScreen.name
+                    } else if(loginViewModel.isLoggedIn.value && item.screen_route == "LoginScreen"){
+                        item.screen_route = AppScreens.AccountScreen.name
+                    }
                     navController.navigate(item.screen_route) {
                         // Pop up to the start destination of the graph to
                         // avoid building up a large stack of destinations

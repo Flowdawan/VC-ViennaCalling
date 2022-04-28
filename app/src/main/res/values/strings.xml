@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Vienna Calling</string>
+    <!-- Login screen-->
+    <string name="login">Login</string>
+    <string name="sign_in_with_email">Sign in with email</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="sign_in_with_facebook">Sign in with Facebook</string>
+
+    <!-- Email login screen -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="create">Registrieren</string>
+
+    <string name="log_out">Log out</string>
 </resources>

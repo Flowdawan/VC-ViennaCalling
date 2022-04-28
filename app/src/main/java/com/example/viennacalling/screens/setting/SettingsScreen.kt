@@ -27,12 +27,14 @@ import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.*
+import com.example.viennacalling.viewmodels.LoginViewModel
+import kotlin.math.log
 
 @Composable
-fun SettingsScreen(navController: NavController = rememberNavController()) {
+fun SettingsScreen(navController: NavController = rememberNavController(), loginViewModel: LoginViewModel) {
     Scaffold(
         backgroundColor = VcScreenBackground,
-        bottomBar = { BottomNavigationBar(navController = navController) },
+        bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
         topBar = {
             TopAppBar({
                 Image(

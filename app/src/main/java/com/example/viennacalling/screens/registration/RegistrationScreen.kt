@@ -31,13 +31,16 @@ import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.VcButtons
 import com.example.viennacalling.ui.theme.VcNavTopBottom
 import com.example.viennacalling.ui.theme.VcScreenBackground
+import com.example.viennacalling.viewmodels.LoginViewModel
 
 
 @Composable
-fun RegistrationScreen(navController: NavController = rememberNavController()) {
+fun RegistrationScreen(
+    navController: NavController = rememberNavController(),
+    loginViewModel: LoginViewModel) {
     Scaffold(
         backgroundColor = VcScreenBackground,
-        bottomBar = { BottomNavigationBar(navController = navController) },
+        bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
         topBar = {
             TopAppBar({
                 Image(

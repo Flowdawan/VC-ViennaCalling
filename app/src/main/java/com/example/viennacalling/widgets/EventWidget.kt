@@ -29,6 +29,7 @@ import com.example.viennacalling.models.Event
 import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.ui.theme.VcEventCard
 import com.example.viennacalling.ui.theme.VcLightGrayPopUp
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Preview
 @Composable
@@ -142,4 +143,14 @@ fun EventDetails(event: Event = getEvents()[0]) {
 
     }
     
+}
+
+@ExperimentalCoroutinesApi
+@Composable
+fun CircularProgressBar(
+    isDisplayed: Boolean
+) {
+    if (isDisplayed) {
+        CircularProgressIndicator()
+    }
 }

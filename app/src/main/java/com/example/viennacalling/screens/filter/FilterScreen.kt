@@ -17,12 +17,13 @@ import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.VcNavTopBottom
 import com.example.viennacalling.ui.theme.VcScreenBackground
+import com.example.viennacalling.viewmodels.LoginViewModel
 
 @Composable
-fun FilterScreen(navController: NavController = rememberNavController()) {
+fun FilterScreen(navController: NavController = rememberNavController(), loginViewModel: LoginViewModel) {
     Scaffold(
         backgroundColor = VcScreenBackground,
-        bottomBar = { BottomNavigationBar(navController = navController) },
+        bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
         topBar = {
             TopAppBar({
                 Image(

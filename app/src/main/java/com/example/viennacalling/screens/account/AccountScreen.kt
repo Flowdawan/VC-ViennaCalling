@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -23,16 +24,16 @@ import com.example.viennacalling.models.Event
 import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
-import com.example.viennacalling.screens.account.Alert
 import com.example.viennacalling.ui.theme.VcLightGrayPopUp
 import com.example.viennacalling.ui.theme.VcNavTopBottom
 import com.example.viennacalling.ui.theme.VcScreenBackground
+import com.example.viennacalling.viewmodels.LoginViewModel
 
 @Composable
-fun AccountScreen(navController: NavController = rememberNavController()) {
+fun AccountScreen(navController: NavController = rememberNavController(), loginViewModel: LoginViewModel) {
     Scaffold(
         backgroundColor = VcScreenBackground,
-        bottomBar = { BottomNavigationBar(navController = navController) },
+        bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
         topBar = {
             TopAppBar({
                 Image(
@@ -56,12 +57,15 @@ fun AccountScreen(navController: NavController = rememberNavController()) {
             )
         }
     ) { padding ->
-        MainContent(navController = navController, padding = padding)
+        MainContent(navController = navController, padding = padding, loginViewModel = loginViewModel)
     }
 }
 
 @Composable
-fun MainContent(navController: NavController, events: List<Event> = getEvents(), padding: PaddingValues) {
+fun MainContent(navController: NavController,
+                events: List<Event> = getEvents(), padding: PaddingValues,
+                loginViewModel: LoginViewModel
+                ) {
     val showDialog = remember { mutableStateOf(false) }
 
     Text("Account Screen")
@@ -72,6 +76,8 @@ fun MainContent(navController: NavController, events: List<Event> = getEvents(),
             .fillMaxWidth()
             .padding(PaddingValues(20.dp, padding.calculateBottomPadding()))
     ) {
+        LogoutButton(loginViewModel = loginViewModel, navController = navController)
+
         Box(
             modifier = Modifier.fillMaxSize(),
             Alignment.BottomCenter
@@ -86,7 +92,9 @@ fun MainContent(navController: NavController, events: List<Event> = getEvents(),
                 showDialog = showDialog.value,
                 onDismiss = { showDialog.value = false })
         }
+
         Spacer(modifier = Modifier.height(20.dp))
+        
     }
 }
 
@@ -120,5 +128,19 @@ fun Alert(name : String,
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier.padding(18.dp)
         )
+    }
+}
+
+@Composable
+fun LogoutButton(loginViewModel: LoginViewModel, navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = { loginViewModel.signOut(navController = navController) }) {
+            Text(text = stringResource(R.string.log_out))
+        }
     }
 }

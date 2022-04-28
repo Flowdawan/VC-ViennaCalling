@@ -2,24 +2,22 @@ package com.example.viennacalling.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -29,15 +27,23 @@ import com.example.viennacalling.models.Event
 import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
-import com.example.viennacalling.ui.theme.VcButtons
 import com.example.viennacalling.ui.theme.VcNavTopBottom
 import com.example.viennacalling.ui.theme.VcScreenBackground
+import com.example.viennacalling.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController = rememberNavController()) {
+fun LoginScreen(
+    navController: NavController = rememberNavController(),
+    loginViewModel: LoginViewModel
+) {
     Scaffold(
         backgroundColor = VcScreenBackground,
-        bottomBar = { BottomNavigationBar(navController = navController) },
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                loginViewModel = loginViewModel
+            )
+        },
         topBar = {
             TopAppBar({
                 Image(
@@ -52,7 +58,7 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
                         navController.navigate(route = AppScreens.FavoriteScreen.name)
                     }) {
                         Icon(
-                            tint = Color.White,
+                            tint = White,
                             imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = "Favorite"
                         )
@@ -61,79 +67,100 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
             )
         }
     ) {
-        MainContent(navController = navController)
+        MainContent(navController = navController, loginViewModel = loginViewModel)
     }
 }
 
 @Composable
-fun MainContent(navController: NavController, events: List<Event> = getEvents()) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+fun MainContent(
+    navController: NavController,
+    events: List<Event> = getEvents(),
+    loginViewModel: LoginViewModel
+) {
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(start = 24.dp, top = 24.dp, end = 24.dp, bottom = 24.dp)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (loginViewModel.error.value.isNotBlank()) {
+            ErrorField(loginViewModel)
+        }
+        EmailField(loginViewModel)
+        PasswordField(loginViewModel)
+        ButtonEmailPasswordLogin(loginViewModel, navController)
+        ButtonEmailPasswordCreate(loginViewModel, navController = navController)
+    }
+}
 
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+@Composable
+fun EmailField(viewModel: LoginViewModel) {
+    val userEmail = viewModel.userEmail.value
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = userEmail,
+        textStyle = TextStyle(color = White),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = White,
+            unfocusedBorderColor = White
+        ),
+        label = { Text(text = stringResource(R.string.email)) },
+        onValueChange = { viewModel.setUserEmail(it) }
+    )
+}
+
+@Composable
+fun PasswordField(viewModel: LoginViewModel) {
+    val password = viewModel.password.value
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        visualTransformation = PasswordVisualTransformation(),
+        value = password,
+        textStyle = TextStyle(color = White),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = White,
+            unfocusedBorderColor = White
+        ),
+        label = { Text(text = stringResource(R.string.password)) },
+        onValueChange = { viewModel.setPassword(it) }
+    )
+}
+
+@Composable
+fun ButtonEmailPasswordLogin(viewModel: LoginViewModel, navController: NavController) {
+    Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(PaddingValues(20.dp))
-    ){
-        Text(
-            text = "Login",
-            fontSize = 32.sp,
-            color = Color.White
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-
-        OutlinedTextField(
-            value = username,
-            onValueChange = { value -> username = value },
-            label = { Text(text = "Username") }
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            singleLine = true,
-            placeholder = { Text("Password") },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            trailingIcon = {
-                val image = if (passwordVisible)
-                    Icons.Filled.Visibility
-                else Icons.Filled.VisibilityOff
-
-                // Please provide localized description for accessibility services
-                val description = if (passwordVisible) "Hide password" else "Show password"
-
-                IconButton(onClick = {passwordVisible = !passwordVisible}){
-                    Icon(imageVector  = image, description)
-                }
-            }
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Row(){
-            Button(
-                onClick = {  navController.navigate(route = AppScreens.AccountScreen.name) },
-                shape = RoundedCornerShape(30.dp),
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Login")
-            }
-            Button(
-                onClick = { navController.navigate(route = AppScreens.RegistrationScreen.name) },
-                shape = RoundedCornerShape(30.dp),
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Text(text = "Registrieren")
-            }
+            .height(50.dp),
+        enabled = viewModel.isValidEmailAndPassword(),
+        content = { Text(text = stringResource(R.string.login)) },
+        onClick = {
+            viewModel.signInWithEmailAndPassword(navController = navController)
         }
+    )
+}
 
+@Composable
+fun ButtonEmailPasswordCreate(viewModel: LoginViewModel, navController: NavController) {
+    Button(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        enabled = viewModel.isValidEmailAndPassword(),
+        content = { Text(text = stringResource(R.string.create)) },
+        onClick = { viewModel.createUserWithEmailAndPassword(navController = navController) }
+    )
+}
 
-    }
+@Composable
+fun ErrorField(viewModel: LoginViewModel) {
+    Text(
+        text = viewModel.error.value,
+        modifier = Modifier.fillMaxWidth(),
+        color = Color.Red,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold
+    )
 }

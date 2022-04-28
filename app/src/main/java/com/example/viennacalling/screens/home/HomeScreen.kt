@@ -1,6 +1,5 @@
 package com.example.viennacalling.screens.home
 
-import android.icu.lang.UCharacter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -33,17 +31,22 @@ import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.VcNavTopBottom
 import com.example.viennacalling.ui.theme.VcScreenBackground
 import com.example.viennacalling.viewmodels.FavoritesViewModel
+import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.EventRow
 import com.example.viennacalling.widgets.FavoriteButton
+import com.google.firebase.firestore.FirebaseFirestore
 
-@Preview
 @Composable
-fun HomeScreen(navController: NavController = rememberNavController(),
-               favoritesViewModel: FavoritesViewModel = viewModel())
+fun HomeScreen(
+    navController: NavController = rememberNavController(),
+    favoritesViewModel: FavoritesViewModel = viewModel(),
+    loginViewModel: LoginViewModel = viewModel(),
+    db: FirebaseFirestore
+)
 {
     Scaffold(
         backgroundColor = VcScreenBackground,
-        bottomBar = { BottomNavigationBar(navController = navController) },
+        bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
         topBar = {
             TopAppBar({
                 Image(
@@ -67,7 +70,7 @@ fun HomeScreen(navController: NavController = rememberNavController(),
             )
         }
     ) { padding ->
-        MainContent(navController = navController, padding = padding, favoritesViewModel = favoritesViewModel)
+        MainContent(navController = navController, padding = padding, favoritesViewModel = favoritesViewModel, loginViewModel = loginViewModel, db = db)
     }
 }
 
@@ -75,11 +78,22 @@ fun HomeScreen(navController: NavController = rememberNavController(),
 fun MainContent(navController: NavController,
                 events: List<Event> = getEvents(),
                 padding: PaddingValues,
-                favoritesViewModel: FavoritesViewModel) {
+                favoritesViewModel: FavoritesViewModel,
+                loginViewModel: LoginViewModel,
+                db: FirebaseFirestore
+                ) {
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(PaddingValues(5.dp, 2.dp, padding.calculateTopPadding(), padding.calculateBottomPadding())),
+            .padding(
+                PaddingValues(
+                    5.dp,
+                    2.dp,
+                    padding.calculateTopPadding(),
+                    padding.calculateBottomPadding()
+                )
+            ),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

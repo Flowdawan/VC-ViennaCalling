@@ -17,23 +17,28 @@ import com.example.viennacalling.screens.registration.RegistrationScreen
 import com.example.viennacalling.screens.setting.SettingsScreen
 import com.example.viennacalling.screens.splash.SplashScreen
 import com.example.viennacalling.viewmodels.FavoritesViewModel
+import com.example.viennacalling.viewmodels.LoginViewModel
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(favoritesViewModel: FavoritesViewModel = viewModel()) {
     val navController = rememberNavController()
-    val favoritesViewModel: FavoritesViewModel = viewModel()
+    val loginViewModel: LoginViewModel = viewModel()
+    val db = Firebase.firestore
 
     NavHost(navController = navController, startDestination = AppScreens.HomeScreen.name) {
-        composable(AppScreens.HomeScreen.name) { HomeScreen(navController = navController, favoritesViewModel = favoritesViewModel) }
+        composable(AppScreens.HomeScreen.name) {
+            HomeScreen(navController = navController, favoritesViewModel = favoritesViewModel, loginViewModel = loginViewModel, db = db)
+        }
         composable(route = AppScreens.SplashScreen.name) { SplashScreen(navController = navController) }
-        composable(route = AppScreens.LoginScreen.name) { LoginScreen(navController = navController) }
-        composable(route = AppScreens.RegistrationScreen.name) { RegistrationScreen(navController = navController) }
-        composable(route = AppScreens.FilterScreen.name) { FilterScreen(navController = navController) }
-        composable(route = AppScreens.FavoriteScreen.name) { FavoriteScreen(navController = navController, favoritesViewModel = favoritesViewModel) }
-        composable(route = AppScreens.SettingsScreen.name) { SettingsScreen(navController = navController) }
-        composable(route = AppScreens.AccountScreen.name) { AccountScreen(navController = navController) }
-
+        composable(route = AppScreens.LoginScreen.name) { LoginScreen(navController = navController, loginViewModel = loginViewModel) }
+        composable(route = AppScreens.RegistrationScreen.name) { RegistrationScreen(navController = navController, loginViewModel = loginViewModel) }
+        composable(route = AppScreens.FilterScreen.name) { FilterScreen(navController = navController, loginViewModel = loginViewModel) }
+        composable(route = AppScreens.FavoriteScreen.name) { FavoriteScreen(navController = navController, favoritesViewModel = favoritesViewModel, loginViewModel = loginViewModel) }
+        composable(route = AppScreens.SettingsScreen.name) { SettingsScreen(navController = navController, loginViewModel = loginViewModel) }
+        composable(route = AppScreens.AccountScreen.name) { AccountScreen(navController = navController, loginViewModel = loginViewModel) }
         composable(
             AppScreens.EventDetailScreen.name + "/{eventId}",
             arguments = listOf(
@@ -42,7 +47,8 @@ fun AppNavigation() {
                 })
         ) { backStackEntry ->
             backStackEntry.arguments?.getString("eventId")
-                ?.let { EventDetailScreen(navController = navController, eventId = it, favoritesViewModel = favoritesViewModel ) }
+                ?.let { EventDetailScreen(navController = navController, eventId = it, favoritesViewModel = favoritesViewModel, loginViewModel = loginViewModel ) }
         }
     }
 }
+

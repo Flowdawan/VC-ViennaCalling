@@ -1,18 +1,14 @@
 package com.example.viennacalling.screens.eventdetail
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +29,7 @@ import com.example.viennacalling.ui.theme.VcLightGrayPopUp
 import com.example.viennacalling.ui.theme.VcNavTopBottom
 import com.example.viennacalling.ui.theme.VcScreenBackground
 import com.example.viennacalling.viewmodels.FavoritesViewModel
+import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.EventDetails
 import com.example.viennacalling.widgets.EventRow
 import com.example.viennacalling.widgets.FavoriteButton
@@ -43,12 +40,13 @@ import com.example.viennacalling.widgets.FavoriteButton
 fun EventDetailScreen(
     navController: NavController = rememberNavController(),
     eventId: String? = getEvents()[0].id,
-    favoritesViewModel: FavoritesViewModel = viewModel()
+    favoritesViewModel: FavoritesViewModel = viewModel(),
+    loginViewModel: LoginViewModel
 ) {
     val event = filterMovie(eventId)
     Scaffold(
         backgroundColor = VcScreenBackground,
-        bottomBar = { BottomNavigationBar(navController = navController) },
+        bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
         topBar = {
             TopAppBar({
                 Image(

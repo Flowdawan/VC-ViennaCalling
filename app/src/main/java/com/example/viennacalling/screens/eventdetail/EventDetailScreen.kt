@@ -27,12 +27,12 @@ import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.VcLightGrayPopUp
 import com.example.viennacalling.ui.theme.VcNavTopBottom
-import com.example.viennacalling.ui.theme.VcScreenBackground
 import com.example.viennacalling.viewmodels.FavoritesViewModel
 import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.EventDetails
 import com.example.viennacalling.widgets.EventRow
 import com.example.viennacalling.widgets.FavoriteButton
+import com.example.viennacalling.widgets.checkIfLightModeIcon
 
 
 @Preview(showBackground = true)
@@ -45,17 +45,17 @@ fun EventDetailScreen(
 ) {
     val event = filterMovie(eventId)
     Scaffold(
-        backgroundColor = VcScreenBackground,
+        backgroundColor = MaterialTheme.colors.background,
         bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
         topBar = {
             TopAppBar({
                 Image(
-                    painterResource(R.drawable.ic_vc_logo),
+                    painterResource(checkIfLightModeIcon()),
                     contentDescription = "Vienna Calling Logo",
                     contentScale = ContentScale.Crop
                 )
             },
-                backgroundColor = VcNavTopBottom,
+                backgroundColor = MaterialTheme.colors.secondary,
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(route = AppScreens.FavoriteScreen.name)
@@ -96,7 +96,7 @@ fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel
                 )
             }
             Divider(
-                color = VcLightGrayPopUp,
+                color = MaterialTheme.colors.surface,
                 modifier = Modifier
                     .padding(10.dp)
                     .alpha(alpha = 0.6F)

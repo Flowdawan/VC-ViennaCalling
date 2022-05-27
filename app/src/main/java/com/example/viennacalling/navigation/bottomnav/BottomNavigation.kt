@@ -1,10 +1,7 @@
 package com.example.viennacalling.navigation.bottomnav
 
 import android.util.Log
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
@@ -14,6 +11,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.viennacalling.R
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.viewmodels.LoginViewModel
+import com.example.viennacalling.widgets.checkIfLightModeText
 
 @Composable
 fun BottomNavigationBar(navController: NavController, loginViewModel: LoginViewModel) {
@@ -24,16 +22,16 @@ fun BottomNavigationBar(navController: NavController, loginViewModel: LoginViewM
         BottomNavItem.Settings,
     )
     BottomNavigation(
-        backgroundColor = colorResource(id = R.color.vc_navigation_top_bottom),
-        contentColor = Color.White
+        backgroundColor = MaterialTheme.colors.secondary,
+        contentColor = checkIfLightModeText()
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         items.forEach { item ->
             BottomNavigationItem(
                 icon = { Icon(imageVector = (item.icon), contentDescription = item.title) },
-                selectedContentColor = Color.White,
-                unselectedContentColor = Color.White.copy(0.4f),
+                selectedContentColor = checkIfLightModeText(),
+                unselectedContentColor = checkIfLightModeText().copy(0.4f),
                 alwaysShowLabel = true,
                 selected = currentRoute == item.screen_route,
                 onClick = {

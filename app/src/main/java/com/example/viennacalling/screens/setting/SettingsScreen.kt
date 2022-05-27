@@ -2,6 +2,7 @@ package com.example.viennacalling.screens.setting
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -26,30 +28,34 @@ import com.example.viennacalling.models.Event
 import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
-import com.example.viennacalling.ui.theme.*
 import com.example.viennacalling.viewmodels.LoginViewModel
-import kotlin.math.log
+import com.example.viennacalling.viewmodels.ThemeViewModel
+import com.example.viennacalling.widgets.checkIfLightModeIcon
+import com.example.viennacalling.widgets.checkIfLightModeText
 
 @Composable
-fun SettingsScreen(navController: NavController = rememberNavController(), loginViewModel: LoginViewModel) {
+fun SettingsScreen(navController: NavController = rememberNavController(),
+                   loginViewModel: LoginViewModel,
+                    themeViewModel: ThemeViewModel,
+                    ) {
     Scaffold(
-        backgroundColor = VcScreenBackground,
+        backgroundColor = MaterialTheme.colors.background,
         bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
         topBar = {
             TopAppBar({
                 Image(
-                    painterResource(R.drawable.ic_vc_logo),
+                    painterResource(checkIfLightModeIcon()),
                     contentDescription = "Vienna Calling Logo",
                     contentScale = ContentScale.Crop
                 )
             },
-                backgroundColor = VcNavTopBottom,
+                backgroundColor = MaterialTheme.colors.secondary,
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(route = AppScreens.FavoriteScreen.name)
                     }) {
                         Icon(
-                            tint = Color.White,
+                            tint = checkIfLightModeText(),
                             imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = "Favorite"
                         )
@@ -58,12 +64,20 @@ fun SettingsScreen(navController: NavController = rememberNavController(), login
             )
         }
     ) { padding ->
-        MainContent(navController = navController, padding = padding)
+        MainContent(
+            navController = navController,
+            padding = padding,
+            themeViewModel = themeViewModel,
+            )
     }
 }
 
 @Composable
-fun MainContent(navController: NavController, events: List<Event> = getEvents(), padding: PaddingValues) {
+fun MainContent(navController: NavController,
+                events: List<Event> = getEvents(),
+                padding: PaddingValues,
+                themeViewModel: ThemeViewModel,
+) {
     val showDialog = remember { mutableStateOf(false) }
 
     Column (
@@ -76,7 +90,7 @@ fun MainContent(navController: NavController, events: List<Event> = getEvents(),
         Text(
             text = "Settings",
             fontSize = 32.sp,
-            color = Color.White
+            color = checkIfLightModeText(),
         )
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -84,24 +98,36 @@ fun MainContent(navController: NavController, events: List<Event> = getEvents(),
             modifier = Modifier
                 .width(311.dp)
                 .height(40.dp)
-                .border(1.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp))
-            ,
-            colors = ButtonDefaults.buttonColors(backgroundColor = VcButtons),
-            onClick = { /*TODO*/ }
+                .border(1.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp)),
+            colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
+            onClick = {
+                themeViewModel.onThemeChanged("Dark")
+            }
         ) {
-            Icon(imageVector = Icons.Default.Email, contentDescription = "Night Mode", tint = Color.White)
-            Text(text = "Dark mode", color = Color.White)
+            Icon(imageVector = Icons.Default.Email, contentDescription = "Night Mode", tint = checkIfLightModeText())
+            Text(text = "Night mode",
+                color = checkIfLightModeText(),
+                modifier = Modifier.padding(3.dp)
+            )
         }
-        Spacer(modifier = Modifier.height(10.dp))
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         Button(
             modifier = Modifier
                 .width(311.dp)
                 .height(40.dp)
                 .border(1.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp)),
-            onClick = { /*TODO*/ }
+            colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
+            onClick = {
+                themeViewModel.onThemeChanged("Light")
+            }
         ) {
-            Icon(imageVector = Icons.Default.Email, contentDescription = "Night Mode", tint = Color.White)
-            Text(text = "Light mode", color = Color.White)
+            Icon(imageVector = Icons.Default.Email, contentDescription = "Light Mode", tint = checkIfLightModeText())
+            Text(text = "Light mode",
+                color = checkIfLightModeText(),
+                modifier = Modifier.padding(3.dp)
+            )
         }
 
         Box(
@@ -110,11 +136,11 @@ fun MainContent(navController: NavController, events: List<Event> = getEvents(),
         ) {
             TextButton(
                 onClick = { showDialog.value = true }){
-                Text(text = "Lerne über Vienna Calling", color = Color.White)
+                Text(text = "Lerne über Vienna Calling", color = checkIfLightModeText())
             }
         }
         if (showDialog.value) {
-            Alert(name = "Vienna Calling ist eine App, die von Wiener EntwicklerInnen mit Unterstützung der FH Campus Wien umgesetzt wurde. Diese App ermöglicht es EinwohnerInnen und TouristInnen, die besten kulturellen und musikalischen Veranstaltungen in dieser Stadt zu finden. Wir möchten Menschen zusammenbringen und jedem die Möglichkeit geben, die Stadt zu erkunden. Es gibt so viele tolle Orte und Veranstaltungen, die man im Sommer besuchen kann. Klicken Sie einfach auf die Schaltfläche \"Interessiert\", damit Sie die Veranstaltung auf Ihrer Liste speichern können. Vergessen Sie auch nicht, ein Konto zu erstellen, um auf alle unsere Funktionen zugreifen zu können. Bleiben Sie dran, wir werden Sie über unsere neuen Funktionen auf dem Laufenden halten. \n",
+            Alert(name = stringResource(R.string.about_text),
                 showDialog = showDialog.value,
                 onDismiss = {showDialog.value = false})
         }
@@ -135,20 +161,20 @@ fun Alert(name : String,
                     horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                     Icon(imageVector = Icons.Default.Phone, contentDescription = "Mehr über Vienna Calling")
-                    Text("Vienna Calling")
+                    Text("Vienna Calling", color = checkIfLightModeText())
                 }
             },
             text = {
-                Text(text = name)
+                Text(text = name, color = checkIfLightModeText())
             },
             onDismissRequest = onDismiss,
             confirmButton = {
                 TextButton(onClick = onDismiss) {
-                    Text("OK")
+                    Text("OK", color = checkIfLightModeText())
                 }
             },
             dismissButton = {},
-            backgroundColor = VcLightGrayPopUp,
+            backgroundColor = MaterialTheme.colors.surface,
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier.padding(18.dp)
         )

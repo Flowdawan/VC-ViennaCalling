@@ -1,10 +1,13 @@
 package com.example.viennacalling.screens.account
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.Composable
@@ -20,35 +23,42 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
-import com.example.viennacalling.models.Event
-import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
-import com.example.viennacalling.ui.theme.VcLightGrayPopUp
-import com.example.viennacalling.ui.theme.VcNavTopBottom
-import com.example.viennacalling.ui.theme.VcScreenBackground
 import com.example.viennacalling.viewmodels.LoginViewModel
+import com.example.viennacalling.widgets.checkIfLightModeIcon
+import com.example.viennacalling.widgets.checkIfLightModeText
 
 @Composable
-fun AccountScreen(navController: NavController = rememberNavController(), loginViewModel: LoginViewModel) {
+fun AccountScreen(
+    navController: NavController = rememberNavController(),
+    loginViewModel: LoginViewModel
+) {
     Scaffold(
-        backgroundColor = VcScreenBackground,
-        bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
+        backgroundColor = MaterialTheme.colors.background,
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                loginViewModel = loginViewModel
+            )
+        },
         topBar = {
             TopAppBar({
                 Image(
-                    painterResource(R.drawable.ic_vc_logo),
+                    painterResource(
+                        checkIfLightModeIcon()
+                    ),
                     contentDescription = "Vienna Calling Logo",
                     contentScale = ContentScale.Crop
                 )
             },
-                backgroundColor = VcNavTopBottom,
+                backgroundColor = MaterialTheme.colors.secondary,
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(route = AppScreens.FavoriteScreen.name)
                     }) {
                         Icon(
-                            tint = Color.White,
+                            tint = checkIfLightModeText(),
                             imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = "Favorite"
                         )
@@ -57,25 +67,62 @@ fun AccountScreen(navController: NavController = rememberNavController(), loginV
             )
         }
     ) { padding ->
-        MainContent(navController = navController, padding = padding, loginViewModel = loginViewModel)
+        MainContent(
+            navController = navController,
+            padding = padding,
+            loginViewModel = loginViewModel
+        )
     }
 }
 
 @Composable
-fun MainContent(navController: NavController,
-                events: List<Event> = getEvents(), padding: PaddingValues,
-                loginViewModel: LoginViewModel
-                ) {
+fun MainContent(
+    navController: NavController,
+    padding: PaddingValues,
+    loginViewModel: LoginViewModel
+) {
     val showDialog = remember { mutableStateOf(false) }
 
-    Text("Account Screen")
-    Column (
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(PaddingValues(20.dp, padding.calculateBottomPadding()))
     ) {
+        Icon(
+            imageVector = Icons.Default.AccountCircle,
+            tint = checkIfLightModeText(),
+            contentDescription = "User Image",
+            modifier = Modifier
+                .size(80.dp)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            modifier = Modifier
+                .width(311.dp)
+                .height(40.dp)
+                .border(1.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp)),
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
+            onClick = { /*TODO*/ }
+        ) {
+            Icon(
+                imageVector = Icons.Default.AccountBox,
+                contentDescription = "User Email",
+                tint = checkIfLightModeText(),
+
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = loginViewModel.userEmail.value,
+                color = checkIfLightModeText(),
+                modifier = Modifier.padding(3.dp)
+            )
+        }
+
+
         LogoutButton(loginViewModel = loginViewModel, navController = navController)
 
         Box(
@@ -84,47 +131,52 @@ fun MainContent(navController: NavController,
         ) {
             TextButton(
                 onClick = { showDialog.value = true }) {
-                Text(text = "Lerne über Vienna Calling", color = Color.White)
+                Text(text = "Lerne über Vienna Calling", color = checkIfLightModeText())
             }
         }
         if (showDialog.value) {
-            Alert(name = "Vienna Calling ist eine App, die von Wiener EntwicklerInnen mit Unterstützung der FH Campus Wien umgesetzt wurde. Diese App ermöglicht es EinwohnerInnen und TouristInnen, die besten kulturellen und musikalischen Veranstaltungen in dieser Stadt zu finden. Wir möchten Menschen zusammenbringen und jedem die Möglichkeit geben, die Stadt zu erkunden. Es gibt so viele tolle Orte und Veranstaltungen, die man im Sommer besuchen kann. Klicken Sie einfach auf die Schaltfläche \"Interessiert\", damit Sie die Veranstaltung auf Ihrer Liste speichern können. Vergessen Sie auch nicht, ein Konto zu erstellen, um auf alle unsere Funktionen zugreifen zu können. Bleiben Sie dran, wir werden Sie über unsere neuen Funktionen auf dem Laufenden halten. \n",
+            Alert(name = stringResource(R.string.about_text),
                 showDialog = showDialog.value,
                 onDismiss = { showDialog.value = false })
         }
 
         Spacer(modifier = Modifier.height(20.dp))
-        
+
     }
 }
 
 @Composable
-fun Alert(name : String,
-          showDialog: Boolean,
-          onDismiss: () -> Unit) {
+fun Alert(
+    name: String,
+    showDialog: Boolean,
+    onDismiss: () -> Unit
+) {
     if (showDialog) {
         AlertDialog(
             title = {
-                Column (
+                Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(imageVector = Icons.Default.Phone, contentDescription = "Mehr über Vienna Calling")
-                    Text("Vienna Calling")
+                    Icon(
+                        imageVector = Icons.Default.Phone,
+                        contentDescription = "Mehr über Vienna Calling"
+                    )
+                    Text("Vienna Calling", color = checkIfLightModeText())
                 }
             },
             text = {
-                Text(text = name)
+                Text(text = name, color = checkIfLightModeText())
             },
             onDismissRequest = onDismiss,
             confirmButton = {
                 TextButton(onClick = onDismiss) {
-                    Text("OK")
+                    Text("OK", color = checkIfLightModeText())
                 }
             },
             dismissButton = {},
-            backgroundColor = VcLightGrayPopUp,
+            backgroundColor = MaterialTheme.colors.surface,
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier.padding(18.dp)
         )
@@ -136,11 +188,14 @@ fun LogoutButton(loginViewModel: LoginViewModel, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 40.dp),
+            .padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { loginViewModel.signOut(navController = navController) }) {
-            Text(text = stringResource(R.string.log_out))
+        Button(
+            onClick = { loginViewModel.signOut(navController = navController) },
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
+        ) {
+            Text(text = stringResource(R.string.log_out), color = checkIfLightModeText())
         }
     }
 }

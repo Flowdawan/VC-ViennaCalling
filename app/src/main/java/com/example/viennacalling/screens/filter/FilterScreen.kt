@@ -16,23 +16,23 @@ import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.VcNavTopBottom
-import com.example.viennacalling.ui.theme.VcScreenBackground
 import com.example.viennacalling.viewmodels.LoginViewModel
+import com.example.viennacalling.widgets.checkIfLightModeIcon
 
 @Composable
 fun FilterScreen(navController: NavController = rememberNavController(), loginViewModel: LoginViewModel) {
     Scaffold(
-        backgroundColor = VcScreenBackground,
+        backgroundColor = MaterialTheme.colors.background,
         bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
         topBar = {
             TopAppBar({
                 Image(
-                    painterResource(R.drawable.ic_vc_logo),
+                    painterResource(checkIfLightModeIcon()),
                     contentDescription = "Vienna Calling Logo",
                     contentScale = ContentScale.Crop
                 )
             },
-                backgroundColor = VcNavTopBottom,
+                backgroundColor = MaterialTheme.colors.secondary,
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(route = AppScreens.FavoriteScreen.name)

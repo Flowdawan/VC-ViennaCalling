@@ -1,10 +1,7 @@
 package com.example.viennacalling.widgets
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -17,18 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.viennacalling.R
 import com.example.viennacalling.models.Event
 import com.example.viennacalling.models.getEvents
-import com.example.viennacalling.ui.theme.VcEventCard
-import com.example.viennacalling.ui.theme.VcLightGrayPopUp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Preview
@@ -44,9 +38,9 @@ fun EventRow(
             .fillMaxWidth()
             .height(351.dp)
             .clickable { onItemClick(event.id) },
-        backgroundColor = VcEventCard,
+        backgroundColor = MaterialTheme.colors.primary,
         elevation = 4.dp,
-        ) {
+    ) {
         Column() {
             Surface(
                 modifier = Modifier
@@ -63,24 +57,24 @@ fun EventRow(
                     contentScale = ContentScale.Crop,
                 )
             }
-            Column (modifier = Modifier.padding(5.dp)){
+            Column(modifier = Modifier.padding(5.dp)) {
                 Text(
-                    color = Color.White,
+                    color = checkIfLightModeText(),
                     text = event.title,
                     style = MaterialTheme.typography.subtitle1,
                 )
                 Text(
-                    color = Color.White,
+                    color = checkIfLightModeText(),
                     text = "Datum: ${event.date}",
                     style = MaterialTheme.typography.subtitle1,
                 )
                 Text(
-                    color = Color.White,
+                    color = checkIfLightModeText(),
                     text = "Ort: ${event.place}",
                     style = MaterialTheme.typography.subtitle1,
                 )
             }
-            Box(contentAlignment = Alignment.TopEnd){
+            Box(contentAlignment = Alignment.TopEnd) {
                 content()
             }
         }
@@ -114,15 +108,14 @@ fun EventDetails(event: Event = getEvents()[0]) {
         modifier = Modifier
             .height(375.dp)
             .fillMaxWidth()
-            .padding(15.dp)
-        ,
+            .padding(15.dp),
         shape = RoundedCornerShape(15.dp)
     ) {
         Column() {
             Text(text = event.title)
 
             Divider(
-                color = VcLightGrayPopUp,
+                color = MaterialTheme.colors.surface,
                 modifier = Modifier
                     .padding(10.dp)
                     .alpha(alpha = 0.6F)
@@ -130,7 +123,7 @@ fun EventDetails(event: Event = getEvents()[0]) {
             Text(text = event.price)
 
             Divider(
-                color = VcLightGrayPopUp,
+                color = MaterialTheme.colors.surface,
                 modifier = Modifier
                     .padding(10.dp)
                     .alpha(alpha = 0.6F)
@@ -142,7 +135,7 @@ fun EventDetails(event: Event = getEvents()[0]) {
 
 
     }
-    
+
 }
 
 @ExperimentalCoroutinesApi
@@ -152,5 +145,29 @@ fun CircularProgressBar(
 ) {
     if (isDisplayed) {
         CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun checkIfLightModeText(reverse: Boolean = false): Color {
+    return if (MaterialTheme.colors.isLight) {
+        when (reverse) {
+            true -> Color.White
+            false -> Color.Black
+        }
+    } else {
+        when (reverse) {
+            true -> Color.Black
+            false -> Color.White
+        }
+    }
+}
+
+@Composable
+fun checkIfLightModeIcon(): Int {
+    if (MaterialTheme.colors.isLight) {
+        return R.drawable.ic_vc_logo_light
+    } else {
+        return R.drawable.ic_vc_logo
     }
 }

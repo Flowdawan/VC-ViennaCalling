@@ -7,15 +7,19 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 private val DarkColorPalette = darkColors(
-    primary = VcButtons,
+    primary = VcEventCard,
     primaryVariant = VcButtons,
-    secondary = Teal200
+    secondary = VcNavTopBottom,
+    background = VcScreenBackground,
+    surface = VcLightGrayPopUp,
 )
 
 private val LightColorPalette = lightColors(
-    primary = VcButtons,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary = VcEventCardLight,
+    primaryVariant = VcButtonsLight,
+    secondary = VcNavTopBottomLight,
+    background = VcScreenBackgroundLight,
+    surface = VcLightGrayPopUpLight,
 
     /* Other default colors to override
     background = Color.White,
@@ -32,6 +36,7 @@ fun ViennaCallingTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {

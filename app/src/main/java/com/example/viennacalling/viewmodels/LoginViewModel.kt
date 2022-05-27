@@ -108,3 +108,4 @@ class LoginViewModel() : ViewModel() {
         navController.navigate(AppScreens.LoginScreen.name)
     }
 }
+

@@ -8,6 +8,8 @@
 
     <!-- Email login screen -->
     <string name="email">Email</string>
+    <string name="about_text">Vienna Calling ist eine App, die von Wiener EntwicklerInnen mit Unterstützung der FH Campus Wien umgesetzt wurde. Diese App ermöglicht es EinwohnerInnen und TouristInnen, die besten kulturellen und musikalischen Veranstaltungen in dieser Stadt zu finden. Wir möchten Menschen zusammenbringen und jedem die Möglichkeit geben, die Stadt zu erkunden. Es gibt so viele tolle Orte und Veranstaltungen, die man im Sommer besuchen kann. Klicken Sie einfach auf die Schaltfläche \"Interessiert\", damit Sie die Veranstaltung auf Ihrer Liste speichern können. Vergessen Sie auch nicht, ein Konto zu erstellen, um auf alle unsere Funktionen zugreifen zu können. Bleiben Sie dran, wir werden Sie über unsere neuen Funktionen auf dem Laufenden halten. \n"</string>
+
     <string name="password">Password</string>
     <string name="create">Registrieren</string>
 

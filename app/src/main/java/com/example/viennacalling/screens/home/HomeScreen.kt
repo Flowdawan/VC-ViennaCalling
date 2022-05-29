@@ -8,8 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -37,7 +36,6 @@ fun HomeScreen(
     navController: NavController = rememberNavController(),
     favoritesViewModel: FavoritesViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
-    db: FirebaseFirestore,
     eventsViewModel: EventsViewModel = viewModel()
 )
 {
@@ -71,8 +69,7 @@ fun HomeScreen(
             padding = padding,
             favoritesViewModel = favoritesViewModel,
             loginViewModel = loginViewModel,
-            db = db,
-            eventsViewModel = eventsViewModel
+            eventsViewModel = eventsViewModel,
             )
     }
 }
@@ -83,17 +80,11 @@ fun MainContent(navController: NavController,
                 padding: PaddingValues,
                 favoritesViewModel: FavoritesViewModel,
                 loginViewModel: LoginViewModel,
-                db: FirebaseFirestore,
                 eventsViewModel: EventsViewModel
                 ) {
-    LaunchedEffect(Unit, block = {
-        eventsViewModel.getEventList()
-    })
-    LazyColumn(modifier = Modifier.fillMaxHeight()) {
-        items(items = eventsViewModel.eventList) { event ->
-            event.nameType?.let { Log.d("HomeScreen", it) }
-        }}
-
+    var isEventInList by remember {
+        mutableStateOf(false)
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -114,14 +105,13 @@ fun MainContent(navController: NavController,
                 onItemClick = { eventId ->
                     navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
                 }){
+                isEventInList = favoritesViewModel.isEventInList(event)
                 FavoriteButton(
                     event = event,
-                    isAlreadyInList = favoritesViewModel.isEventInList(event),
-                    onFavoriteClick = {
-                            event ->
+                    isAlreadyInList = isEventInList,
+                    onFavoriteClick = { event ->
                         if (favoritesViewModel.isEventInList(event)) {
                             favoritesViewModel.removeEvent(event)
-
                         } else {
                             favoritesViewModel.addEvent(event)
                         }

@@ -1,5 +1,6 @@
 package com.example.viennacalling.widgets
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
@@ -50,7 +51,7 @@ fun EventRow(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(event.images[0])
+                        .data(event.images)
                         .crossfade(true)
                         .build(),
                     contentDescription = "Movie Cover",
@@ -70,7 +71,7 @@ fun EventRow(
                 )
                 Text(
                     color = checkIfLightModeText(),
-                    text = "Ort: ${event.place}",
+                    text = "Ort: ${event.location}",
                     style = MaterialTheme.typography.subtitle1,
                 )
             }
@@ -87,7 +88,6 @@ fun FavoriteButton(
     onFavoriteClick: (Event) -> Unit = {},
     isAlreadyInList: Boolean = false
 ) {
-
     Icon(imageVector = if (!isAlreadyInList) {
         Icons.Default.FavoriteBorder
     } else {
@@ -129,23 +129,13 @@ fun EventDetails(event: Event = getEvents()[0]) {
                     .alpha(alpha = 0.6F)
             )
 
-            Text(text = event.place)
+            Text(text = event.location)
 
         }
 
 
     }
 
-}
-
-@ExperimentalCoroutinesApi
-@Composable
-fun CircularProgressBar(
-    isDisplayed: Boolean
-) {
-    if (isDisplayed) {
-        CircularProgressIndicator()
-    }
 }
 
 @Composable

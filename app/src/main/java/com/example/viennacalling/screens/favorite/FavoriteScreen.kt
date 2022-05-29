@@ -1,5 +1,6 @@
 package com.example.viennacalling.screens.favorite
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -7,6 +8,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -26,7 +29,7 @@ import com.example.viennacalling.widgets.checkIfLightModeIcon
 
 @Composable
 fun FavoriteScreen(navController: NavController = rememberNavController(),
-                   favoritesViewModel: FavoritesViewModel = viewModel(),
+                   favoritesViewModel: FavoritesViewModel,
                    loginViewModel: LoginViewModel
                    ) {
     Scaffold(
@@ -59,11 +62,11 @@ fun FavoriteScreen(navController: NavController = rememberNavController(),
 
 @Composable
 fun MainContent(navController: NavController,
-                events: List<Event> = getEvents(),
                 favoritesViewModel: FavoritesViewModel
 ) {
+    val eventList: List<Event> by favoritesViewModel.favoriteEvents.collectAsState()
     LazyColumn {
-        items(items = favoritesViewModel.getAllEvents()) { event ->
+        items(items = eventList) { event ->
             EventRow(event = event,
                 onItemClick = { eventId ->
                     navController.navigate(route =  AppScreens.EventDetailScreen.name + "/$eventId")

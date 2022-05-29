@@ -14,7 +14,8 @@ import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.checkIfLightModeText
 
 @Composable
-fun BottomNavigationBar(navController: NavController, loginViewModel: LoginViewModel) {
+fun BottomNavigationBar(navController: NavController,
+                        loginViewModel: LoginViewModel) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Filter,

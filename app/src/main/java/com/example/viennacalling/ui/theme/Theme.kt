@@ -13,7 +13,7 @@ private val DarkColorPalette = darkColors(
     background = VcScreenBackground,
     surface = VcLightGrayPopUp,
     onBackground = VcEventDetailBackground,
-    )
+)
 
 private val LightColorPalette = lightColors(
     primary = VcEventCardLight,

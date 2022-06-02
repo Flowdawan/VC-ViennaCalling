@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -36,7 +36,6 @@ fun EventRow(
     onItemClick: (String) -> Unit = {},
     content: @Composable () -> Unit = {}
 ) {
-    Log.d(TAG, event.id)
     Card(
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
         modifier = Modifier
@@ -82,7 +81,7 @@ fun EventRow(
 
                 Text(
                     color = checkIfLightModeText(),
-                    text = "Ort: ${event.streetAddress}-${event.plz}",
+                    text = "Ort: ${event.streetAddress} ${event.plz}",
                     style = MaterialTheme.typography.subtitle1,
                 )
             }
@@ -101,8 +100,15 @@ fun EventRow(
 fun FavoriteButton(
     event: Event,
     onFavoriteClick: (Event) -> Unit = {},
-    isAlreadyInList: Boolean = false
+    isAlreadyInList: Boolean = false,
 ) {
+    Log.d("State", "im button $isAlreadyInList" )
+    var color by remember { mutableStateOf(Color.DarkGray) }
+    color = if (isAlreadyInList) {
+        Purple500
+    } else {
+        Color.DarkGray
+    }
     Button(
         modifier = Modifier
             .padding(10.dp, bottom = 15.dp)
@@ -111,9 +117,9 @@ fun FavoriteButton(
         shape = RoundedCornerShape(44),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = if (isAlreadyInList) {
-                Purple500
+                color
             } else {
-                Color.DarkGray
+                color
             }
         ),
         onClick = { onFavoriteClick(event) }
@@ -135,20 +141,12 @@ fun EventDetails(
     content: @Composable () -> Unit = {}
 ) {
 
-    val uriHandler = LocalUriHandler.current // To open external linls
-    val intent = Intent(
-        Intent.ACTION_VIEW,
-        Uri.parse(
-            "https://www.google.com/maps/search/?api=1&query=${
-                event.point.replace(
-                    " ",
-                    "&"
-                )
-            }"
-        )
-    ) // to open the google maps app with the latitude point of the event
+    val uriHandler = LocalUriHandler.current // To open external links
     val context = LocalContext.current
 
+    val googleMapsUri = Uri.parse("geo:${event.point.replace(" ", ", ")},")
+    val mapIntent = Intent(Intent.ACTION_VIEW, googleMapsUri)
+    mapIntent.setPackage("com.google.android.apps.maps") // to open the google maps app with the latitude point of the event
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -189,12 +187,16 @@ fun EventDetails(
 
             Text(
                 modifier = Modifier.clickable {
-                    if (event.point != "") {
-                        startActivity(context, intent, null)
+                    if (event.streetAddress != "" && event.point != "") {
+                        startActivity(context, mapIntent, null)
                     }
                 },
                 color = checkIfLightModeText(),
-                text = "Ort: ${event.streetAddress}-${event.plz}",
+                text = if (event.streetAddress != "") {
+                    "Ort: ${event.streetAddress} ${event.plz}"
+                } else {
+                    "Ort: Es ist leider keine Adresse vorhanden"
+                },
                 style = MaterialTheme.typography.subtitle1,
             )
 
@@ -207,8 +209,8 @@ fun EventDetails(
 
             Text(
                 modifier = Modifier.clickable {
-                    if (event.title != "") {
-                        uriHandler.openUri(event.title)
+                    if (event.link != "") {
+                        uriHandler.openUri(event.link)
                     }
                 },
                 text = event.link,

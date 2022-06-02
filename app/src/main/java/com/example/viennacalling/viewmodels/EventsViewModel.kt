@@ -23,11 +23,11 @@ class EventsViewModel(
         }
     }
 
-    fun isInList(id: Int) {
-        _eventList[id].isInList = !_eventList[id].isInList
-    }
-
     fun getAllEvents(): List<Event> {
         return _eventList
+    }
+
+    fun testState() {
+        _eventList.removeLast()
     }
 }

@@ -2,51 +2,47 @@ package com.example.viennacalling.screens.registration
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
-import com.example.viennacalling.models.Event
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.screens.login.EmailField
 import com.example.viennacalling.screens.login.PasswordField
+import com.example.viennacalling.screens.setting.Alert
 import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.checkIfLightModeIcon
 import com.example.viennacalling.widgets.checkIfLightModeText
-import kotlin.math.log
 
 
 @Composable
 fun RegistrationScreen(
     navController: NavController = rememberNavController(),
-    loginViewModel: LoginViewModel) {
+    loginViewModel: LoginViewModel
+) {
     Scaffold(
         backgroundColor = MaterialTheme.colors.background,
-        bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                loginViewModel = loginViewModel
+            )
+        },
         topBar = {
             TopAppBar({
                 Image(
@@ -69,21 +65,27 @@ fun RegistrationScreen(
                 }
             )
         }
-    ) {
-        MainContent(navController = navController, loginViewModel = loginViewModel)
+    ) { padding ->
+        MainContent(
+            navController = navController,
+            padding = padding,
+            loginViewModel = loginViewModel
+        )
     }
 }
 
 @Composable
 fun MainContent(
     navController: NavController,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    padding: PaddingValues
 ) {
+    val showDialog = remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(start = 24.dp, top = 24.dp, end = 24.dp, bottom = 24.dp)
-            .fillMaxSize(),
+            .padding(PaddingValues(20.dp, padding.calculateBottomPadding()))
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -102,8 +104,24 @@ fun MainContent(
 
         ButtonEmailPasswordCreate(
             enabled = loginViewModel.isValidEmailAndPassword(),
-            onRegistrationClick = { loginViewModel.createUserWithEmailAndPassword(navController = navController)}
+            onRegistrationClick = { loginViewModel.createUserWithEmailAndPassword(navController = navController) }
         )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            Alignment.BottomCenter
+        ) {
+            TextButton(
+                onClick = { showDialog.value = true }) {
+                Text(text = "Lerne über Vienna Calling", color = checkIfLightModeText())
+            }
+        }
+        if (showDialog.value) {
+            Alert(name = stringResource(R.string.about_text),
+                showDialog = showDialog.value,
+                onDismiss = { showDialog.value = false })
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+
     }
 }
 
@@ -113,9 +131,9 @@ fun ButtonEmailPasswordCreate(enabled: Boolean = true, onRegistrationClick: () -
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
-        colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
         enabled = enabled,
-        content = { Text(text = "Registrieren", color = checkIfLightModeText() ) },
+        content = { Text(text = "Registrieren", color = checkIfLightModeText()) },
         onClick = {
             onRegistrationClick()
         }

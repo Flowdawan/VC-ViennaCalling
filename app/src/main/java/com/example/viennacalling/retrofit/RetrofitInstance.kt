@@ -12,9 +12,11 @@ object RetrofitInstance {
         Retrofit.Builder()
             .baseUrl("https://www.wien.gv.at/")
             .client(OkHttpClient())
-            .addConverterFactory(SimpleXmlConverterFactory.createNonStrict(
-                Persister(AnnotationStrategy())
-            ))
+            .addConverterFactory(
+                SimpleXmlConverterFactory.createNonStrict(
+                    Persister(AnnotationStrategy())
+                )
+            )
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
             .create(EventApi::class.java)

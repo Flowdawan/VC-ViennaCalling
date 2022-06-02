@@ -1,13 +1,16 @@
 package com.example.viennacalling.screens.eventdetail
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -45,7 +48,12 @@ fun EventDetailScreen(
     val event = filterMovie(eventId, eventsViewModel.eventList)
     Scaffold(
         backgroundColor = MaterialTheme.colors.background,
-        bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                loginViewModel = loginViewModel
+            )
+        },
         topBar = {
             TopAppBar({
                 Image(
@@ -76,48 +84,57 @@ fun EventDetailScreen(
 
 @Composable
 fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel()) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+    LazyColumn(
+        modifier = Modifier
+            .padding(10.dp)
     ) {
-        Column(
-            modifier = Modifier.background(color = MaterialTheme.colors.onBackground)
-        ) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(240.dp)
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(bottom = 20.dp)
             ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(event.images)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Movie Cover",
-                    contentScale = ContentScale.Crop,
-                )
-            }
-            Divider(
-                color = MaterialTheme.colors.surface,
-                modifier = Modifier
-                    .padding(10.dp)
-                    .alpha(alpha = 0.6F)
-            )
-            EventDetails(event = event) {
-                FavoriteButton(
-                    event = event,
-                    isAlreadyInList = favoritesViewModel.isEventInList(event),
-                    onFavoriteClick = { event ->
-                        if (favoritesViewModel.isEventInList(event)) {
-                            favoritesViewModel.removeEvent(event)
-                        } else {
-                            favoritesViewModel.addEvent(event)
-                        }
+                Column(
+                    modifier = Modifier.background(color = MaterialTheme.colors.onBackground)
+                ) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(240.dp)
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(event.images)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Movie Cover",
+                            contentScale = ContentScale.Crop,
+                        )
                     }
-                )
+                    Divider(
+                        color = MaterialTheme.colors.surface,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .alpha(alpha = 0.6F)
+                    )
+                    EventDetails(event = event) {
+                        FavoriteButton(
+                            event = event,
+                            isAlreadyInList = favoritesViewModel.isEventInList(event),
+                            onFavoriteClick = { event ->
+                                if (favoritesViewModel.isEventInList(event)) {
+                                    favoritesViewModel.removeEvent(event)
+                                } else {
+                                    favoritesViewModel.addEvent(event)
+                                }
+                            }
+                        )
+                    }
+                }
             }
         }
     }
 }
+
 fun filterMovie(eventId: String?, eventList: List<Event>): Event {
     return eventList.filter { event -> event.id == eventId }[0]
 }

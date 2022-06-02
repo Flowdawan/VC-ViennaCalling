@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
+import com.example.viennacalling.screens.setting.Alert
 import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.checkIfLightModeIcon
 import com.example.viennacalling.widgets.checkIfLightModeText
@@ -113,7 +113,7 @@ fun MainContent(
                 contentDescription = "User Email",
                 tint = checkIfLightModeText(),
 
-            )
+                )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = loginViewModel.userEmail.value,
@@ -142,44 +142,6 @@ fun MainContent(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-    }
-}
-
-@Composable
-fun Alert(
-    name: String,
-    showDialog: Boolean,
-    onDismiss: () -> Unit
-) {
-    if (showDialog) {
-        AlertDialog(
-            title = {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Phone,
-                        contentDescription = "Mehr über Vienna Calling"
-                    )
-                    Text("Vienna Calling", color = checkIfLightModeText())
-                }
-            },
-            text = {
-                Text(text = name, color = checkIfLightModeText())
-            },
-            onDismissRequest = onDismiss,
-            confirmButton = {
-                TextButton(onClick = onDismiss) {
-                    Text("OK", color = checkIfLightModeText())
-                }
-            },
-            dismissButton = {},
-            backgroundColor = MaterialTheme.colors.surface,
-            shape = RoundedCornerShape(4.dp),
-            modifier = Modifier.padding(18.dp)
-        )
     }
 }
 

@@ -13,14 +13,17 @@ private val TAG = "FirebaseDao"
 class FirebaseDao {
     val firebaseDb = Firebase.firestore
 
-    // Firebase
+    // We are saving as documentPath a combination of the logged in user Id and the id from the event,
+    // therefore we get a unique document for every user who saved an event
+
+    // Firebase add a new Event
     suspend fun addFirebaseEvent(event: Event) {
         val userId = Firebase.auth.currentUser?.uid
         event.uuid = userId
 
         // Add a new document with a generated ID
         firebaseDb.collection("events")
-            .document("${userId}-${event.title}")
+            .document("${userId}-${event.id}")
             .set(event)
             .addOnSuccessListener { documentReference ->
                 Log.d(TAG, "DocumentSnapshot added with ID: $documentReference")
@@ -30,11 +33,11 @@ class FirebaseDao {
             }
     }
 
-    // Firebase
+    // Firebase deleting a event from firebase with the id
     suspend fun deleteFirebaseEvent(event: Event) {
         val userId = Firebase.auth.currentUser?.uid
         // Delete Document
-        firebaseDb.collection("events").document("${userId}-${event.title}")
+        firebaseDb.collection("events").document("${userId}-${event.id}")
             .delete()
             .addOnSuccessListener { documentReference ->
                 Log.d(TAG, "DocumentSnapshot deleted with ID: $documentReference")
@@ -44,7 +47,7 @@ class FirebaseDao {
             }
     }
 
-    // Firebase
+    // Firebase loading the favorites events from firebase
     suspend fun getFirebaseEvents(_favoriteEvents: MutableStateFlow<List<Event>>) {
         val userId = Firebase.auth.currentUser?.uid
         firebaseDb.collection("events")

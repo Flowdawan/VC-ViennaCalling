@@ -1,21 +1,22 @@
 package com.example.viennacalling.navigation.bottomnav
 
-import android.util.Log
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.viennacalling.R
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.checkIfLightModeText
 
 @Composable
-fun BottomNavigationBar(navController: NavController,
-                        loginViewModel: LoginViewModel) {
+fun BottomNavigationBar(
+    navController: NavController,
+    loginViewModel: LoginViewModel
+) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Filter,
@@ -36,9 +37,9 @@ fun BottomNavigationBar(navController: NavController,
                 alwaysShowLabel = true,
                 selected = currentRoute == item.screen_route,
                 onClick = {
-                    if(!loginViewModel.isLoggedIn.value && item.screen_route == "AccountScreen"){
+                    if (!loginViewModel.isLoggedIn.value && item.screen_route == "AccountScreen") {
                         item.screen_route = AppScreens.LoginScreen.name
-                    } else if(loginViewModel.isLoggedIn.value && item.screen_route == "LoginScreen"){
+                    } else if (loginViewModel.isLoggedIn.value && item.screen_route == "LoginScreen") {
                         item.screen_route = AppScreens.AccountScreen.name
                     }
                     navController.navigate(item.screen_route) {

@@ -11,7 +11,8 @@ data class Channel @JvmOverloads constructor(
         name = "item",
         entry = "item",
         inline = true,
-        empty = true)
+        empty = true
+    )
     var eventList: MutableList<EventList>? =
         null
 )

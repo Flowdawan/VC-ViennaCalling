@@ -1,6 +1,5 @@
 package com.example.viennacalling.repository
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.viennacalling.dao.EventsDao
 import com.example.viennacalling.dao.FirebaseDao
 import com.example.viennacalling.models.Event
@@ -10,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class EventsRepository(
     private val eventsDao: EventsDao,
     private val firebaseDao: FirebaseDao,
-    ) {
+) {
 
     // We can use the '=' (Single-expression functions) for the function or the bracket braces
     suspend fun addEvent(event: Event) = eventsDao.addEvent(event = event)
@@ -32,33 +31,14 @@ class EventsRepository(
     // Firebase
     suspend fun addFirebaseEvent(event: Event) = firebaseDao.addFirebaseEvent(event = event)
     suspend fun deleteFirebaseEvent(event: Event) = firebaseDao.deleteFirebaseEvent(event = event)
-    suspend fun getFirebaseEvents(_favoriteEvents: MutableStateFlow<List<Event>>) = firebaseDao.getFirebaseEvents(_favoriteEvents = _favoriteEvents)
+    suspend fun getFirebaseEvents(_favoriteEvents: MutableStateFlow<List<Event>>) =
+        firebaseDao.getFirebaseEvents(_favoriteEvents = _favoriteEvents)
 
-    suspend fun fetchEventsRssFeed(eventList: MutableList<Event>) = eventsDao.fetchEventRssFeed(
-        eventList = eventList)
+    fun fetchEventsRssFeed(eventList: MutableList<Event>) = eventsDao.fetchEventRssFeed(
+        eventList = eventList
+    )
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*

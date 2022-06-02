@@ -13,5 +13,6 @@ sealed class BottomNavItem(var title: String, var icon: ImageVector, var screen_
     object Home : BottomNavItem("Startseite", Icons.Default.Home, AppScreens.HomeScreen.name)
     object Filter : BottomNavItem("Filtern", Icons.Default.Search, AppScreens.FilterScreen.name)
     object Account : BottomNavItem("Konto", Icons.Default.AccountBox, AppScreens.AccountScreen.name)
-    object Settings : BottomNavItem("Settings", Icons.Default.Settings, AppScreens.SettingsScreen.name)
+    object Settings :
+        BottomNavItem("Settings", Icons.Default.Settings, AppScreens.SettingsScreen.name)
 }

@@ -1,16 +1,9 @@
 package com.example.viennacalling.retrofit
 
-import android.util.Log
-import com.example.viennacalling.models.xml.EventList
 import com.example.viennacalling.models.xml.RssFeed
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
 import retrofit2.http.GET
 import retrofit2.http.Query
-import java.text.SimpleDateFormat
-import java.util.*
 
 interface EventApi {
     @GET("vadb/internet/AdvPrSrv.asp")

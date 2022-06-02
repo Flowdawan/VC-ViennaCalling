@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "LoginViewModel"
 
-class LoginViewModel() : ViewModel() {
+class LoginViewModel : ViewModel() {
     private val _isLoggedIn = mutableStateOf(false)
     val isLoggedIn: State<Boolean> = _isLoggedIn
 
@@ -56,10 +56,15 @@ class LoginViewModel() : ViewModel() {
     fun createUserWithEmailAndPassword(navController: NavController) = viewModelScope.launch {
         _error.value = ""
         Firebase.auth.createUserWithEmailAndPassword(userEmail.value, password.value)
-            .addOnCompleteListener { task -> signInCompletedTask(task, navController = navController) }
+            .addOnCompleteListener { task ->
+                signInCompletedTask(
+                    task,
+                    navController = navController
+                )
+            }
     }
 
-    private fun getUserId() : String? {
+    private fun getUserId(): String? {
         val id = Firebase.auth.currentUser?.uid
         return id
     }
@@ -68,7 +73,12 @@ class LoginViewModel() : ViewModel() {
         try {
             _error.value = ""
             Firebase.auth.signInWithEmailAndPassword(userEmail.value, password.value)
-                .addOnCompleteListener { task -> signInCompletedTask(task, navController = navController) }
+                .addOnCompleteListener { task ->
+                    signInCompletedTask(
+                        task,
+                        navController = navController
+                    )
+                }
         } catch (e: Exception) {
             _error.value = e.localizedMessage ?: "Unknown error"
             Log.d(TAG, "Sign in fail: $e")
@@ -89,13 +99,13 @@ class LoginViewModel() : ViewModel() {
         }
     }
 
-    private fun getCurrentUser() : FirebaseUser? {
+    private fun getCurrentUser(): FirebaseUser? {
         val user = Firebase.auth.currentUser
         Log.d(TAG, "user display name: ${user?.displayName}, email: ${user?.email}")
         return user
     }
 
-    fun isValidEmailAndPassword() : Boolean {
+    fun isValidEmailAndPassword(): Boolean {
         if (userEmail.value.isBlank() || password.value.isBlank()) {
             return false
         }

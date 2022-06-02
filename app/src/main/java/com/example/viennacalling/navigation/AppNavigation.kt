@@ -1,6 +1,5 @@
 package com.example.viennacalling.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,14 +21,14 @@ import com.example.viennacalling.screens.registration.RegistrationScreen
 import com.example.viennacalling.screens.setting.SettingsScreen
 import com.example.viennacalling.screens.splash.SplashScreen
 import com.example.viennacalling.viewmodels.*
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import kotlin.math.log
 
 
 @Composable
 fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
 
+    // All our view Models where we save our state of the objects too and pass it to the screens
+    // The pattern where the state goes down, and events go up is called a unidirectional data flow
+    // We try to use these pattern as good as possible and create as high as possible our states
     val navController = rememberNavController()
     val loginViewModel: LoginViewModel = viewModel()
 
@@ -44,10 +43,10 @@ fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
     )
 
     val eventsViewModel: EventsViewModel = viewModel(
-    factory = EventsViewModelFactory(repository = repository)
+        factory = EventsViewModelFactory(repository = repository)
     )
 
-    NavHost(navController = navController, startDestination = AppScreens.HomeScreen.name) {
+    NavHost(navController = navController, startDestination = AppScreens.SplashScreen.name) {
         composable(AppScreens.HomeScreen.name) {
             HomeScreen(
                 navController = navController,
@@ -72,6 +71,7 @@ fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
         composable(route = AppScreens.FilterScreen.name) {
             FilterScreen(
                 navController = navController,
+                favoritesViewModel = favoritesViewModel,
                 loginViewModel = loginViewModel
             )
         }
@@ -102,8 +102,14 @@ fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
                     type = NavType.StringType
                 })
         ) { backStackEntry ->
-            EventDetailScreen(navController = navController, eventId = backStackEntry.arguments?.getString("eventId"), favoritesViewModel = favoritesViewModel, loginViewModel = loginViewModel, eventsViewModel = eventsViewModel)
-        }
+            EventDetailScreen(
+                navController = navController,
+                eventId = backStackEntry.arguments?.getString("eventId"),
+                favoritesViewModel = favoritesViewModel,
+                loginViewModel = loginViewModel,
+                eventsViewModel = eventsViewModel
+            )
         }
     }
+}
 

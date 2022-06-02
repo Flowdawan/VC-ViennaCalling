@@ -2,12 +2,12 @@ package com.example.viennacalling.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
-import com.example.viennacalling.ui.theme.VcNavTopBottom
+import com.example.viennacalling.screens.setting.Alert
 import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.checkIfLightModeIcon
 import com.example.viennacalling.widgets.checkIfLightModeText
@@ -65,45 +65,64 @@ fun LoginScreen(
                 }
             )
         }
-    ) {
-        MainContent(navController = navController, loginViewModel = loginViewModel)
+    ) { padding ->
+        MainContent(
+            navController = navController,
+            padding = padding,
+            loginViewModel = loginViewModel
+        )
     }
 }
 
 @Composable
 fun MainContent(
     navController: NavController,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    padding: PaddingValues,
 ) {
+    val showDialog = remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(start = 24.dp, top = 24.dp, end = 24.dp, bottom = 24.dp)
-            .fillMaxSize(),
+            .padding(PaddingValues(20.dp, padding.calculateBottomPadding()))
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         if (loginViewModel.error.value.isNotBlank()) {
             ErrorField(error = loginViewModel.error.value)
         }
-
         EmailField(userEmail = loginViewModel.userEmail.value) { value ->
-                loginViewModel.setUserEmail(value)
-            }
+            loginViewModel.setUserEmail(value)
+        }
 
         PasswordField(password = loginViewModel.password.value) { value ->
-                loginViewModel.setPassword(value)
-            }
+            loginViewModel.setPassword(value)
+        }
 
         ButtonEmailPasswordLogin(enabled = loginViewModel.isValidEmailAndPassword()) {
-                loginViewModel.signInWithEmailAndPassword(navController = navController)
-            }
+            loginViewModel.signInWithEmailAndPassword(navController = navController)
+        }
 
         RegistrationButton {
             navController.navigate(route = AppScreens.RegistrationScreen.name)
         }
 
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            Alignment.BottomCenter
+        ) {
+            TextButton(
+                onClick = { showDialog.value = true }) {
+                Text(text = "Lerne über Vienna Calling", color = checkIfLightModeText())
+            }
+        }
+        if (showDialog.value) {
+            Alert(name = stringResource(R.string.about_text),
+                showDialog = showDialog.value,
+                onDismiss = { showDialog.value = false })
+        }
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
@@ -150,9 +169,9 @@ fun ButtonEmailPasswordLogin(enabled: Boolean = true, onRegistrationClick: () ->
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
-        colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
         enabled = enabled,
-        content = { Text(text = stringResource(R.string.login), color = checkIfLightModeText() ) },
+        content = { Text(text = stringResource(R.string.login), color = checkIfLightModeText()) },
         onClick = {
             onRegistrationClick()
         }
@@ -165,7 +184,7 @@ fun RegistrationButton(onRegistrationClick: () -> Unit = {}) {
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
-        colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
         content = { Text(text = stringResource(R.string.create), color = checkIfLightModeText()) },
         onClick = { onRegistrationClick() }
     )

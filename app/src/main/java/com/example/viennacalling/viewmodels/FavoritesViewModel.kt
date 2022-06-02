@@ -1,9 +1,5 @@
 package com.example.viennacalling.viewmodels
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.viennacalling.models.Event
@@ -11,7 +7,8 @@ import com.example.viennacalling.repository.EventsRepository
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
@@ -23,7 +20,7 @@ class FavoritesViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            if(Firebase.auth.currentUser != null) {
+            if (Firebase.auth.currentUser != null) {
                 repository.getFirebaseEvents(_favoriteEvents)
             } else {
                 repository.getAllEvents().collect { eventList ->
@@ -35,9 +32,9 @@ class FavoritesViewModel(
 
     fun addEvent(event: Event) {
         viewModelScope.launch(Dispatchers.IO) {
-            if(!isEventInList(event)){
+            if (!isEventInList(event)) {
                 repository.addEvent(event = event)
-                if(Firebase.auth.currentUser != null) {
+                if (Firebase.auth.currentUser != null) {
                     repository.addFirebaseEvent(event = event)
                 }
             }
@@ -47,7 +44,7 @@ class FavoritesViewModel(
     fun removeEvent(event: Event) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteEvent(event.title)
-            if(Firebase.auth.currentUser != null) {
+            if (Firebase.auth.currentUser != null) {
                 repository.deleteFirebaseEvent(event)
             }
         }

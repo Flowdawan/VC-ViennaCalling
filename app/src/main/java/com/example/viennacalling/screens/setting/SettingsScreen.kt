@@ -25,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
 import com.example.viennacalling.models.Event
-import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.viewmodels.LoginViewModel
@@ -74,7 +73,6 @@ fun SettingsScreen(navController: NavController = rememberNavController(),
 
 @Composable
 fun MainContent(navController: NavController,
-                events: List<Event> = getEvents(),
                 padding: PaddingValues,
                 themeViewModel: ThemeViewModel,
 ) {

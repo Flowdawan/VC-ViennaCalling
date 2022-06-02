@@ -12,7 +12,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
 import com.example.viennacalling.models.Event
-import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.VcNavTopBottom
@@ -52,6 +51,6 @@ fun FilterScreen(navController: NavController = rememberNavController(), loginVi
 }
 
 @Composable
-fun MainContent(navController: NavController, events: List<Event> = getEvents()) {
+fun MainContent(navController: NavController) {
     Text("Filter Screen")
 }

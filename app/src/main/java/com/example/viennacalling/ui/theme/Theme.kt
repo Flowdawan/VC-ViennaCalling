@@ -12,7 +12,8 @@ private val DarkColorPalette = darkColors(
     secondary = VcNavTopBottom,
     background = VcScreenBackground,
     surface = VcLightGrayPopUp,
-)
+    onBackground = VcEventDetailBackground,
+    )
 
 private val LightColorPalette = lightColors(
     primary = VcEventCardLight,
@@ -20,6 +21,7 @@ private val LightColorPalette = lightColors(
     secondary = VcNavTopBottomLight,
     background = VcScreenBackgroundLight,
     surface = VcLightGrayPopUpLight,
+    onBackground = VcEventDetailBackgroundLight,
 
     /* Other default colors to override
     background = Color.White,

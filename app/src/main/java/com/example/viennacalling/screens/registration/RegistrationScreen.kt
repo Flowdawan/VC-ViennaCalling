@@ -30,9 +30,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
 import com.example.viennacalling.models.Event
-import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
+import com.example.viennacalling.screens.login.EmailField
+import com.example.viennacalling.screens.login.PasswordField
 import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.checkIfLightModeIcon
 import com.example.viennacalling.widgets.checkIfLightModeText
@@ -106,78 +107,18 @@ fun MainContent(
     }
 }
 
-
-@Composable
-fun EmailField(userEmail: String, onEmailChange: (String) -> Unit = {}) {
-    val userEmail = userEmail
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = userEmail,
-        textStyle = TextStyle(color = checkIfLightModeText()),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = checkIfLightModeText(),
-            unfocusedBorderColor = checkIfLightModeText()
-        ),
-        label = { Text(text = stringResource(R.string.email)) },
-        onValueChange = { value ->
-            onEmailChange(value)
-        }
-    )
-}
-
-@Composable
-fun PasswordField(password: String, onPasswordChange: (String) -> Unit = {}) {
-    val password = password
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        visualTransformation = PasswordVisualTransformation(),
-        value = password,
-        textStyle = TextStyle(color = checkIfLightModeText()),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = checkIfLightModeText(),
-            unfocusedBorderColor = checkIfLightModeText()
-        ),
-        label = { Text(text = stringResource(R.string.password)) },
-        onValueChange = { value ->
-            onPasswordChange(value)
-        }
-    )
-}
-
-@Composable
-fun ButtonEmailPasswordLogin(enabled: Boolean = true, onRegistrationClick: () -> Unit = {}) {
-    Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
-        enabled = enabled,
-        content = { Text(text = stringResource(R.string.login)) },
-        onClick = {
-            onRegistrationClick()
-        }
-    )
-}
-
 @Composable
 fun ButtonEmailPasswordCreate(enabled: Boolean = true, onRegistrationClick: () -> Unit = {}) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
+        colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
         enabled = enabled,
-        content = { Text(text = stringResource(R.string.create)) },
-        onClick = { onRegistrationClick() }
-    )
-}
-
-@Composable
-fun RegistrationButton(onRegistrationClick: () -> Unit = {}) {
-    Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
-        content = { Text(text = stringResource(R.string.create)) },
-        onClick = { onRegistrationClick() }
+        content = { Text(text = "Registrieren", color = checkIfLightModeText() ) },
+        onClick = {
+            onRegistrationClick()
+        }
     )
 }
 

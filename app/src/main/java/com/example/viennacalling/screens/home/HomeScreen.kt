@@ -11,15 +11,14 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.viennacalling.R
 import com.example.viennacalling.models.Event
-import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.viewmodels.EventsViewModel
@@ -29,7 +28,6 @@ import com.example.viennacalling.widgets.EventRow
 import com.example.viennacalling.widgets.FavoriteButton
 import com.example.viennacalling.widgets.checkIfLightModeIcon
 import com.example.viennacalling.widgets.checkIfLightModeText
-import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun HomeScreen(
@@ -56,7 +54,7 @@ fun HomeScreen(
                         navController.navigate(route = AppScreens.FavoriteScreen.name)
                     }) {
                         Icon(
-                            tint = checkIfLightModeText(),
+                            tint = Color.White,
                             imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = "Favorite"
                         )
@@ -68,23 +66,17 @@ fun HomeScreen(
         MainContent(navController = navController,
             padding = padding,
             favoritesViewModel = favoritesViewModel,
-            loginViewModel = loginViewModel,
-            eventsViewModel = eventsViewModel,
+            eventsViewModel = eventsViewModel
             )
     }
 }
 
 @Composable
 fun MainContent(navController: NavController,
-                events: List<Event> = getEvents(),
                 padding: PaddingValues,
                 favoritesViewModel: FavoritesViewModel,
-                loginViewModel: LoginViewModel,
                 eventsViewModel: EventsViewModel
                 ) {
-    var isEventInList by remember {
-        mutableStateOf(false)
-    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -99,16 +91,15 @@ fun MainContent(navController: NavController,
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        items(items = events) { event ->
+        items(items = eventsViewModel.getAllEvents()) { event ->
             EventRow(
                 event = event,
                 onItemClick = { eventId ->
                     navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
                 }){
-                isEventInList = favoritesViewModel.isEventInList(event)
                 FavoriteButton(
                     event = event,
-                    isAlreadyInList = isEventInList,
+                    isAlreadyInList = favoritesViewModel.isEventInList(event),
                     onFavoriteClick = { event ->
                         if (favoritesViewModel.isEventInList(event)) {
                             favoritesViewModel.removeEvent(event)
@@ -116,7 +107,6 @@ fun MainContent(navController: NavController,
                             favoritesViewModel.addEvent(event)
                         }
                     }
-
                 )
             }
         }

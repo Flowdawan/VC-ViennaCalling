@@ -9,7 +9,7 @@ import com.example.viennacalling.models.Event
 
 @Database(
     entities = [(Event::class)], // all entities which are in this database
-    version = 5,
+    version = 4,
     exportSchema = false
 )
 abstract class EventsDB(): RoomDatabase() {

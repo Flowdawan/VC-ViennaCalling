@@ -1,6 +1,8 @@
 package com.example.viennacalling.screens.eventdetail
 
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,37 +15,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.viennacalling.R
 import com.example.viennacalling.models.Event
-import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
-import com.example.viennacalling.ui.theme.VcLightGrayPopUp
-import com.example.viennacalling.ui.theme.VcNavTopBottom
+import com.example.viennacalling.viewmodels.EventsViewModel
 import com.example.viennacalling.viewmodels.FavoritesViewModel
 import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.EventDetails
-import com.example.viennacalling.widgets.EventRow
 import com.example.viennacalling.widgets.FavoriteButton
 import com.example.viennacalling.widgets.checkIfLightModeIcon
 
+private const val TAG = "EventDetailScreen"
 
-@Preview(showBackground = true)
+
 @Composable
 fun EventDetailScreen(
     navController: NavController = rememberNavController(),
-    eventId: String? = getEvents()[0].id,
-    favoritesViewModel: FavoritesViewModel = viewModel(),
-    loginViewModel: LoginViewModel
+    favoritesViewModel: FavoritesViewModel,
+    loginViewModel: LoginViewModel = viewModel(),
+    eventsViewModel: EventsViewModel,
+    eventId: String? = eventsViewModel.getAllEvents()[0].id,
 ) {
-    val event = filterMovie(eventId)
+    val event = filterMovie(eventId, eventsViewModel.eventList)
     Scaffold(
         backgroundColor = MaterialTheme.colors.background,
         bottomBar = { BottomNavigationBar(navController = navController, loginViewModel = loginViewModel) },
@@ -70,7 +69,7 @@ fun EventDetailScreen(
             )
         }
     ) {
-        MainContent(event, favoritesViewModel = favoritesViewModel)
+        MainContent(event = event, favoritesViewModel = favoritesViewModel)
     }
 
 }
@@ -80,7 +79,9 @@ fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column() {
+        Column(
+            modifier = Modifier.background(color = MaterialTheme.colors.onBackground)
+        ) {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -88,7 +89,7 @@ fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(event.images[0])
+                        .data(event.images)
                         .crossfade(true)
                         .build(),
                     contentDescription = "Movie Cover",
@@ -101,10 +102,22 @@ fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel
                     .padding(10.dp)
                     .alpha(alpha = 0.6F)
             )
-            EventDetails(event = event)
+            EventDetails(event = event) {
+                FavoriteButton(
+                    event = event,
+                    isAlreadyInList = favoritesViewModel.isEventInList(event),
+                    onFavoriteClick = { event ->
+                        if (favoritesViewModel.isEventInList(event)) {
+                            favoritesViewModel.removeEvent(event)
+                        } else {
+                            favoritesViewModel.addEvent(event)
+                        }
+                    }
+                )
+            }
         }
     }
 }
-fun filterMovie(eventId: String?): Event {
-    return getEvents().filter { event -> event.id == eventId }[0]
+fun filterMovie(eventId: String?, eventList: List<Event>): Event {
+    return eventList.filter { event -> event.id == eventId }[0]
 }

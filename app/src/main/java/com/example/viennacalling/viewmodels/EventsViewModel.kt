@@ -1,15 +1,33 @@
 package com.example.viennacalling.viewmodels
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.viennacalling.models.Event
-
+import com.example.viennacalling.repository.EventsRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class EventsViewModel : ViewModel() {
+class EventsViewModel(
+    private val repository: EventsRepository
+) : ViewModel() {
 
+    private val _eventList = mutableStateListOf<Event>()
+
+    val eventList: List<Event>
+        get() = _eventList
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.fetchEventsRssFeed(eventList = _eventList)
+        }
+    }
+
+    fun isInList(id: Int) {
+        _eventList[id].isInList = !_eventList[id].isInList
+    }
+
+    fun getAllEvents(): List<Event> {
+        return _eventList
+    }
 }

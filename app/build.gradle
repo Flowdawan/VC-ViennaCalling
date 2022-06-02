@@ -79,7 +79,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
 
     // Retrofit
-    implementation "com.squareup.retrofit2:converter-simplexml:$retrofit_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-simplexml:$retrofit_version"
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
@@ -90,4 +89,9 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
+    // Jsoup for extracting html from String
+    implementation("org.jsoup:jsoup:$jsoup_version")
+
+    //Coil image Loading
+    implementation "io.coil-kt:coil-compose:$coil_version"
 }

@@ -1,13 +1,15 @@
 package com.example.viennacalling.viewmodels
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.viennacalling.models.Event
-import com.example.viennacalling.models.getEvents
 import com.example.viennacalling.repository.EventsRepository
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -21,8 +23,12 @@ class FavoritesViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getAllEvents().collect { eventList ->
-                _favoriteEvents.value = eventList
+            if(Firebase.auth.currentUser != null) {
+                repository.getFirebaseEvents(_favoriteEvents)
+            } else {
+                repository.getAllEvents().collect { eventList ->
+                    _favoriteEvents.value = eventList
+                }
             }
         }
     }
@@ -31,13 +37,19 @@ class FavoritesViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             if(!isEventInList(event)){
                 repository.addEvent(event = event)
+                if(Firebase.auth.currentUser != null) {
+                    repository.addFirebaseEvent(event = event)
+                }
             }
         }
     }
 
     fun removeEvent(event: Event) {
         viewModelScope.launch(Dispatchers.IO) {
-                repository.deleteEvent(event)
+            repository.deleteEvent(event.title)
+            if(Firebase.auth.currentUser != null) {
+                repository.deleteFirebaseEvent(event)
+            }
         }
     }
 
@@ -48,24 +60,7 @@ class FavoritesViewModel(
     }
 
     fun isEventInList(event: Event): Boolean {
-        var eventList = favoriteEvents.value
-        var isInList = false
-        eventList.forEach() {
-            isInList = it.id == event.id
-        }
-        return isInList
+        return favoriteEvents.value.contains(event)
     }
-
-    /* fun getEventByName(title: String): Event {
-         viewModelScope.launch(Dispatchers.IO) {
-             return repository.getEventByName(title = title)
-         }
-     }
-
-     suspend fun getEventById(id: Long): Event {
-         viewModelScope.launch(Dispatchers.IO) {
-             return repository.getEventById(id = id)
-         }
-     }*/
 }
 

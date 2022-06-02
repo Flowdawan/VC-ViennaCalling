@@ -104,12 +104,6 @@ fun MainContent(
             navController.navigate(route = AppScreens.RegistrationScreen.name)
         }
 
-        /*
-        ButtonEmailPasswordCreate(
-            enabled = loginViewModel.isValidEmailAndPassword(),
-            onRegistrationClick = { loginViewModel.createUserWithEmailAndPassword(navController = navController)}
-        )
-        */
     }
 }
 
@@ -119,12 +113,12 @@ fun EmailField(userEmail: String, onEmailChange: (String) -> Unit = {}) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = userEmail,
-        textStyle = TextStyle(color = Color.Black),
+        textStyle = TextStyle(color = checkIfLightModeText()),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color.Black,
-            unfocusedBorderColor = Color.Black
+            focusedBorderColor = checkIfLightModeText(),
+            unfocusedBorderColor = checkIfLightModeText()
         ),
-        label = { Text(text = stringResource(R.string.email)) },
+        label = { Text(text = stringResource(R.string.email), color = checkIfLightModeText()) },
         onValueChange = { value ->
             onEmailChange(value)
         }
@@ -138,12 +132,12 @@ fun PasswordField(password: String, onPasswordChange: (String) -> Unit = {}) {
         modifier = Modifier.fillMaxWidth(),
         visualTransformation = PasswordVisualTransformation(),
         value = password,
-        textStyle = TextStyle(color = checkIfLightModeText(true)),
+        textStyle = TextStyle(color = checkIfLightModeText()),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = checkIfLightModeText(true),
-            unfocusedBorderColor = checkIfLightModeText(true)
+            focusedBorderColor = checkIfLightModeText(),
+            unfocusedBorderColor = checkIfLightModeText()
         ),
-        label = { Text(text = stringResource(R.string.password)) },
+        label = { Text(text = stringResource(R.string.password), color = checkIfLightModeText()) },
         onValueChange = { value ->
             onPasswordChange(value)
         }
@@ -158,7 +152,7 @@ fun ButtonEmailPasswordLogin(enabled: Boolean = true, onRegistrationClick: () ->
             .height(50.dp),
         colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
         enabled = enabled,
-        content = { Text(text = stringResource(R.string.login), color = checkIfLightModeText(true) ) },
+        content = { Text(text = stringResource(R.string.login), color = checkIfLightModeText() ) },
         onClick = {
             onRegistrationClick()
         }
@@ -172,7 +166,7 @@ fun RegistrationButton(onRegistrationClick: () -> Unit = {}) {
             .fillMaxWidth()
             .height(50.dp),
         colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
-        content = { Text(text = stringResource(R.string.create)) },
+        content = { Text(text = stringResource(R.string.create), color = checkIfLightModeText()) },
         onClick = { onRegistrationClick() }
     )
 }

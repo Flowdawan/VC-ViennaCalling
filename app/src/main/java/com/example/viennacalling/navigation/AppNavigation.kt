@@ -1,6 +1,5 @@
 package com.example.viennacalling.navigation
 
-import android.nfc.Tag
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -11,9 +10,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.viennacalling.dao.EventsDB
-import com.example.viennacalling.models.EventListResponse
+import com.example.viennacalling.dao.FirebaseDao
 import com.example.viennacalling.repository.EventsRepository
-import com.example.viennacalling.retrofit.RetrofitInstance
 import com.example.viennacalling.screens.account.AccountScreen
 import com.example.viennacalling.screens.eventdetail.EventDetailScreen
 import com.example.viennacalling.screens.favorite.FavoriteScreen
@@ -24,11 +22,9 @@ import com.example.viennacalling.screens.registration.RegistrationScreen
 import com.example.viennacalling.screens.setting.SettingsScreen
 import com.example.viennacalling.screens.splash.SplashScreen
 import com.example.viennacalling.viewmodels.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.HttpException
-import retrofit2.Response
-import java.io.IOException
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlin.math.log
 
 
 @Composable
@@ -36,14 +32,19 @@ fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
 
     val navController = rememberNavController()
     val loginViewModel: LoginViewModel = viewModel()
-    val eventsViewModel: EventsViewModel = viewModel()
-
 
     val context = LocalContext.current
     val db = EventsDB.getDatabase(context = context)
-    val repository = EventsRepository(eventsDao = db.eventsDao())
+
+    val firebaseDb = FirebaseDao()
+
+    val repository = EventsRepository(eventsDao = db.eventsDao(), firebaseDao = firebaseDb)
     val favoritesViewModel: FavoritesViewModel = viewModel(
         factory = FavoritesViewModelFactory(repository = repository)
+    )
+
+    val eventsViewModel: EventsViewModel = viewModel(
+    factory = EventsViewModelFactory(repository = repository)
     )
 
     NavHost(navController = navController, startDestination = AppScreens.HomeScreen.name) {
@@ -101,16 +102,8 @@ fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
                     type = NavType.StringType
                 })
         ) { backStackEntry ->
-            backStackEntry.arguments?.getString("eventId")
-                ?.let {
-                    EventDetailScreen(
-                        navController = navController,
-                        eventId = it,
-                        favoritesViewModel = favoritesViewModel,
-                        loginViewModel = loginViewModel
-                    )
-                }
+            EventDetailScreen(navController = navController, eventId = backStackEntry.arguments?.getString("eventId"), favoritesViewModel = favoritesViewModel, loginViewModel = loginViewModel, eventsViewModel = eventsViewModel)
+        }
         }
     }
-}
 

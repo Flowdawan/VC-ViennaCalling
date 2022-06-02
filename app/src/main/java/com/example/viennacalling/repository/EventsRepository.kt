@@ -1,10 +1,16 @@
 package com.example.viennacalling.repository
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.viennacalling.dao.EventsDao
+import com.example.viennacalling.dao.FirebaseDao
 import com.example.viennacalling.models.Event
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
-class EventsRepository(private val eventsDao: EventsDao) {
+class EventsRepository(
+    private val eventsDao: EventsDao,
+    private val firebaseDao: FirebaseDao,
+    ) {
 
     // We can use the '=' (Single-expression functions) for the function or the bracket braces
     suspend fun addEvent(event: Event) = eventsDao.addEvent(event = event)
@@ -13,7 +19,7 @@ class EventsRepository(private val eventsDao: EventsDao) {
 
     suspend fun editEvent(event: Event) = eventsDao.editEvent(event = event)
 
-    suspend fun deleteEvent(event: Event) = eventsDao.deleteEvent(event = event)
+    suspend fun deleteEvent(title: String) = eventsDao.deleteEvent(title = title)
 
     suspend fun getEventByName(title: String): Event {
         return eventsDao.getEventByName(title = title)
@@ -22,6 +28,14 @@ class EventsRepository(private val eventsDao: EventsDao) {
     suspend fun getEventById(id: Long): Event {
         return eventsDao.getEventById(id = id)
     }
+
+    // Firebase
+    suspend fun addFirebaseEvent(event: Event) = firebaseDao.addFirebaseEvent(event = event)
+    suspend fun deleteFirebaseEvent(event: Event) = firebaseDao.deleteFirebaseEvent(event = event)
+    suspend fun getFirebaseEvents(_favoriteEvents: MutableStateFlow<List<Event>>) = firebaseDao.getFirebaseEvents(_favoriteEvents = _favoriteEvents)
+
+    suspend fun fetchEventsRssFeed(eventList: MutableList<Event>) = eventsDao.fetchEventRssFeed(
+        eventList = eventList)
 
 }
 

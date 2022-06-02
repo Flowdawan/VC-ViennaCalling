@@ -11,7 +11,9 @@ val VcNavTopBottom = Color(0xFF080B29)
 val VcScreenBackground = Color(0xFF211F33)
 val VcEventCard = Color(0xFF081729)
 val VcButtons = Color(0xFF4A4458)
-val VcLightGrayPopUp = Color(0xFFCAC4D0)
+val VcLightGrayPopUp = Color(0xFF1C1B1F)
+val VcEventDetailBackground = Color(0xFF14141C)
+
 
 // Light
 val VcNavTopBottomLight = Color(0xFFF9F6FC)
@@ -19,3 +21,5 @@ val VcEventCardLight = Color(0xFFFFFBFE)
 val VcButtonsLight = Color(0xFF938F99)
 val VcLightGrayPopUpLight = Color(0xFFFFFBFE)
 val VcScreenBackgroundLight = Color(0xFFE5E5E5)
+val VcEventDetailBackgroundLight = Color(0xFFF3EDF7)
+

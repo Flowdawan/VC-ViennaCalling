@@ -1,5 +1,6 @@
 package com.example.viennacalling.screens.eventdetail
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -85,15 +86,14 @@ fun EventDetailScreen(
 }
 
 @Composable
-fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel()) {
-    var isInListcolor by remember {
+fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel) {
+    var isInListColor by remember {
         if (favoritesViewModel.isEventInList(event)) {
             mutableStateOf(Purple700)
         } else {
             mutableStateOf(Color.DarkGray)
         }
     }
-
     LazyColumn(
         modifier = Modifier
             .padding(10.dp)
@@ -130,14 +130,14 @@ fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel
                     EventDetails(event = event) {
                         FavoriteButton(
                             event = event,
-                            isAlreadyInListColor = isInListcolor,
+                            isAlreadyInListColor = isInListColor,
                             onFavoriteClick = { event ->
                                 if (favoritesViewModel.isEventInList(event)) {
                                     favoritesViewModel.removeEvent(event)
-                                    isInListcolor = Color.DarkGray
+                                    isInListColor = Color.DarkGray
                                 } else {
                                     favoritesViewModel.addEvent(event)
-                                    isInListcolor = Purple700
+                                    isInListColor = Purple700
                                 }
                             }
                         )

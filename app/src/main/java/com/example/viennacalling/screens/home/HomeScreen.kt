@@ -103,7 +103,7 @@ fun MainContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         items(items = eventsViewModel.getAllEvents()) { event ->
-            var isInListcolor by remember {
+            var isInListColor by remember {
                 if (favoritesViewModel.isEventInList(event)) {
                     mutableStateOf(Purple700)
                 } else {
@@ -117,14 +117,14 @@ fun MainContent(
                 }) {
                 FavoriteButton(
                     event = event,
-                    isAlreadyInListColor = isInListcolor,
+                    isAlreadyInListColor = isInListColor,
                     onFavoriteClick = { event ->
                         if (favoritesViewModel.isEventInList(event)) {
                             favoritesViewModel.removeEvent(event)
-                            isInListcolor = Color.DarkGray
+                            isInListColor = Color.DarkGray
                         } else {
                             favoritesViewModel.addEvent(event)
-                            isInListcolor = Purple700
+                            isInListColor = Purple700
                         }
                     }
                 )

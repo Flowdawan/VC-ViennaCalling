@@ -146,7 +146,6 @@ fun EventDetails(
     val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
     // Make the Intent explicit by setting the Google Maps package
     mapIntent.setPackage("com.google.android.apps.maps")
-    Log.d(TAG, mapIntent.data.toString())
 
     Card(
         modifier = Modifier

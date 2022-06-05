@@ -1,21 +1,19 @@
 package com.example.viennacalling.screens.filter
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -26,6 +24,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.models.Event
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
+import com.example.viennacalling.ui.theme.Purple700
+import com.example.viennacalling.viewmodels.EventsViewModel
 import com.example.viennacalling.viewmodels.FavoritesViewModel
 import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.EventRow
@@ -33,11 +33,14 @@ import com.example.viennacalling.widgets.FavoriteButton
 import com.example.viennacalling.widgets.checkIfLightModeIcon
 import com.example.viennacalling.widgets.checkIfLightModeText
 
+private const val TAG = "FilterScreen"
+
 @Composable
 fun FilterScreen(
     navController: NavController = rememberNavController(),
     favoritesViewModel: FavoritesViewModel,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    eventsViewModel: EventsViewModel
 ) {
     Scaffold(
         backgroundColor = MaterialTheme.colors.background,
@@ -77,6 +80,7 @@ fun FilterScreen(
             navController = navController,
             favoritesViewModel = favoritesViewModel,
             padding = padding,
+            eventsViewModel = eventsViewModel,
         )
     }
 }
@@ -86,55 +90,120 @@ fun MainContent(
     navController: NavController,
     favoritesViewModel: FavoritesViewModel,
     padding: PaddingValues,
+    eventsViewModel: EventsViewModel
 ) {
-    val eventList: List<Event> by favoritesViewModel.favoriteEvents.collectAsState()
 
-    Button(
-        modifier = Modifier
-            .padding(2.dp, bottom = 2.dp)
-            .height(60.dp)
-            .width(150.dp),
-        border = BorderStroke(1.dp, Color.Black),
-        shape = RoundedCornerShape(44),
-        onClick = { }
+    var filteredEventList = eventsViewModel.getAllFilteredEvents()
+
+    Row(
+        modifier = Modifier.padding(5.dp)
     ) {
-        Text(
-            text = "Filtern",
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
+        Button(
             modifier = Modifier
                 .padding(6.dp)
-        )
-    }
-    LazyColumn(
-        modifier = Modifier.padding(
-            PaddingValues(
-                5.dp,
-                2.dp,
-                padding.calculateTopPadding(),
-                padding.calculateBottomPadding()
+                .height(60.dp)
+                .width(130.dp),
+            border = BorderStroke(1.dp, Color.Black),
+            shape = RoundedCornerShape(44),
+            onClick = {
+                filteredEventList = eventsViewModel.filterEventsByCategory(categoryId =  "68", subCategory = "68")
+            }
+        ) {
+            Text(
+                text = "Kultur & Freizeit",
+                style = MaterialTheme.typography.subtitle1,
+                color = Color.White,
             )
-        ),
+        }
+
+        Button(
+            modifier = Modifier
+                .padding(6.dp)
+                .height(60.dp)
+                .width(120.dp),
+            border = BorderStroke(1.dp, Color.Black),
+            shape = RoundedCornerShape(44),
+            onClick = {
+                filteredEventList = eventsViewModel.filterEventsByCategory(categoryId =  "73", subCategory = "90,+64,+91,+73")
+            }
+        ) {
+            Text(
+                text = "Sehenswürdigkeiten",
+                color = Color.White,
+            )
+        }
+
+        Button(
+            modifier = Modifier
+                .padding(6.dp)
+                .height(60.dp)
+                .width(150.dp),
+            border = BorderStroke(1.dp, Color.Black),
+            shape = RoundedCornerShape(44),
+            onClick = {
+                filteredEventList = eventsViewModel.filterEventsByCategory()
+            }
+        ) {
+            Text(
+                text = "Party",
+                color = Color.White,
+            )
+        }
+
+    }
+    Divider(
+        color = MaterialTheme.colors.surface,
+        modifier = Modifier
+            .padding(20.dp)
+            .alpha(alpha = 0.2F)
+    )
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                PaddingValues(
+                    5.dp,
+                    2.dp + 80.dp,
+                    padding.calculateTopPadding(),
+                    padding.calculateBottomPadding()
+                )
+            ),
+
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        items(items = eventList) { event ->
-            EventRow(event = event,
+        items(items = filteredEventList) { event ->
+            var isInListColor by remember {
+                if (favoritesViewModel.isEventInList(event)) {
+                    mutableStateOf(Purple700)
+                } else {
+                    mutableStateOf(Color.DarkGray)
+                }
+            }
+            EventRow(
+                event = event,
                 onItemClick = { eventId ->
                     navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
-                }
-            ) {
+                }) {
                 FavoriteButton(
                     event = event,
-                    isAlreadyInListColor = Color.DarkGray,
+                    isAlreadyInListColor = isInListColor,
                     onFavoriteClick = { event ->
                         if (favoritesViewModel.isEventInList(event)) {
                             favoritesViewModel.removeEvent(event)
+                            isInListColor = Color.DarkGray
                         } else {
                             favoritesViewModel.addEvent(event)
+                            isInListColor = Purple700
                         }
                     }
-
                 )
             }
         }
     }
+}
+
+fun filterEventByCategory(eventList: List<Event>, categoryId: String = "6"): String {
+    return "sad"
 }

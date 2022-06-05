@@ -72,7 +72,8 @@ fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
             FilterScreen(
                 navController = navController,
                 favoritesViewModel = favoritesViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
+                eventsViewModel = eventsViewModel
             )
         }
         composable(route = AppScreens.FavoriteScreen.name) {

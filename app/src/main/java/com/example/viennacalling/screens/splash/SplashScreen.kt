@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
 import com.example.viennacalling.navigation.AppScreens
+import com.example.viennacalling.viewmodels.EventsViewModel
 import kotlinx.coroutines.delay
 
 @Composable
@@ -34,7 +35,7 @@ fun SplashScreen(navController: NavController = rememberNavController()) {
                 }
             )
         )
-        delay(3000L)
+        delay(2500L)
         navController.navigate(AppScreens.HomeScreen.name) {
             popUpTo(AppScreens.SplashScreen.name) {
                 inclusive = true

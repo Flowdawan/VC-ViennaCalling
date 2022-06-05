@@ -12,6 +12,7 @@ interface EventApi {
         @Query("Type") type: String,
         @Query("hmwd") hmwd: String,
         @Query("KATEGORIE_ID") category: String,
+        @Query("HAUPTKATEGORIEN") subCategory: String,
         @Query("vie_range-from") startDate: String,
         @Query("vie_range-to") endDate: String
     ): Call<RssFeed>

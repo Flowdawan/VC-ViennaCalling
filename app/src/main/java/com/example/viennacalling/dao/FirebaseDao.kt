@@ -36,6 +36,7 @@ class FirebaseDao {
     // Firebase deleting a event from firebase with the id
     suspend fun deleteFirebaseEvent(event: Event) {
         val userId = Firebase.auth.currentUser?.uid
+        Log.d(TAG, "current User $userId")
         // Delete Document
         firebaseDb.collection("events").document("${userId}-${event.id}")
             .delete()

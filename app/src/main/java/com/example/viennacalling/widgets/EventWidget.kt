@@ -128,7 +128,11 @@ fun FavoriteButton(
         onClick = { onFavoriteClick(event) }
     ) {
         Text(
-            text = "Merken",
+            text = if (isAlreadyInListColor == Color.DarkGray) {
+                "Merken"
+            } else {
+                "Gemerkt"
+            },
             color = Color.White,
             fontWeight = FontWeight.Bold,
             modifier = Modifier

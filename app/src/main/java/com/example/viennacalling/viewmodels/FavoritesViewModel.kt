@@ -1,5 +1,6 @@
 package com.example.viennacalling.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.viennacalling.models.Event
@@ -61,7 +62,13 @@ class FavoritesViewModel(
     }
 
     fun isEventInList(event: Event): Boolean {
-        return _favoriteEvents.value.contains(event)
+        var isInList = false
+        _favoriteEvents.value.forEach { eventItem ->
+            if(event.id == eventItem.id){
+                isInList = true
+            }
+        }
+        return isInList
     }
 }
 

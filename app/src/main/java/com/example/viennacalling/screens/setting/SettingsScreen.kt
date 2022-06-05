@@ -53,7 +53,7 @@ fun SettingsScreen(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .width(133.dp)
-                        .height(47.dp)
+                        .height(57.dp)
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,
@@ -113,11 +113,11 @@ fun MainContent(
         ) {
             Icon(
                 imageVector = Icons.Default.DarkMode,
-                contentDescription = "Night Mode",
+                contentDescription = "Dark Mode",
                 tint = checkIfLightModeText()
             )
             Text(
-                text = "Night mode",
+                text = "Dark mode",
                 color = checkIfLightModeText(),
                 modifier = Modifier.padding(3.dp)
             )

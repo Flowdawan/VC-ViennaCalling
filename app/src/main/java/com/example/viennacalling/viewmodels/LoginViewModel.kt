@@ -9,10 +9,13 @@ import androidx.navigation.NavController
 import com.example.viennacalling.navigation.AppScreens
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
+
 
 private const val TAG = "LoginViewModel"
 
@@ -65,8 +68,7 @@ class LoginViewModel : ViewModel() {
     }
 
     private fun getUserId(): String? {
-        val id = Firebase.auth.currentUser?.uid
-        return id
+        return Firebase.auth.currentUser?.uid
     }
 
     fun signInWithEmailAndPassword(navController: NavController) = viewModelScope.launch {
@@ -99,7 +101,7 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    private fun getCurrentUser(): FirebaseUser? {
+    public fun getCurrentUser(): FirebaseUser? {
         val user = Firebase.auth.currentUser
         Log.d(TAG, "user display name: ${user?.displayName}, email: ${user?.email}")
         return user

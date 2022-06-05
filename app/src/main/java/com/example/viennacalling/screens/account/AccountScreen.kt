@@ -52,7 +52,7 @@ fun AccountScreen(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .width(133.dp)
-                        .height(47.dp)
+                        .height(57.dp)
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,
@@ -118,11 +118,13 @@ fun MainContent(
 
                 )
             Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = loginViewModel.userEmail.value,
-                color = checkIfLightModeText(),
-                modifier = Modifier.padding(3.dp)
-            )
+            loginViewModel.getCurrentUser()?.email?.let {
+                Text(
+                    text = it,
+                    color = checkIfLightModeText(),
+                    modifier = Modifier.padding(3.dp)
+                )
+            }
         }
 
 

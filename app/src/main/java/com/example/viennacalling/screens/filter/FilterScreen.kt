@@ -52,7 +52,7 @@ fun FilterScreen(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .width(133.dp)
-                        .height(47.dp)
+                        .height(57.dp)
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,
@@ -95,13 +95,16 @@ fun MainContent(
     }
 
     Row(
-        modifier = Modifier.padding(5.dp)
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
     ) {
         Button(
             modifier = Modifier
-                .padding(6.dp)
                 .height(60.dp)
-                .width(130.dp),
+                .width(130.dp)
+                .padding(end = 5.dp),
             border = if (clickedButton == 1) {
                 BorderStroke(1.dp, Color.DarkGray)
             } else {
@@ -119,15 +122,15 @@ fun MainContent(
             Text(
                 text = "Kultur & Freizeit",
                 style = MaterialTheme.typography.subtitle1,
-                color = Color.White,
+                color = checkIfLightModeText(),
             )
         }
 
         Button(
             modifier = Modifier
-                .padding(6.dp)
                 .height(60.dp)
-                .width(130.dp),
+                .width(130.dp)
+                .padding(end = 5.dp),
             border = if (clickedButton == 2) {
                 BorderStroke(1.dp, Color.DarkGray)
             } else {
@@ -145,13 +148,12 @@ fun MainContent(
         ) {
             Text(
                 text = "Sehenswürdigkeiten",
-                color = Color.White,
+                color = checkIfLightModeText(),
             )
         }
 
         Button(
             modifier = Modifier
-                .padding(6.dp)
                 .height(60.dp)
                 .width(130.dp),
             border = if (clickedButton == 3) {
@@ -169,7 +171,7 @@ fun MainContent(
         ) {
             Text(
                 text = "Party",
-                color = Color.White,
+                color = checkIfLightModeText(),
             )
         }
 

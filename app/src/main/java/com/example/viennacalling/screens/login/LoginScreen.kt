@@ -50,7 +50,7 @@ fun LoginScreen(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .width(133.dp)
-                        .height(47.dp)
+                        .height(57.dp)
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,

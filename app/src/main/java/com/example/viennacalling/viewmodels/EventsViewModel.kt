@@ -1,9 +1,6 @@
 package com.example.viennacalling.viewmodels
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.viennacalling.models.Event
@@ -29,9 +26,14 @@ class EventsViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.fetchEventsRssFeed(eventList = _eventList, categoryId = "6,+68,+90,+64,+91,+73", subCategory = "6,+68,+73")
+            repository.fetchEventsRssFeed(
+                eventList = _eventList,
+                categoryId = "6,+68,+90,+64,+91,+73",
+                subCategory = "6,+68,+73"
+            )
         }
     }
+
     fun getAllEvents(): List<Event> {
         return _eventList
     }
@@ -43,7 +45,11 @@ class EventsViewModel(
     fun filterEventsByCategory(categoryId: String = "6", subCategory: String = ""): List<Event> {
         _filteredList.clear()
         viewModelScope.launch(Dispatchers.IO) {
-            repository.fetchEventsRssFeed(eventList = _filteredList, categoryId = categoryId, subCategory = subCategory)
+            repository.fetchEventsRssFeed(
+                eventList = _filteredList,
+                categoryId = categoryId,
+                subCategory = subCategory
+            )
         }
         return _filteredList
     }

@@ -11,7 +11,7 @@ data class Event(
     val description: String = "",
     val category: String = "",
     val link: String = "",
-    val url: String ="",
+    val url: String = "",
     val subject: String = "",
     val startTime: String = "",
     val endTime: String = "",

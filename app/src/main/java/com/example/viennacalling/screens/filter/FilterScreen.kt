@@ -1,7 +1,5 @@
 package com.example.viennacalling.screens.filter
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,11 +16,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.viennacalling.models.Event
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.Purple700
@@ -106,7 +102,7 @@ fun MainContent(
                 .padding(6.dp)
                 .height(60.dp)
                 .width(130.dp),
-            border = if(clickedButton == 1) {
+            border = if (clickedButton == 1) {
                 BorderStroke(1.dp, Color.DarkGray)
             } else {
                 BorderStroke(1.dp, Color.Black)
@@ -116,7 +112,8 @@ fun MainContent(
             onClick = {
                 initialState = false
                 clickedButton = 1
-                filteredEventList = eventsViewModel.filterEventsByCategory(categoryId =  "68", subCategory = "68")
+                filteredEventList =
+                    eventsViewModel.filterEventsByCategory(categoryId = "68", subCategory = "68")
             }
         ) {
             Text(
@@ -130,8 +127,8 @@ fun MainContent(
             modifier = Modifier
                 .padding(6.dp)
                 .height(60.dp)
-                .width(120.dp),
-            border = if(clickedButton == 2) {
+                .width(130.dp),
+            border = if (clickedButton == 2) {
                 BorderStroke(1.dp, Color.DarkGray)
             } else {
                 BorderStroke(1.dp, Color.Black)
@@ -140,7 +137,10 @@ fun MainContent(
             onClick = {
                 initialState = false
                 clickedButton = 2
-                filteredEventList = eventsViewModel.filterEventsByCategory(categoryId =  "73", subCategory = "90,+64,+91,+73")
+                filteredEventList = eventsViewModel.filterEventsByCategory(
+                    categoryId = "73",
+                    subCategory = "90,+64,+91,+73"
+                )
             }
         ) {
             Text(
@@ -153,8 +153,8 @@ fun MainContent(
             modifier = Modifier
                 .padding(6.dp)
                 .height(60.dp)
-                .width(150.dp),
-            border = if(clickedButton == 3) {
+                .width(130.dp),
+            border = if (clickedButton == 3) {
                 BorderStroke(1.dp, Color.DarkGray)
             } else {
                 BorderStroke(1.dp, Color.Black)
@@ -163,7 +163,8 @@ fun MainContent(
             onClick = {
                 initialState = false
                 clickedButton = 3
-                filteredEventList = eventsViewModel.filterEventsByCategory(categoryId =  "6", subCategory = "")
+                filteredEventList =
+                    eventsViewModel.filterEventsByCategory(categoryId = "6", subCategory = "")
             }
         ) {
             Text(
@@ -180,7 +181,7 @@ fun MainContent(
             .alpha(alpha = 0.2F)
     )
 
-    if(!initialState) {
+    if (!initialState) {
         CircularIndeterminatorProgressBar(isDisplayed = filteredEventList.isEmpty())
     }
 

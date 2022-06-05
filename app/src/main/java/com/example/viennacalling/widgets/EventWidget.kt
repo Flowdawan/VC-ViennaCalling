@@ -79,7 +79,7 @@ fun EventRow(
                     style = MaterialTheme.typography.subtitle1,
                 )
 
-                if(event.startHour != "" && event.startMin != "") {
+                if (event.startHour != "" && event.startMin != "") {
                     Text(
                         color = checkIfLightModeText(),
                         text = "Zeit: ${event.startHour}:${event.startMin}",
@@ -149,7 +149,8 @@ fun EventDetails(
 
     // val gmmIntentUri = Uri.parse("geo:${event.point.replace(" ", ",")}")
 
-    val uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=${event.streetAddress} ${event.plz}")
+    val uri =
+        Uri.parse("https://www.google.com/maps/search/?api=1&query=${event.streetAddress} ${event.plz}")
 
     // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
     val mapIntent = Intent(Intent.ACTION_VIEW, uri)
@@ -185,7 +186,7 @@ fun EventDetails(
                 style = MaterialTheme.typography.subtitle1,
             )
 
-            if(event.startTime != "") {
+            if (event.startTime != "") {
                 Divider(
                     color = MaterialTheme.colors.surface,
                     modifier = Modifier
@@ -204,7 +205,7 @@ fun EventDetails(
                 )
             }
 
-            if(event.startHour != "" && event.startMin != "") {
+            if (event.startHour != "" && event.startMin != "") {
                 Divider(
                     color = MaterialTheme.colors.surface,
                     modifier = Modifier
@@ -253,11 +254,11 @@ fun EventDetails(
                 modifier = Modifier.clickable {
                     if (event.url != "") {
                         uriHandler.openUri(event.url)
-                    } else if(event.link != "") {
+                    } else if (event.link != "") {
                         uriHandler.openUri(event.link)
                     }
                 },
-                text = if(event.url != "") event.url else event.link,
+                text = if (event.url != "") event.url else event.link,
                 style = MaterialTheme.typography.subtitle1,
                 color = checkIfLightModeText()
             )
@@ -303,14 +304,15 @@ fun checkIfLightModeIcon(): Int {
 }
 
 @Composable
-fun CircularIndeterminatorProgressBar(isDisplayed: Boolean){
+fun CircularIndeterminatorProgressBar(isDisplayed: Boolean) {
     Log.d(TAG, "Fetching new Events")
-    if(isDisplayed) {
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp, top = 90.dp),
+    if (isDisplayed) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp, top = 90.dp),
             horizontalArrangement = Arrangement.Center
-        ){
+        ) {
             CircularProgressIndicator(
                 color = Color.White
             )

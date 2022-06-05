@@ -37,7 +37,11 @@ interface EventsDao {
     suspend fun getEventById(id: Long): Event
 
 
-    fun fetchEventRssFeed(eventList: MutableList<Event>, categoryId: String = "6", subCategory: String = "") {
+    fun fetchEventRssFeed(
+        eventList: MutableList<Event>,
+        categoryId: String = "6",
+        subCategory: String = ""
+    ) {
 
         // If there are no images we select random one of these stock photos)
         val eventImagesList = listOf(

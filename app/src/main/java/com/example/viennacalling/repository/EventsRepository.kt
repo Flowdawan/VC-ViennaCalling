@@ -34,7 +34,11 @@ class EventsRepository(
     suspend fun getFirebaseEvents(_favoriteEvents: MutableStateFlow<List<Event>>) =
         firebaseDao.getFirebaseEvents(_favoriteEvents = _favoriteEvents)
 
-    fun fetchEventsRssFeed(eventList: MutableList<Event>, categoryId: String = "6", subCategory: String = "") = eventsDao.fetchEventRssFeed(
+    fun fetchEventsRssFeed(
+        eventList: MutableList<Event>,
+        categoryId: String = "6",
+        subCategory: String = ""
+    ) = eventsDao.fetchEventRssFeed(
         eventList = eventList, categoryId = categoryId
     )
 }

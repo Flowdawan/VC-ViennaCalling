@@ -16,7 +16,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
 import com.example.viennacalling.navigation.AppScreens
-import com.example.viennacalling.viewmodels.EventsViewModel
 import kotlinx.coroutines.delay
 
 @Composable

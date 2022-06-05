@@ -1,5 +1,6 @@
 package com.example.viennacalling.screens.filter
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -28,10 +29,7 @@ import com.example.viennacalling.ui.theme.Purple700
 import com.example.viennacalling.viewmodels.EventsViewModel
 import com.example.viennacalling.viewmodels.FavoritesViewModel
 import com.example.viennacalling.viewmodels.LoginViewModel
-import com.example.viennacalling.widgets.EventRow
-import com.example.viennacalling.widgets.FavoriteButton
-import com.example.viennacalling.widgets.checkIfLightModeIcon
-import com.example.viennacalling.widgets.checkIfLightModeText
+import com.example.viennacalling.widgets.*
 
 private const val TAG = "FilterScreen"
 
@@ -92,8 +90,13 @@ fun MainContent(
     padding: PaddingValues,
     eventsViewModel: EventsViewModel
 ) {
-
     var filteredEventList = eventsViewModel.getAllFilteredEvents()
+    var initialState by remember {
+        mutableStateOf(true)
+    }
+    var clickedButton by remember {
+        mutableStateOf(0)
+    }
 
     Row(
         modifier = Modifier.padding(5.dp)
@@ -103,9 +106,16 @@ fun MainContent(
                 .padding(6.dp)
                 .height(60.dp)
                 .width(130.dp),
-            border = BorderStroke(1.dp, Color.Black),
+            border = if(clickedButton == 1) {
+                BorderStroke(1.dp, Color.DarkGray)
+            } else {
+                BorderStroke(1.dp, Color.Black)
+            },
             shape = RoundedCornerShape(44),
+
             onClick = {
+                initialState = false
+                clickedButton = 1
                 filteredEventList = eventsViewModel.filterEventsByCategory(categoryId =  "68", subCategory = "68")
             }
         ) {
@@ -121,9 +131,15 @@ fun MainContent(
                 .padding(6.dp)
                 .height(60.dp)
                 .width(120.dp),
-            border = BorderStroke(1.dp, Color.Black),
+            border = if(clickedButton == 2) {
+                BorderStroke(1.dp, Color.DarkGray)
+            } else {
+                BorderStroke(1.dp, Color.Black)
+            },
             shape = RoundedCornerShape(44),
             onClick = {
+                initialState = false
+                clickedButton = 2
                 filteredEventList = eventsViewModel.filterEventsByCategory(categoryId =  "73", subCategory = "90,+64,+91,+73")
             }
         ) {
@@ -138,10 +154,16 @@ fun MainContent(
                 .padding(6.dp)
                 .height(60.dp)
                 .width(150.dp),
-            border = BorderStroke(1.dp, Color.Black),
+            border = if(clickedButton == 3) {
+                BorderStroke(1.dp, Color.DarkGray)
+            } else {
+                BorderStroke(1.dp, Color.Black)
+            },
             shape = RoundedCornerShape(44),
             onClick = {
-                filteredEventList = eventsViewModel.filterEventsByCategory()
+                initialState = false
+                clickedButton = 3
+                filteredEventList = eventsViewModel.filterEventsByCategory(categoryId =  "6", subCategory = "")
             }
         ) {
             Text(
@@ -157,6 +179,10 @@ fun MainContent(
             .padding(20.dp)
             .alpha(alpha = 0.2F)
     )
+
+    if(!initialState) {
+        CircularIndeterminatorProgressBar(isDisplayed = filteredEventList.isEmpty())
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -202,8 +228,4 @@ fun MainContent(
             }
         }
     }
-}
-
-fun filterEventByCategory(eventList: List<Event>, categoryId: String = "6"): String {
-    return "sad"
 }

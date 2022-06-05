@@ -54,9 +54,22 @@ data class EventList @JvmOverloads constructor(
     @param:Element(name = "point", required = false)
     var point: String? = null,
 
+    @field:Element(name = "byhour", required = false)
+    @param:Element(name = "byhour", required = false)
+    var startHour: String? = null,
+
+    @field:Element(name = "byminute", required = false)
+    @param:Element(name = "byminute", required = false)
+    var startMin: String? = null,
+
+
     @field:Element(name = "location", required = false)
     @param:Element(name = "location", required = false)
     var location: Location? = null,
+
+    @field:Element(name = "organizer", required = false)
+    @param:Element(name = "organizer", required = false)
+    var organizer: Organizer? = null,
 
     @field:Element(name = "content", required = false)
     @param:Element(name = "content", required = false)
@@ -79,4 +92,12 @@ data class Location @JvmOverloads constructor(
     @field:Element(name = "postal-code", required = false)
     @param:Element(name = "postal-code", required = false)
     var postal_code: String? = null,
+)
+
+@Root(name = "organizer", strict = false)
+data class Organizer @JvmOverloads constructor(
+
+    @field:Element(name = "url", required = false)
+    @param:Element(name = "url", required = false)
+    var url: String? = null,
 )

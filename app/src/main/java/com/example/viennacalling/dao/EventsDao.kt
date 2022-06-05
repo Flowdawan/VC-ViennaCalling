@@ -112,9 +112,12 @@ interface EventsDao {
                             description = Jsoup.parse(event.descriptionList?.get(0)).text()
                                 ?: "Es ist leider keine Beschreibung vorhanden",
                             link = event.link ?: "Es ist leider kein Link vorhanden",
+                            url = event.organizer?.url ?: "",
                             subject = event.subject ?: "Es ist leider kein Subject vorhanden",
                             startTime = startDate,
                             endTime = endDate,
+                            startHour = event.startHour ?: "",
+                            startMin = event.startMin ?: "",
                             point = event.point ?: "",
                             streetAddress = event.location?.street_address?.replace(
                                 "/$".toRegex(),

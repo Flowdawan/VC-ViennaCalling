@@ -79,6 +79,15 @@ fun EventRow(
                     style = MaterialTheme.typography.subtitle1,
                 )
 
+                if(event.startHour != "" && event.startMin != "") {
+                    Text(
+                        color = checkIfLightModeText(),
+                        text = "Zeit: ${event.startHour}:${event.startMin}",
+                        style = MaterialTheme.typography.subtitle1,
+                    )
+                }
+
+
                 Text(
                     color = checkIfLightModeText(),
                     text = if (event.streetAddress.trim() != "") {
@@ -140,12 +149,10 @@ fun EventDetails(
 
     // val gmmIntentUri = Uri.parse("geo:${event.point.replace(" ", ",")}")
 
-    val gmmIntentUri = Uri.parse("geo:0,0q=${event.plz} ${event.streetAddress}, Vienna")
+    val uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=${event.streetAddress} ${event.plz}")
 
     // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
-    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-    // Make the Intent explicit by setting the Google Maps package
-    mapIntent.setPackage("com.google.android.apps.maps")
+    val mapIntent = Intent(Intent.ACTION_VIEW, uri)
 
     Card(
         modifier = Modifier
@@ -177,6 +184,40 @@ fun EventDetails(
                 text = event.description,
                 style = MaterialTheme.typography.subtitle1,
             )
+
+            if(event.startTime != "") {
+                Divider(
+                    color = MaterialTheme.colors.surface,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .alpha(alpha = 0.6F)
+                )
+
+                Text(
+                    color = checkIfLightModeText(),
+                    text = if (event.endTime != "" && (event.startTime != event.endTime)) {
+                        "Datum: ${event.startTime} bis ${event.endTime}"
+                    } else {
+                        "Datum: ${event.startTime}"
+                    },
+                    style = MaterialTheme.typography.subtitle1,
+                )
+            }
+
+            if(event.startHour != "" && event.startMin != "") {
+                Divider(
+                    color = MaterialTheme.colors.surface,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .alpha(alpha = 0.6F)
+                )
+
+                Text(
+                    color = checkIfLightModeText(),
+                    text = "Zeit: ${event.startHour}:${event.startMin}",
+                    style = MaterialTheme.typography.subtitle1,
+                )
+            }
 
             Divider(
                 color = MaterialTheme.colors.surface,
@@ -210,11 +251,13 @@ fun EventDetails(
 
             Text(
                 modifier = Modifier.clickable {
-                    if (event.link != "") {
+                    if (event.url != "") {
+                        uriHandler.openUri(event.url)
+                    } else if(event.link != "") {
                         uriHandler.openUri(event.link)
                     }
                 },
-                text = event.link,
+                text = if(event.url != "") event.url else event.link,
                 style = MaterialTheme.typography.subtitle1,
                 color = checkIfLightModeText()
             )
@@ -256,5 +299,21 @@ fun checkIfLightModeIcon(): Int {
         R.drawable.ic_vc_logo_light
     } else {
         R.drawable.ic_vc_logo
+    }
+}
+
+@Composable
+fun CircularIndeterminatorProgressBar(isDisplayed: Boolean){
+    Log.d(TAG, "Fetching new Events")
+    if(isDisplayed) {
+        Row (modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp, top = 90.dp),
+            horizontalArrangement = Arrangement.Center
+        ){
+            CircularProgressIndicator(
+                color = Color.White
+            )
+        }
     }
 }

@@ -1,7 +1,9 @@
 package com.example.viennacalling.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.viennacalling.models.Event
@@ -42,9 +44,6 @@ class EventsViewModel(
         _filteredList.clear()
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchEventsRssFeed(eventList = _filteredList, categoryId = categoryId, subCategory = subCategory)
-        }
-        filteredList.forEach {
-            Log.d(TAG, "Noch vor der Rückgabe  ${it.toString()}")
         }
         return _filteredList
     }

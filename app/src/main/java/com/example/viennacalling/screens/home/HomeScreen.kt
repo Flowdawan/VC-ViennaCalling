@@ -23,10 +23,7 @@ import com.example.viennacalling.ui.theme.Purple700
 import com.example.viennacalling.viewmodels.EventsViewModel
 import com.example.viennacalling.viewmodels.FavoritesViewModel
 import com.example.viennacalling.viewmodels.LoginViewModel
-import com.example.viennacalling.widgets.EventRow
-import com.example.viennacalling.widgets.FavoriteButton
-import com.example.viennacalling.widgets.checkIfLightModeIcon
-import com.example.viennacalling.widgets.checkIfLightModeText
+import com.example.viennacalling.widgets.*
 
 private const val TAG = "HomeScreen"
 
@@ -87,6 +84,8 @@ fun MainContent(
     favoritesViewModel: FavoritesViewModel,
     eventsViewModel: EventsViewModel,
 ) {
+    CircularIndeterminatorProgressBar(isDisplayed = eventsViewModel.getAllEvents().isEmpty())
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

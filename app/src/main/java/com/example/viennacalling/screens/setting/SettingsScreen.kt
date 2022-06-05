@@ -50,7 +50,10 @@ fun SettingsScreen(
                 Image(
                     painterResource(checkIfLightModeIcon()),
                     contentDescription = "Vienna Calling Logo",
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(133.dp)
+                        .height(47.dp)
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,
@@ -92,7 +95,7 @@ fun MainContent(
             .padding(PaddingValues(20.dp, padding.calculateBottomPadding()))
     ) {
         Text(
-            text = "Settings",
+            text = "Einstellungen",
             fontSize = 32.sp,
             color = checkIfLightModeText(),
         )

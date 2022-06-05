@@ -11,7 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,7 +47,10 @@ fun LoginScreen(
                 Image(
                     painterResource(checkIfLightModeIcon()),
                     contentDescription = "Vienna Calling Logo",
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(133.dp)
+                        .height(47.dp)
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,
@@ -57,7 +59,7 @@ fun LoginScreen(
                         navController.navigate(route = AppScreens.FavoriteScreen.name)
                     }) {
                         Icon(
-                            tint = White,
+                            tint = checkIfLightModeText(),
                             imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = "Favorite"
                         )
@@ -137,7 +139,7 @@ fun EmailField(userEmail: String, onEmailChange: (String) -> Unit = {}) {
             focusedBorderColor = checkIfLightModeText(),
             unfocusedBorderColor = checkIfLightModeText()
         ),
-        label = { Text(text = stringResource(R.string.email), color = checkIfLightModeText()) },
+        label = { Text(text = "Email", color = checkIfLightModeText()) },
         onValueChange = { value ->
             onEmailChange(value)
         }
@@ -156,7 +158,7 @@ fun PasswordField(password: String, onPasswordChange: (String) -> Unit = {}) {
             focusedBorderColor = checkIfLightModeText(),
             unfocusedBorderColor = checkIfLightModeText()
         ),
-        label = { Text(text = stringResource(R.string.password), color = checkIfLightModeText()) },
+        label = { Text(text = "Passwort", color = checkIfLightModeText()) },
         onValueChange = { value ->
             onPasswordChange(value)
         }
@@ -171,7 +173,7 @@ fun ButtonEmailPasswordLogin(enabled: Boolean = true, onRegistrationClick: () ->
             .height(50.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
         enabled = enabled,
-        content = { Text(text = stringResource(R.string.login), color = checkIfLightModeText()) },
+        content = { Text(text = "Login", color = checkIfLightModeText()) },
         onClick = {
             onRegistrationClick()
         }
@@ -185,7 +187,7 @@ fun RegistrationButton(onRegistrationClick: () -> Unit = {}) {
             .fillMaxWidth()
             .height(50.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
-        content = { Text(text = stringResource(R.string.create), color = checkIfLightModeText()) },
+        content = { Text(text = "Registrieren", color = checkIfLightModeText()) },
         onClick = { onRegistrationClick() }
     )
 }

@@ -1,10 +1,7 @@
 package com.example.viennacalling.dao
 
 import android.util.Log
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.example.viennacalling.models.Event
 import com.example.viennacalling.models.xml.RssFeed
 import com.example.viennacalling.retrofit.RetrofitInstance
@@ -27,8 +24,8 @@ interface EventsDao {
     @Update
     suspend fun editEvent(event: Event)
 
-    @Query("DELETE FROM events WHERE title = :title")
-    suspend fun deleteEvent(title: String)
+    @Delete
+    suspend fun deleteEvent(event: Event)
 
     @Insert
     suspend fun addEvent(event: Event)
@@ -78,8 +75,6 @@ interface EventsDao {
         retrofitInstance.enqueue(object : Callback<RssFeed?> {
             override fun onResponse(call: Call<RssFeed?>, response: Response<RssFeed?>) {
                 if (response.isSuccessful) {
-                    var eventCounter: Int = 0
-                    val apiResponse: RssFeed? = response.body()
                     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
                     // API response
@@ -104,7 +99,7 @@ interface EventsDao {
 
                         // New event is created and then saved in our list which is then displayed in the home screen
                         var newEvent = Event(
-                            id = "$eventCounter-${
+                            id = "${
                                 event.dtstart?.replace(
                                     "+",
                                     ""
@@ -129,9 +124,7 @@ interface EventsDao {
                             plz = event.location?.postal_code ?: "",
                             images = event.content?.url ?: eventImagesList.random()
                         )
-
                         eventList.add(newEvent)
-                        eventCounter += 1
                     }
                 } else {
                     Log.d(TAG, "We got no response")

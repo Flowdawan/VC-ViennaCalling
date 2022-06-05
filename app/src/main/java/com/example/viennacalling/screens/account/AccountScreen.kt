@@ -49,7 +49,10 @@ fun AccountScreen(
                         checkIfLightModeIcon()
                     ),
                     contentDescription = "Vienna Calling Logo",
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(133.dp)
+                        .height(47.dp)
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,
@@ -157,7 +160,7 @@ fun LogoutButton(loginViewModel: LoginViewModel, navController: NavController) {
             onClick = { loginViewModel.signOut(navController = navController) },
             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant),
         ) {
-            Text(text = stringResource(R.string.log_out), color = checkIfLightModeText())
+            Text(text = "Abmelden", color = checkIfLightModeText())
         }
     }
 }

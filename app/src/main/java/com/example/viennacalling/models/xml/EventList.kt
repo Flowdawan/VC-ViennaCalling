@@ -41,8 +41,8 @@ data class EventList @JvmOverloads constructor(
     @param:Element(name = "subject", required = false)
     var subject: String? = null,
 
-    @field:Element(name = "dtstart", required = false)
-    @param:Element(name = "dtstart", required = false)
+    @field:Element(name = "dtstart", required = true)
+    @param:Element(name = "dtstart", required = true)
     var dtstart: String? = null,
 
     @field:Element(name = "dtend", required = false)

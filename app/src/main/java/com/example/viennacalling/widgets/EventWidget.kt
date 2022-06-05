@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -26,7 +26,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.viennacalling.R
 import com.example.viennacalling.models.Event
-import com.example.viennacalling.ui.theme.Purple500
+
 
 private const val TAG = "EventWidget"
 
@@ -66,9 +66,10 @@ fun EventRow(
                     text = event.title,
                     style = MaterialTheme.typography.caption,
                 )
+
                 Text(
                     color = checkIfLightModeText(),
-                    text = if (event.startTime != "" && event.endTime != "" && event.startTime != event.startTime) {
+                    text = if (event.startTime != "" && event.endTime != "" && (event.startTime != event.endTime)) {
                         "Datum: ${event.startTime} bis ${event.endTime}"
                     } else if (event.startTime != "") {
                         "Datum: ${event.startTime}"
@@ -78,10 +79,13 @@ fun EventRow(
                     style = MaterialTheme.typography.subtitle1,
                 )
 
-
                 Text(
                     color = checkIfLightModeText(),
-                    text = "Ort: ${event.streetAddress} ${event.plz}",
+                    text = if (event.streetAddress.trim() != "") {
+                        "Ort: ${event.streetAddress} ${event.plz}"
+                    } else {
+                        "Ort: Es ist leider keine Adresse vorhanden"
+                    },
                     style = MaterialTheme.typography.subtitle1,
                 )
             }
@@ -100,15 +104,9 @@ fun EventRow(
 fun FavoriteButton(
     event: Event,
     onFavoriteClick: (Event) -> Unit = {},
-    isAlreadyInList: Boolean = false,
+    isAlreadyInListColor: Color = Color.DarkGray,
 ) {
-    Log.d("State", "im button $isAlreadyInList" )
-    var color by remember { mutableStateOf(Color.DarkGray) }
-    color = if (isAlreadyInList) {
-        Purple500
-    } else {
-        Color.DarkGray
-    }
+
     Button(
         modifier = Modifier
             .padding(10.dp, bottom = 15.dp)
@@ -116,11 +114,7 @@ fun FavoriteButton(
         border = BorderStroke(1.dp, Color.Black),
         shape = RoundedCornerShape(44),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = if (isAlreadyInList) {
-                color
-            } else {
-                color
-            }
+            backgroundColor = isAlreadyInListColor
         ),
         onClick = { onFavoriteClick(event) }
     ) {
@@ -144,9 +138,16 @@ fun EventDetails(
     val uriHandler = LocalUriHandler.current // To open external links
     val context = LocalContext.current
 
-    val googleMapsUri = Uri.parse("geo:${event.point.replace(" ", ", ")},")
-    val mapIntent = Intent(Intent.ACTION_VIEW, googleMapsUri)
-    mapIntent.setPackage("com.google.android.apps.maps") // to open the google maps app with the latitude point of the event
+    // val gmmIntentUri = Uri.parse("geo:${event.point.replace(" ", ",")}")
+
+    val gmmIntentUri = Uri.parse("geo:0,0q=${event.plz} ${event.streetAddress}, Vienna")
+
+    // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+    // Make the Intent explicit by setting the Google Maps package
+    mapIntent.setPackage("com.google.android.apps.maps")
+    Log.d(TAG, mapIntent.data.toString())
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -188,11 +189,12 @@ fun EventDetails(
             Text(
                 modifier = Modifier.clickable {
                     if (event.streetAddress != "" && event.point != "") {
+                        // Attempt to start an activity that can handle the Intent
                         startActivity(context, mapIntent, null)
                     }
                 },
                 color = checkIfLightModeText(),
-                text = if (event.streetAddress != "") {
+                text = if (event.streetAddress.trim() != "") {
                     "Ort: ${event.streetAddress} ${event.plz}"
                 } else {
                     "Ort: Es ist leider keine Adresse vorhanden"

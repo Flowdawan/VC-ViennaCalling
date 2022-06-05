@@ -18,7 +18,7 @@ class EventsRepository(
 
     suspend fun editEvent(event: Event) = eventsDao.editEvent(event = event)
 
-    suspend fun deleteEvent(title: String) = eventsDao.deleteEvent(title = title)
+    suspend fun deleteEvent(event: Event) = eventsDao.deleteEvent(event = event)
 
     suspend fun getEventByName(title: String): Event {
         return eventsDao.getEventByName(title = title)

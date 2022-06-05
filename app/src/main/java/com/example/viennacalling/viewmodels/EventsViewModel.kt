@@ -26,8 +26,4 @@ class EventsViewModel(
     fun getAllEvents(): List<Event> {
         return _eventList
     }
-
-    fun testState() {
-        _eventList.removeLast()
-    }
 }

@@ -2,15 +2,12 @@ package com.example.viennacalling.screens.eventdetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -27,12 +24,14 @@ import coil.request.ImageRequest
 import com.example.viennacalling.models.Event
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
+import com.example.viennacalling.ui.theme.Purple700
 import com.example.viennacalling.viewmodels.EventsViewModel
 import com.example.viennacalling.viewmodels.FavoritesViewModel
 import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.EventDetails
 import com.example.viennacalling.widgets.FavoriteButton
 import com.example.viennacalling.widgets.checkIfLightModeIcon
+import com.example.viennacalling.widgets.checkIfLightModeText
 
 private const val TAG = "EventDetailScreen"
 
@@ -45,7 +44,7 @@ fun EventDetailScreen(
     eventsViewModel: EventsViewModel,
     eventId: String? = eventsViewModel.getAllEvents()[0].id,
 ) {
-    val event = filterMovie(eventId, eventsViewModel.eventList)
+    val event = filterEvent(eventId, eventsViewModel.eventList)
     Scaffold(
         backgroundColor = MaterialTheme.colors.background,
         bottomBar = {
@@ -59,7 +58,10 @@ fun EventDetailScreen(
                 Image(
                     painterResource(checkIfLightModeIcon()),
                     contentDescription = "Vienna Calling Logo",
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(133.dp)
+                        .height(47.dp)
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,
@@ -68,7 +70,7 @@ fun EventDetailScreen(
                         navController.navigate(route = AppScreens.FavoriteScreen.name)
                     }) {
                         Icon(
-                            tint = Color.White,
+                            tint = checkIfLightModeText(),
                             imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = "Favorite"
                         )
@@ -84,6 +86,14 @@ fun EventDetailScreen(
 
 @Composable
 fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel()) {
+    var isInListcolor by remember {
+        if (favoritesViewModel.isEventInList(event)) {
+            mutableStateOf(Purple700)
+        } else {
+            mutableStateOf(Color.DarkGray)
+        }
+    }
+
     LazyColumn(
         modifier = Modifier
             .padding(10.dp)
@@ -106,7 +116,7 @@ fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel
                                 .data(event.images)
                                 .crossfade(true)
                                 .build(),
-                            contentDescription = "Movie Cover",
+                            contentDescription = "Event Cover",
                             contentScale = ContentScale.Crop,
                         )
                     }
@@ -116,15 +126,18 @@ fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel
                             .padding(10.dp)
                             .alpha(alpha = 0.6F)
                     )
+
                     EventDetails(event = event) {
                         FavoriteButton(
                             event = event,
-                            isAlreadyInList = favoritesViewModel.isEventInList(event),
+                            isAlreadyInListColor = isInListcolor,
                             onFavoriteClick = { event ->
                                 if (favoritesViewModel.isEventInList(event)) {
                                     favoritesViewModel.removeEvent(event)
+                                    isInListcolor = Color.DarkGray
                                 } else {
                                     favoritesViewModel.addEvent(event)
+                                    isInListcolor = Purple700
                                 }
                             }
                         )
@@ -135,6 +148,6 @@ fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel = viewModel
     }
 }
 
-fun filterMovie(eventId: String?, eventList: List<Event>): Event {
+fun filterEvent(eventId: String?, eventList: List<Event>): Event {
     return eventList.filter { event -> event.id == eventId }[0]
 }

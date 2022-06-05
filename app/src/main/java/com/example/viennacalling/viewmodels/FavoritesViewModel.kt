@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+private const val TAG = "FavoritesViewModel"
+
 class FavoritesViewModel(
     private val repository: EventsRepository
 ) : ViewModel() {
@@ -43,9 +45,11 @@ class FavoritesViewModel(
 
     fun removeEvent(event: Event) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteEvent(event.title)
-            if (Firebase.auth.currentUser != null) {
-                repository.deleteFirebaseEvent(event)
+            if (isEventInList(event)) {
+                repository.deleteEvent(event)
+                if (Firebase.auth.currentUser != null) {
+                    repository.deleteFirebaseEvent(event)
+                }
             }
         }
     }
@@ -57,7 +61,7 @@ class FavoritesViewModel(
     }
 
     fun isEventInList(event: Event): Boolean {
-        return favoriteEvents.value.contains(event)
+        return _favoriteEvents.value.contains(event)
     }
 }
 

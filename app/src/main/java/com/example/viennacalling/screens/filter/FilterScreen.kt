@@ -24,7 +24,6 @@ import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.Purple700
 import com.example.viennacalling.viewmodels.EventsViewModel
 import com.example.viennacalling.viewmodels.FavoritesViewModel
-import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.*
 
 private const val TAG = "FilterScreen"
@@ -33,7 +32,6 @@ private const val TAG = "FilterScreen"
 fun FilterScreen(
     navController: NavController = rememberNavController(),
     favoritesViewModel: FavoritesViewModel,
-    loginViewModel: LoginViewModel,
     eventsViewModel: EventsViewModel
 ) {
     Scaffold(
@@ -41,7 +39,6 @@ fun FilterScreen(
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
-                loginViewModel = loginViewModel
             )
         },
         topBar = {

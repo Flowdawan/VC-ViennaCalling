@@ -16,7 +16,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -27,7 +26,6 @@ import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.Purple700
 import com.example.viennacalling.viewmodels.EventsViewModel
 import com.example.viennacalling.viewmodels.FavoritesViewModel
-import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.EventDetails
 import com.example.viennacalling.widgets.FavoriteButton
 import com.example.viennacalling.widgets.checkIfLightModeIcon
@@ -40,7 +38,6 @@ private const val TAG = "EventDetailScreen"
 fun EventDetailScreen(
     navController: NavController = rememberNavController(),
     favoritesViewModel: FavoritesViewModel,
-    loginViewModel: LoginViewModel = viewModel(),
     eventsViewModel: EventsViewModel,
     eventId: String? = eventsViewModel.getAllEvents()[0].id,
 ) {
@@ -50,7 +47,6 @@ fun EventDetailScreen(
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
-                loginViewModel = loginViewModel
             )
         },
         topBar = {

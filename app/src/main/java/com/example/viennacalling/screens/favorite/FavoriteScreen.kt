@@ -24,7 +24,6 @@ import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.Purple700
 import com.example.viennacalling.viewmodels.FavoritesViewModel
-import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.EventRow
 import com.example.viennacalling.widgets.FavoriteButton
 import com.example.viennacalling.widgets.checkIfLightModeIcon
@@ -34,14 +33,12 @@ import com.example.viennacalling.widgets.checkIfLightModeText
 fun FavoriteScreen(
     navController: NavController = rememberNavController(),
     favoritesViewModel: FavoritesViewModel,
-    loginViewModel: LoginViewModel
 ) {
     Scaffold(
         backgroundColor = MaterialTheme.colors.background,
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
-                loginViewModel = loginViewModel
             )
         },
         topBar = {

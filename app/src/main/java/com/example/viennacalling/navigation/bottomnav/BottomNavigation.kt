@@ -8,19 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.viennacalling.navigation.AppScreens
-import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.checkIfLightModeText
 
 @Composable
 fun BottomNavigationBar(
     navController: NavController,
-    loginViewModel: LoginViewModel
 ) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Filter,
-        BottomNavItem.Account,
         BottomNavItem.Settings,
     )
     BottomNavigation(
@@ -37,11 +33,6 @@ fun BottomNavigationBar(
                 alwaysShowLabel = true,
                 selected = currentRoute == item.screen_route,
                 onClick = {
-                    if (!loginViewModel.isLoggedIn.value && item.screen_route == "AccountScreen") {
-                        item.screen_route = AppScreens.LoginScreen.name
-                    } else if (loginViewModel.isLoggedIn.value && item.screen_route == "LoginScreen") {
-                        item.screen_route = AppScreens.AccountScreen.name
-                    }
                     navController.navigate(item.screen_route) {
                         // Pop up to the start destination of the graph to
                         // avoid building up a large stack of destinations

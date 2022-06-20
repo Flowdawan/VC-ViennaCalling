@@ -9,15 +9,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.viennacalling.dao.EventsDB
-import com.example.viennacalling.dao.FirebaseDao
 import com.example.viennacalling.repository.EventsRepository
-import com.example.viennacalling.screens.account.AccountScreen
 import com.example.viennacalling.screens.eventdetail.EventDetailScreen
 import com.example.viennacalling.screens.favorite.FavoriteScreen
 import com.example.viennacalling.screens.filter.FilterScreen
 import com.example.viennacalling.screens.home.HomeScreen
-import com.example.viennacalling.screens.login.LoginScreen
-import com.example.viennacalling.screens.registration.RegistrationScreen
 import com.example.viennacalling.screens.setting.SettingsScreen
 import com.example.viennacalling.screens.splash.SplashScreen
 import com.example.viennacalling.viewmodels.*
@@ -30,14 +26,11 @@ fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
     // The pattern where the state goes down, and events go up is called a unidirectional data flow
     // We try to use these pattern as good as possible and create as high as possible our states
     val navController = rememberNavController()
-    val loginViewModel: LoginViewModel = viewModel()
 
     val context = LocalContext.current
     val db = EventsDB.getDatabase(context = context)
 
-    val firebaseDb = FirebaseDao()
-
-    val repository = EventsRepository(eventsDao = db.eventsDao(), firebaseDao = firebaseDb)
+    val repository = EventsRepository(eventsDao = db.eventsDao())
     val favoritesViewModel: FavoritesViewModel = viewModel(
         factory = FavoritesViewModelFactory(repository = repository)
     )
@@ -51,28 +44,17 @@ fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
             HomeScreen(
                 navController = navController,
                 favoritesViewModel = favoritesViewModel,
-                loginViewModel = loginViewModel,
                 eventsViewModel = eventsViewModel
             )
         }
-        composable(route = AppScreens.SplashScreen.name) { SplashScreen(navController = navController) }
-        composable(route = AppScreens.LoginScreen.name) {
-            LoginScreen(
-                navController = navController,
-                loginViewModel = loginViewModel
-            )
+        composable(route = AppScreens.SplashScreen.name) {
+            SplashScreen(navController = navController)
         }
-        composable(route = AppScreens.RegistrationScreen.name) {
-            RegistrationScreen(
-                navController = navController,
-                loginViewModel = loginViewModel
-            )
-        }
+
         composable(route = AppScreens.FilterScreen.name) {
             FilterScreen(
                 navController = navController,
                 favoritesViewModel = favoritesViewModel,
-                loginViewModel = loginViewModel,
                 eventsViewModel = eventsViewModel
             )
         }
@@ -80,22 +62,15 @@ fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
             FavoriteScreen(
                 navController = navController,
                 favoritesViewModel = favoritesViewModel,
-                loginViewModel = loginViewModel
             )
         }
         composable(route = AppScreens.SettingsScreen.name) {
             SettingsScreen(
                 navController = navController,
-                loginViewModel = loginViewModel,
                 themeViewModel = themeViewModel
             )
         }
-        composable(route = AppScreens.AccountScreen.name) {
-            AccountScreen(
-                navController = navController,
-                loginViewModel = loginViewModel
-            )
-        }
+
         composable(
             AppScreens.EventDetailScreen.name + "/{eventId}",
             arguments = listOf(
@@ -107,7 +82,6 @@ fun AppNavigation(themeViewModel: ThemeViewModel = viewModel()) {
                 navController = navController,
                 eventId = backStackEntry.arguments?.getString("eventId"),
                 favoritesViewModel = favoritesViewModel,
-                loginViewModel = loginViewModel,
                 eventsViewModel = eventsViewModel
             )
         }

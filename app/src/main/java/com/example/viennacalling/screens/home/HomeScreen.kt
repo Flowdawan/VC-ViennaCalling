@@ -22,7 +22,6 @@ import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
 import com.example.viennacalling.ui.theme.Purple700
 import com.example.viennacalling.viewmodels.EventsViewModel
 import com.example.viennacalling.viewmodels.FavoritesViewModel
-import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.widgets.*
 
 private const val TAG = "HomeScreen"
@@ -31,7 +30,6 @@ private const val TAG = "HomeScreen"
 fun HomeScreen(
     navController: NavController = rememberNavController(),
     favoritesViewModel: FavoritesViewModel = viewModel(),
-    loginViewModel: LoginViewModel = viewModel(),
     eventsViewModel: EventsViewModel = viewModel(),
 ) {
     Scaffold(
@@ -39,7 +37,6 @@ fun HomeScreen(
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
-                loginViewModel = loginViewModel
             )
         },
         topBar = {

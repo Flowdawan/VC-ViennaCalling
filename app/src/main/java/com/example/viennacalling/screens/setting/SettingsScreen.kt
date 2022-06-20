@@ -26,7 +26,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.viennacalling.R
 import com.example.viennacalling.navigation.AppScreens
 import com.example.viennacalling.navigation.bottomnav.BottomNavigationBar
-import com.example.viennacalling.viewmodels.LoginViewModel
 import com.example.viennacalling.viewmodels.ThemeViewModel
 import com.example.viennacalling.widgets.checkIfLightModeIcon
 import com.example.viennacalling.widgets.checkIfLightModeText
@@ -34,7 +33,6 @@ import com.example.viennacalling.widgets.checkIfLightModeText
 @Composable
 fun SettingsScreen(
     navController: NavController = rememberNavController(),
-    loginViewModel: LoginViewModel,
     themeViewModel: ThemeViewModel,
 ) {
     Scaffold(
@@ -42,7 +40,6 @@ fun SettingsScreen(
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
-                loginViewModel = loginViewModel
             )
         },
         topBar = {

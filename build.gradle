@@ -1,23 +1,22 @@
 buildscript {
     ext {
         compose_version = '1.1.1'
-        navigation_version = '2.4.2'
+        navigation_version = '2.5.0'
         coil_version = '2.0.0-rc02'
-        lifecycle_version = "2.5.0-rc01"
+        lifecycle_version = '2.6.0-alpha01'
         retrofit_version = '2.9.0'
         room_version = '2.4.2'
-        jsoup_version = '1.14.3'
-        coil_version = '2.0.0-rc02'
+        jsoup_version = '1.15.1'
+        coil_version = '2.1.0'
     }
     dependencies {
-        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.google.gms:google-services:4.3.13'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     id 'com.android.application' version '7.2.0' apply false
     id 'com.android.library' version '7.2.0' apply false
     id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
-
 }
 
 task clean(type: Delete) {

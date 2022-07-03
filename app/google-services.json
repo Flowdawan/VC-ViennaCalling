@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:471626492102:android:033eabd6d5d9fb54e3cfc7",
         "android_client_info": {
-          "package_name": "com.example.viennacalling"
+          "package_name": "at.deflow.viennacalling"
         }
       },
       "oauth_client": [

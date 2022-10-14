@@ -10,11 +10,8 @@ import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.URLDecoder
-import java.net.URLEncoder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 private const val TAG = "EventsDao"
 

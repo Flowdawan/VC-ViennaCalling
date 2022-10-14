@@ -23,10 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import at.deflow.viennacalling.R
+import at.deflow.viennacalling.models.Event
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import at.deflow.viennacalling.models.Event
-import java.net.URLDecoder
 
 
 private const val TAG = "EventWidget"
@@ -65,7 +64,7 @@ fun EventRow(
                 Text(
                     color = checkIfLightModeText(),
 
-                    text = URLDecoder.decode(event.title, "utf-8"),
+                    text = event.title,
                     style = MaterialTheme.typography.caption,
                 )
 

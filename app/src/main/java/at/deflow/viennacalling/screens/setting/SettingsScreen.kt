@@ -81,7 +81,6 @@ fun SettingsScreen(
         }
     ) { padding ->
         MainContent(
-            navController = navController,
             padding = padding,
             themeViewModel = themeViewModel,
         )
@@ -90,7 +89,6 @@ fun SettingsScreen(
 
 @Composable
 fun MainContent(
-    navController: NavController,
     padding: PaddingValues,
     themeViewModel: ThemeViewModel,
 ) {
@@ -194,10 +192,10 @@ fun AnnotatedClickableAlertText() {
             pop()
 
             append("\nKontaktiert uns unter: ")
-            pushStringAnnotation(tag = "vc@sherl.at", annotation = "mailto:vc@sherl.at")
+            pushStringAnnotation(tag = "vc@sherl.at", annotation = "mailto:vc@deflow.at")
 
             withStyle(style = SpanStyle(color = Color.Blue)) {
-                append("vc@sherl.at")
+                append("vc@deflow.at")
             }
             pop()
 

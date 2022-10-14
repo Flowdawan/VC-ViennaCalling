@@ -144,7 +144,7 @@ fun MainContent(
             }
         ) {
             Text(
-                text = "Sehenswürdigkeiten",
+                text = "Attraktionen",
                 color = checkIfLightModeText(),
             )
         }

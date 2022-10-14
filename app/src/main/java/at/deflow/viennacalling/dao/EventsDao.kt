@@ -10,8 +10,11 @@ import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URLDecoder
+import java.net.URLEncoder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 private const val TAG = "EventsDao"
 
@@ -132,6 +135,7 @@ interface EventsDao {
                             plz = event.location?.postal_code ?: "",
                             images = event.content?.url ?: eventImagesList.random()
                         )
+
                         eventList.add(newEvent)
                     }
                 } else {

@@ -132,6 +132,7 @@ interface EventsDao {
                             plz = event.location?.postal_code ?: "",
                             images = event.content?.url ?: eventImagesList.random()
                         )
+
                         eventList.add(newEvent)
                     }
                 } else {

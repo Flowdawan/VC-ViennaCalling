@@ -23,9 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import at.deflow.viennacalling.R
+import at.deflow.viennacalling.models.Event
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import at.deflow.viennacalling.models.Event
 
 
 private const val TAG = "EventWidget"
@@ -63,6 +63,7 @@ fun EventRow(
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     color = checkIfLightModeText(),
+
                     text = event.title,
                     style = MaterialTheme.typography.caption,
                 )
@@ -147,7 +148,6 @@ fun EventDetails(
     event: Event,
     content: @Composable () -> Unit = {}
 ) {
-
     val uriHandler = LocalUriHandler.current // To open external links
     val context = LocalContext.current
 

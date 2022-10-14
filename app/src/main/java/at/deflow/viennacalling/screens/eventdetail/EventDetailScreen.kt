@@ -74,14 +74,14 @@ fun EventDetailScreen(
                 }
             )
         }
-    ) {
-        MainContent(event = event, favoritesViewModel = favoritesViewModel)
+    ) { padding ->
+        MainContent(event = event, favoritesViewModel = favoritesViewModel, padding = padding)
     }
 
 }
 
 @Composable
-fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel) {
+fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel, padding: PaddingValues) {
     var isInListColor by remember {
         if (favoritesViewModel.isEventInList(event)) {
             mutableStateOf(Purple700)

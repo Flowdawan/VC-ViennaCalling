@@ -1,24 +1,34 @@
 package at.deflow.viennacalling.screens.filter
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import at.deflow.viennacalling.models.Event
 import at.deflow.viennacalling.navigation.AppScreens
 import at.deflow.viennacalling.navigation.bottomnav.BottomNavigationBar
 import at.deflow.viennacalling.ui.theme.Purple700
@@ -34,6 +44,7 @@ fun FilterScreen(
     favoritesViewModel: FavoritesViewModel,
     eventsViewModel: EventsViewModel
 ) {
+
     Scaffold(
         backgroundColor = MaterialTheme.colors.background,
         bottomBar = {
@@ -83,106 +94,15 @@ fun MainContent(
     padding: PaddingValues,
     eventsViewModel: EventsViewModel
 ) {
-    var filteredEventList = eventsViewModel.getAllFilteredEvents()
-    var initialState by remember {
-        mutableStateOf(true)
-    }
-    var clickedButton by remember {
-        mutableStateOf(0)
-    }
+    val eventList = eventsViewModel.getEventListForSearch()
+    val initialEventList = eventList.toList()
+    var searchedList: List<Event>
 
-    Row(
-        modifier = Modifier
-            .padding(12.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Button(
-            modifier = Modifier
-                .height(60.dp)
-                .width(130.dp)
-                .padding(end = 5.dp),
-            border = if (clickedButton == 1) {
-                BorderStroke(1.dp, Color.DarkGray)
-            } else {
-                BorderStroke(1.dp, Color.Black)
-            },
-            shape = RoundedCornerShape(44),
+    val textState = remember { mutableStateOf(TextFieldValue("")) }
 
-            onClick = {
-                initialState = false
-                clickedButton = 1
-                filteredEventList =
-                    eventsViewModel.filterEventsByCategory(categoryId = "68", subCategory = "68")
-            }
-        ) {
-            Text(
-                text = "Kultur & Freizeit",
-                style = MaterialTheme.typography.subtitle1,
-                color = checkIfLightModeText(),
-            )
-        }
+    CircularIndeterminatorProgressBar(isDisplayed = initialEventList.isEmpty())
 
-        Button(
-            modifier = Modifier
-                .height(60.dp)
-                .width(130.dp)
-                .padding(end = 5.dp),
-            border = if (clickedButton == 2) {
-                BorderStroke(1.dp, Color.DarkGray)
-            } else {
-                BorderStroke(1.dp, Color.Black)
-            },
-            shape = RoundedCornerShape(44),
-            onClick = {
-                initialState = false
-                clickedButton = 2
-                filteredEventList = eventsViewModel.filterEventsByCategory(
-                    categoryId = "73",
-                    subCategory = "90,+64,+91,+73"
-                )
-            }
-        ) {
-            Text(
-                text = "Attraktionen",
-                color = checkIfLightModeText(),
-            )
-        }
-
-        Button(
-            modifier = Modifier
-                .height(60.dp)
-                .width(130.dp),
-            border = if (clickedButton == 3) {
-                BorderStroke(1.dp, Color.DarkGray)
-            } else {
-                BorderStroke(1.dp, Color.Black)
-            },
-            shape = RoundedCornerShape(44),
-            onClick = {
-                initialState = false
-                clickedButton = 3
-                filteredEventList =
-                    eventsViewModel.filterEventsByCategory(categoryId = "6", subCategory = "")
-            }
-        ) {
-            Text(
-                text = "Party",
-                color = checkIfLightModeText(),
-            )
-        }
-
-    }
-    Divider(
-        color = MaterialTheme.colors.surface,
-        modifier = Modifier
-            .padding(20.dp)
-            .alpha(alpha = 0.2F)
-    )
-
-    if (!initialState) {
-        CircularIndeterminatorProgressBar(isDisplayed = filteredEventList.isEmpty())
-    }
+    SearchBar(state = textState)
 
     LazyColumn(
         modifier = Modifier
@@ -190,16 +110,24 @@ fun MainContent(
             .padding(
                 PaddingValues(
                     5.dp,
-                    2.dp + 80.dp,
+                    8.dp + 59.dp,
                     padding.calculateTopPadding(),
                     padding.calculateBottomPadding()
                 )
             ),
-
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        items(items = filteredEventList) { event ->
+        val searchedText = textState.value.text
+        searchedList = if (searchedText.isEmpty()) {
+            initialEventList
+        } else {
+            eventList.filter { event ->
+                event.title.contains(searchedText.trim(), ignoreCase = true) ||
+                        event.streetAddress.contains(searchedText.trim(), ignoreCase = true)
+            }
+        }
+        items(items = searchedList) { event ->
             var isInListColor by remember {
                 if (favoritesViewModel.isEventInList(event)) {
                     mutableStateOf(Purple700)
@@ -228,4 +156,61 @@ fun MainContent(
             }
         }
     }
+}
+
+@Composable
+fun SearchBar(state: MutableState<TextFieldValue>) {
+    val focusManager = LocalFocusManager.current
+    TextField(
+        value = state.value,
+        onValueChange = { value ->
+            state.value = value
+        },
+        placeholder = { Text("Search events...") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 5.dp)
+            .shadow(3.dp, CircleShape),
+        textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
+        leadingIcon = {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = "Searchbar Icon",
+                modifier = Modifier
+                    .padding(15.dp)
+                    .size(24.dp)
+            )
+        },
+        trailingIcon = {
+            if (state.value != TextFieldValue("")) {
+                IconButton(
+                    onClick = {
+                        state.value =
+                            TextFieldValue("") // Remove text from TextField when you press the 'X' icon
+                    }
+                ) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = "Closing Searchbar",
+                        modifier = Modifier
+                            .padding(15.dp)
+                            .size(24.dp)
+                    )
+                }
+            }
+        },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        shape = RoundedCornerShape(20.dp), // The TextFiled has rounded corners top left and right by default
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.White,
+            cursorColor = Color.White,
+            leadingIconColor = Color.White,
+            trailingIconColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        )
+    )
 }

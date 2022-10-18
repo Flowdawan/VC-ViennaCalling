@@ -56,6 +56,10 @@ interface EventsDao {
             "https://cdn.pixabay.com/photo/2016/11/22/19/15/audience-1850119_1280.jpg",
             "https://cdn.pixabay.com/photo/2015/03/08/17/25/musician-664432_1280.jpg",
             "https://cdn.pixabay.com/photo/2016/11/22/18/56/audience-1850022_1280.jpg",
+            "https://cdn.pixabay.com/photo/2019/06/11/16/14/vienna-4267377_960_720.jpg",
+            "https://cdn.pixabay.com/photo/2019/08/13/17/17/vienna-state-opera-4403839_960_720.jpg",
+            "https://cdn.pixabay.com/photo/2018/12/17/14/20/vienna-3880488_960_720.jpg",
+
         )
 
         // here we need to create the date param for the get request with the range current to next year
@@ -65,7 +69,7 @@ interface EventsDao {
             current.plusYears(1).format(formatter) // To get all events from today + 1 year
         val currentFormatted = current.format(formatter)
 
-        var retrofitInstance = RetrofitInstance.api.getEventList(
+        val retrofitInstance = RetrofitInstance.api.getEventList(
             layout = "rss-vadb_neu",
             type = "R",
             hmwd = "d",
@@ -84,11 +88,11 @@ interface EventsDao {
 
                     // API response
                     response.body()!!.channel?.eventList?.forEach { event ->
-                        var startDate: String = ""
-                        var endDate: String = ""
+                        var startDate = ""
+                        var endDate = ""
 
                         // because we want to use the point for our unique id for every object we manipulate it a little
-                        var pointId = event.point?.replace("[.+\\s]".toRegex(), "")
+                        val pointId = event.point?.replace("[.+\\s]".toRegex(), "")
 
                         if (event.dtstart != null && event.dtstart!!.first() != 'T') {
                             startDate =
@@ -103,7 +107,7 @@ interface EventsDao {
                         }
 
                         // New event is created and then saved in our list which is then displayed in the home screen
-                        var newEvent = Event(
+                        val newEvent = Event(
                             id = "${
                                 event.dtstart?.replace(
                                     "+",
@@ -113,7 +117,8 @@ interface EventsDao {
                             title = event.titleList?.get(0)?.replaceFirstChar { it.uppercase() }
                                 ?: "Es ist leider kein Titel vorhanden",
                             category = event.category ?: "Es ist leider keine Kategorie vorhanden",
-                            description = Jsoup.parse(event.descriptionList?.get(0)).text()
+                            description = event.descriptionList?.get(0)
+                                ?.let { Jsoup.parse(it).text() }
                                 ?: "Es ist leider keine Beschreibung vorhanden",
                             link = event.link ?: "Es ist leider kein Link vorhanden",
                             url = event.organizer?.url ?: "",

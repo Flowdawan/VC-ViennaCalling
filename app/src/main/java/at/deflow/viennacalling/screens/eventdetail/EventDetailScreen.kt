@@ -18,8 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import at.deflow.viennacalling.models.Event
 import at.deflow.viennacalling.navigation.AppScreens
 import at.deflow.viennacalling.navigation.bottomnav.BottomNavigationBar
@@ -30,6 +28,8 @@ import at.deflow.viennacalling.widgets.EventDetails
 import at.deflow.viennacalling.widgets.FavoriteButton
 import at.deflow.viennacalling.widgets.checkIfLightModeIcon
 import at.deflow.viennacalling.widgets.checkIfLightModeText
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 private const val TAG = "EventDetailScreen"
 

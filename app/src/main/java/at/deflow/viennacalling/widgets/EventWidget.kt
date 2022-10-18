@@ -301,9 +301,9 @@ fun checkIfLightModeText(reverse: Boolean = false): Color {
 @Composable
 fun checkIfLightModeIcon(): Int {
     return if (MaterialTheme.colors.isLight) {
-        R.drawable.ic_vc_logo_light
+        R.drawable.ic_vienna_calling_logo_black
     } else {
-        R.drawable.ic_vc_logo
+        R.drawable.ic_vienna_calling_logo_splash_round
     }
 }
 

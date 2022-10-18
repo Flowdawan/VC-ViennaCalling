@@ -2,7 +2,6 @@ package at.deflow.viennacalling.widgets
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -48,7 +47,7 @@ fun EventRow(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(188.dp)
+                    .height(170.dp)
                     .clip(RoundedCornerShape(10.dp))
             ) {
                 AsyncImage(
@@ -309,7 +308,6 @@ fun checkIfLightModeIcon(): Int {
 
 @Composable
 fun CircularIndeterminatorProgressBar(isDisplayed: Boolean) {
-    Log.d(TAG, "Fetching new Events")
     if (isDisplayed) {
         Row(
             modifier = Modifier

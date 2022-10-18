@@ -91,8 +91,5 @@ dependencies {
     // Jsoup for extracting html from String
     implementation("org.jsoup:jsoup:$jsoup_version")
 
-    //Coil image Loading
-    implementation "io.coil-kt:coil-compose:$coil_version"
-
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
 }

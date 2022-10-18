@@ -1,6 +1,5 @@
 package at.deflow.viennacalling.screens.home
 
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,6 +30,10 @@ import at.deflow.viennacalling.widgets.CircularIndeterminatorProgressBar
 import at.deflow.viennacalling.widgets.EventRow
 import at.deflow.viennacalling.widgets.FavoriteButton
 import at.deflow.viennacalling.widgets.checkIfLightModeText
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 private const val TAG = "HomeScreen"
 
@@ -41,15 +44,19 @@ fun HomeScreen(
     eventsViewModel: EventsViewModel = viewModel(),
 ) {
     val filteredState = eventsViewModel.eventsFilterState
+    eventsViewModel.cacheNewList()
 
     var clickedAdditionalInfo by remember {
         mutableStateOf(0)
     }
 
-    val initialList = eventsViewModel.getAllEvents()
+    var isTimeout by remember {
+        mutableStateOf(false)
+    }
+
     val events = EventsClass(
-        eventList = initialList,
-        filteredEventList = initialList
+        eventList = eventsViewModel.getAllEvents(),
+        filteredEventList = eventsViewModel.getAllEvents()
     )
     Scaffold(
         backgroundColor = MaterialTheme.colors.background,
@@ -64,8 +71,9 @@ fun HomeScreen(
                     filteredState = filteredState,
                     events = events,
                     eventsViewModel = eventsViewModel,
-                    onFilterClicked =  {
+                    onFilterClicked = {
                         clickedAdditionalInfo = 0
+                        isTimeout = false
                     }
                 )
             },
@@ -83,6 +91,7 @@ fun HomeScreen(
                 }
             )
         }
+
     ) { padding ->
         MainContent(
             navController = navController,
@@ -90,8 +99,10 @@ fun HomeScreen(
             favoritesViewModel = favoritesViewModel,
             events = events,
             clickedAdditionalInfo = clickedAdditionalInfo,
-            onAdditionalInfoClick =  {
-                clickedAdditionalInfo = it
+            isTimeout = isTimeout,
+            onAdditionalInfoClick = { clickedElement, timeout ->
+                clickedAdditionalInfo = clickedElement
+                isTimeout = timeout
             }
         )
     }
@@ -104,10 +115,12 @@ fun MainContent(
     favoritesViewModel: FavoritesViewModel,
     events: EventsClass,
     clickedAdditionalInfo: Int,
-    onAdditionalInfoClick: (Int) -> Unit = {},
+    isTimeout: Boolean,
+    onAdditionalInfoClick: (Int, Boolean) -> Unit = { _: Int, _: Boolean -> },
 ) {
-    CircularIndeterminatorProgressBar(isDisplayed = events.eventList.isEmpty())
-
+    if (!isTimeout) {
+        CircularIndeterminatorProgressBar(isDisplayed = events.eventList.isEmpty())
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -123,9 +136,9 @@ fun MainContent(
             },
             shape = RoundedCornerShape(66),
             onClick = {
-                if(clickedAdditionalInfo != 1) {
-                    onAdditionalInfoClick(1)
+                if (clickedAdditionalInfo != 1) {
                     events.eventList = events.filteredEventList
+                    onAdditionalInfoClick(1, events.eventList.isEmpty())
                 }
             }
         ) {
@@ -145,14 +158,17 @@ fun MainContent(
             },
             shape = RoundedCornerShape(44),
             onClick = {
-                if(clickedAdditionalInfo != 2) {
-                    onAdditionalInfoClick(2)
-                    events.eventList = filterEventsToday(filteredEventList = events.filteredEventList)
+                if (clickedAdditionalInfo != 2) {
+                    events.eventList =
+                        filterEventsToday(
+                            filteredEventList = events.filteredEventList,
+                        )
+                    onAdditionalInfoClick(2, events.eventList.isEmpty())
                 }
             }
         ) {
             Text(
-                text = "Ab Heute",
+                text = "Ab heute",
                 color = checkIfLightModeText(),
             )
         }
@@ -166,11 +182,12 @@ fun MainContent(
             },
             shape = RoundedCornerShape(44),
             onClick = {
-                if(clickedAdditionalInfo != 3) {
-                    onAdditionalInfoClick(3)
+                if (clickedAdditionalInfo != 3) {
                     events.eventList =
                         filterEventsSeveralDays(filteredEventList = events.filteredEventList)
+                    onAdditionalInfoClick(3, events.eventList.isEmpty())
                 }
+
             }
         ) {
             Text(
@@ -179,46 +196,68 @@ fun MainContent(
             )
         }
     }
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                PaddingValues(
-                    5.dp,
-                    8.dp + 40.dp,
-                    padding.calculateTopPadding(),
-                    padding.calculateBottomPadding()
-                )
-            ),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        items(items = events.eventList) { event ->
-            var isInListColor by remember {
-                if (favoritesViewModel.isEventInList(event)) {
-                    mutableStateOf(Purple700)
-                } else {
-                    mutableStateOf(Color.DarkGray)
-                }
-            }
-            EventRow(
-                event = event,
-                onItemClick = { eventId ->
-                    navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
-                }) {
-                FavoriteButton(
-                    event = event,
-                    isAlreadyInListColor = isInListColor,
-                    onFavoriteClick = { event ->
-                        if (favoritesViewModel.isEventInList(event)) {
-                            favoritesViewModel.removeEvent(event)
-                            isInListColor = Color.DarkGray
-                        } else {
-                            favoritesViewModel.addEvent(event)
-                            isInListColor = Purple700
-                        }
+    if (isTimeout) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    PaddingValues(
+                        5.dp,
+                        8.dp + 40.dp,
+                        padding.calculateTopPadding(),
+                        padding.calculateBottomPadding()
+                    )
+                ),
+        ) {
+            Text(
+                text = "Es wurden keine Events gefunden!",
+                style = MaterialTheme.typography.caption,
+                color = checkIfLightModeText(),
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    PaddingValues(
+                        5.dp,
+                        8.dp + 40.dp,
+                        padding.calculateTopPadding(),
+                        padding.calculateBottomPadding()
+                    )
+                ),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            items(items = events.eventList) { event ->
+                var isInListColor by remember {
+                    if (favoritesViewModel.isEventInList(event)) {
+                        mutableStateOf(Purple700)
+                    } else {
+                        mutableStateOf(Color.DarkGray)
                     }
-                )
+                }
+                EventRow(
+                    event = event,
+                    onItemClick = { eventId ->
+                        navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
+                    }) {
+                    FavoriteButton(
+                        event = event,
+                        isAlreadyInListColor = isInListColor,
+                        onFavoriteClick = { event ->
+                            if (favoritesViewModel.isEventInList(event)) {
+                                favoritesViewModel.removeEvent(event)
+                                isInListColor = Color.DarkGray
+                            } else {
+                                favoritesViewModel.addEvent(event)
+                                isInListColor = Purple700
+                            }
+                        }
+                    )
+                }
             }
         }
     }
@@ -231,10 +270,9 @@ fun DropdownMenu(
     eventsViewModel: EventsViewModel,
     filteredState: FilteredState,
     onFilterClicked: () -> Unit = {},
-    ) {
+) {
     var expanded by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
     Box(
         contentAlignment = Alignment.CenterStart,
         modifier = Modifier
@@ -270,7 +308,6 @@ fun DropdownMenu(
         ) {
             DropdownMenuItem(onClick = {
                 if (filteredState.appliedFilter != 0) {
-                    Toast.makeText(context, "Home", Toast.LENGTH_SHORT).show()
                     filteredState.appliedFilter = 0
                     onFilterClicked()
                     events.filteredEventList = eventsViewModel.fetchAllEventsNew()
@@ -282,7 +319,6 @@ fun DropdownMenu(
             }
             DropdownMenuItem(onClick = {
                 if (filteredState.appliedFilter != 1) {
-                    Toast.makeText(context, "Attraktionen", Toast.LENGTH_SHORT).show()
                     filteredState.appliedFilter = 1
                     onFilterClicked()
                     events.filteredEventList = eventsViewModel.filterEventsByCategory(
@@ -297,7 +333,6 @@ fun DropdownMenu(
             }
             DropdownMenuItem(onClick = {
                 if (filteredState.appliedFilter != 2) {
-                    Toast.makeText(context, "Kultur & Freizeit", Toast.LENGTH_SHORT).show()
                     filteredState.appliedFilter = 2
                     onFilterClicked()
                     events.filteredEventList =
@@ -314,7 +349,6 @@ fun DropdownMenu(
             }
             DropdownMenuItem(onClick = {
                 if (filteredState.appliedFilter != 3) {
-                    Toast.makeText(context, "Party", Toast.LENGTH_SHORT).show()
                     filteredState.appliedFilter = 3
                     onFilterClicked()
                     events.filteredEventList =
@@ -339,15 +373,29 @@ fun Modifier.filterButton(): Modifier =
         .width(130.dp)
         .padding(end = 4.dp)
 
-fun filterEventsToday(filteredEventList: List<Event>): List<Event> {
+fun filterEventsToday(
+    filteredEventList: List<Event>,
+): List<Event> {
     val copyEventList = filteredEventList
+
+    val currentDate = LocalDateTime.now()
+    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    val formattedDate = currentDate.format(formatter)
+
+    val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN)
+    val firstDate: Date = sdf.parse(formattedDate) as Date
+
     val newEventList = copyEventList.filter { event ->
-        event.endTime.isEmpty()
+        val secondDate: Date = sdf.parse(event.startTime) as Date
+        secondDate.after(firstDate) || secondDate.equals(firstDate)
     }
+
     return newEventList
 }
 
-fun filterEventsSeveralDays(filteredEventList: List<Event>): List<Event> {
+fun filterEventsSeveralDays(
+    filteredEventList: List<Event>,
+): List<Event> {
     val copyEventList = filteredEventList
     val newEventList = copyEventList.filter { event ->
         event.endTime.isNotEmpty()

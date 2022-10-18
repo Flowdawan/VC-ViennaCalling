@@ -20,6 +20,7 @@ class EventsViewModel(
         private set
 
     private val _eventList = mutableStateListOf<Event>()
+    private var eventListSearch = mutableStateListOf<Event>()
 
     val eventList: List<Event>
         get() = _eventList
@@ -33,6 +34,21 @@ class EventsViewModel(
             )
         }
     }
+
+    fun cacheNewList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.fetchEventsRssFeed(
+                eventList = eventListSearch,
+                categoryId = "6,+68,+90,+64,+91,+73",
+                subCategory = "6,+68,+73"
+            )
+        }
+    }
+
+    fun getEventListForSearch(): List<Event> {
+        return eventListSearch
+    }
+
 
     fun fetchAllEventsNew(): List<Event> {
         _eventList.clear()

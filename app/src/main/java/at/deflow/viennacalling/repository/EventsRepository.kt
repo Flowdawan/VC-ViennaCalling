@@ -13,25 +13,10 @@ class EventsRepository(
 
     fun getAllEvents(): Flow<List<Event>> = eventsDao.getAllEvents()
 
-    suspend fun editEvent(event: Event) = eventsDao.editEvent(event = event)
-
     suspend fun deleteEvent(event: Event) = eventsDao.deleteEvent(event = event)
 
-    suspend fun getEventByName(title: String): Event {
-        return eventsDao.getEventByName(title = title)
-    }
-
-    suspend fun getEventById(id: Long): Event {
-        return eventsDao.getEventById(id = id)
-    }
-
-
-    fun fetchEventsRssFeed(
-        eventList: MutableList<Event>,
-        categoryId: String = "6",
-        subCategory: String = ""
-    ) = eventsDao.fetchEventRssFeed(
-        eventList = eventList, categoryId = categoryId
+    fun fetchEventsRssFeed(eventList: MutableList<Event>) = eventsDao.fetchEventRssFeed(
+        eventList = eventList
     )
 }
 

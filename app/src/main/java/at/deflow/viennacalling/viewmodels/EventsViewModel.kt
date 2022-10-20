@@ -29,8 +29,6 @@ class EventsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchEventsRssFeed(
                 eventList = _eventList,
-                categoryId = "6,+68,+90,+64,+91,+73",
-                subCategory = "6,+68,+73"
             )
         }
     }
@@ -39,8 +37,6 @@ class EventsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchEventsRssFeed(
                 eventList = eventListSearch,
-                categoryId = "6,+68,+90,+64,+91,+73",
-                subCategory = "6,+68,+73"
             )
         }
     }
@@ -55,8 +51,6 @@ class EventsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchEventsRssFeed(
                 eventList = _eventList,
-                categoryId = "6,+68,+90,+64,+91,+73",
-                subCategory = "6,+68,+73"
             )
         }
         return _eventList
@@ -71,8 +65,6 @@ class EventsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchEventsRssFeed(
                 eventList = _eventList,
-                categoryId = categoryId,
-                subCategory = subCategory
             )
         }
         return _eventList

@@ -12,6 +12,7 @@ data class Event(
     val category: String = "",
     val link: String = "",
     val url: String = "",
+    val days: String = "",
     val subject: String = "",
     val startTime: String = "",
     val endTime: String = "",
@@ -20,6 +21,6 @@ data class Event(
     val point: String = "",
     val streetAddress: String = "",
     val plz: String = "",
-    val images: String = "",
+    val images: String? = "",
     var uuid: String? = "0",
 )

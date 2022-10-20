@@ -13,7 +13,7 @@ android {
         minSdk 27
         targetSdk 32
         versionCode 5
-        versionName "1.1.0"
+        versionName "1.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -81,6 +81,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-simplexml:$retrofit_version"
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
     // Room Database
     implementation "androidx.room:room-runtime:$room_version"

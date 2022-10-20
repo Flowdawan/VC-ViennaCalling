@@ -10,7 +10,7 @@ import at.deflow.viennacalling.models.Event
 // For the RoomDb
 @Database(
     entities = [(Event::class)], // all entities which are in this database
-    version = 3,
+    version = 7,
     exportSchema = false
 )
 abstract class EventsDB : RoomDatabase() {

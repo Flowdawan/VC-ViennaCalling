@@ -1,5 +1,3 @@
-- New Structure
-- Add searchbar
-- Fixed minor bugs
-- Possibility to filtering by categories
-- Minor redesign
+- Architecture
+- Minor fixes
+- New improved way to fetch events

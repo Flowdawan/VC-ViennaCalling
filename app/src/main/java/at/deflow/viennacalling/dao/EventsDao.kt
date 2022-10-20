@@ -3,10 +3,8 @@ package at.deflow.viennacalling.dao
 import android.util.Log
 import androidx.room.*
 import at.deflow.viennacalling.models.Event
-import at.deflow.viennacalling.models.xml.RssFeed
 import at.deflow.viennacalling.retrofit.RetrofitInstance
 import kotlinx.coroutines.flow.Flow
-import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,14 +35,10 @@ interface EventsDao {
     suspend fun getEventById(id: Long): Event
 
 
-    fun fetchEventRssFeed(
-        eventList: MutableList<Event>,
-        categoryId: String = "6",
-        subCategory: String = ""
-    ) {
+    fun fetchEventRssFeed(eventList: MutableList<Event>) {
 
         // If there are no images we select random one of these stock photos)
-        val eventImagesList = listOf(
+        val eventImagesListDefault = listOf(
             "https://cdn.pixabay.com/photo/2016/11/29/06/17/audience-1867754_1280.jpg",
             "https://cdn.pixabay.com/photo/2015/11/22/19/04/crowd-1056764_1280.jpg",
             "https://cdn.pixabay.com/photo/2019/10/15/03/16/black-and-white-4550471_1280.jpg",
@@ -59,99 +53,78 @@ interface EventsDao {
             "https://cdn.pixabay.com/photo/2019/06/11/16/14/vienna-4267377_960_720.jpg",
             "https://cdn.pixabay.com/photo/2019/08/13/17/17/vienna-state-opera-4403839_960_720.jpg",
             "https://cdn.pixabay.com/photo/2018/12/17/14/20/vienna-3880488_960_720.jpg",
-
         )
 
-        // here we need to create the date param for the get request with the range current to next year
-        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-        val current = LocalDateTime.now()
-        val nextYear =
-            current.plusYears(1).format(formatter) // To get all events from today + 1 year
-        val currentFormatted = current.format(formatter)
-
-        val retrofitInstance = RetrofitInstance.api.getEventList(
-            layout = "rss-vadb_neu",
-            type = "R",
-            hmwd = "d",
-            category = categoryId,
-            subCategory = subCategory,
-            startDate = currentFormatted.toString(),
-            endDate = nextYear.toString()
-        )
+        val retrofitInstance = RetrofitInstance.api.getEventListAll()
 
         // Here we make the actual request to our api and if we get correct data back (which is basically models.xml.* data classes)
         // we use it to create a new event for each item from the rss feed and then store it in our event view model
-        retrofitInstance.enqueue(object : Callback<RssFeed?> {
-            override fun onResponse(call: Call<RssFeed?>, response: Response<RssFeed?>) {
-                if (response.isSuccessful) {
-                    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        retrofitInstance.enqueue(object : Callback<ArrayList<Event>?> {
+            override fun onResponse(
+                call: Call<ArrayList<Event>?>,
+                response: Response<ArrayList<Event>?>
+            ) {
 
-                    // API response
-                    response.body()!!.channel?.eventList?.forEach { event ->
-                        var startDate = ""
-                        var endDate = ""
+                val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
-                        // because we want to use the point for our unique id for every object we manipulate it a little
-                        val pointId = event.point?.replace("[.+\\s]".toRegex(), "")
+                // API response
+                response.body()!!.forEach { event ->
+                    var startDate = ""
+                    var endDate = ""
 
-                        if (event.dtstart != null && event.dtstart!!.first() != 'T') {
-                            startDate =
-                                LocalDateTime.parse(event.dtstart?.take(19) ?: "").format(formatter)
-                                    .toString()
-                        }
+                    // because we want to use the point for our unique id for every object we manipulate it a little
+                    val pointId = event.point.replace("[.+\\s]".toRegex(), "")
 
-                        if (event.dtend != null && event.dtend!!.first() != 'T') {
-                            endDate =
-                                LocalDateTime.parse(event.dtend?.take(19) ?: "").format(formatter)
-                                    .toString()
-                        }
+                    if (event.startTime != "" && event.startTime.first() != 'T') {
+                        startDate =
+                            LocalDateTime.parse(event.startTime.take(19) ?: "").format(formatter)
+                                .toString()
+                    }
 
-                        // New event is created and then saved in our list which is then displayed in the home screen
-                        val newEvent = Event(
-                            id = "${
-                                event.dtstart?.replace(
-                                    "+",
-                                    ""
-                                )
-                            }-$pointId".replace("-$".toRegex(), ""),
-                            title = event.titleList?.get(0)?.replaceFirstChar { it.uppercase() }
-                                ?: "Es ist leider kein Titel vorhanden",
-                            category = event.category ?: "Es ist leider keine Kategorie vorhanden",
-                            description = event.descriptionList?.get(0)
-                                ?.let { Jsoup.parse(it).text() }
-                                ?: "Es ist leider keine Beschreibung vorhanden",
-                            link = event.link ?: "Es ist leider kein Link vorhanden",
-                            url = event.organizer?.url ?: "",
-                            subject = event.subject ?: "Es ist leider kein Subject vorhanden",
-                            startTime = startDate,
-                            endTime = endDate,
-                            startHour = event.startHour ?: "",
-                            startMin = event.startMin ?: "",
-                            point = event.point ?: "",
-                            streetAddress = event.location?.street_address?.replace(
-                                "/$".toRegex(),
+                    if (event.endTime != "" && event.endTime.first() != 'T') {
+                        endDate =
+                            LocalDateTime.parse(event.endTime.take(19) ?: "").format(formatter)
+                                .toString()
+                    }
+
+                    // New event is created and then saved in our list which is then displayed in the home screen
+                    val newEvent = Event(
+                        id = "${
+                            event.startTime.replace(
+                                "+",
                                 ""
                             )
-                                ?.trim()
-                                ?: "",
-                            plz = event.location?.postal_code ?: "",
-                            images = event.content?.url ?: eventImagesList.random()
-                        )
-
-                        eventList.add(newEvent)
-                    }
-                } else {
-                    Log.d(TAG, "We got no response")
+                        }-$pointId".replace("-$".toRegex(), ""),
+                        title = if (event.title != "") event.title else "Es ist leider kein Titel vorhanden",
+                        description = if (event.description != "") event.description else "Es ist leider keine Beschreibung vorhanden",
+                        category = event.category,
+                        link = if (event.link != "") event.link else "Es ist leider kein Link vorhanden",
+                        url = event.url,
+                        subject = event.subject,
+                        startTime = startDate,
+                        endTime = endDate,
+                        startHour = event.startHour,
+                        startMin = event.startMin,
+                        point = event.point,
+                        streetAddress = event.streetAddress,
+                        plz = event.plz,
+                        images = if (event.images != "") event.images
+                        else
+                            when (event.category) {
+                                "party" -> eventImagesListDefault.random()
+                                "sightseeing" -> eventImagesListDefault.random()
+                                "culture" -> eventImagesListDefault.random()
+                                else -> eventImagesListDefault.random()
+                            }
+                    )
+                    Log.d(TAG, newEvent.toString())
+                    eventList.add(newEvent)
                 }
             }
 
-            override fun onFailure(call: Call<RssFeed?>, t: Throwable) {
-                Log.d(
-                    TAG,
-                    "We got a exception while trying to fetch the xml feed: ${t.stackTrace}"
-                )
+            override fun onFailure(call: Call<ArrayList<Event>?>, t: Throwable) {
+                Log.d(TAG, "Failed to fetch data");
             }
         })
     }
-
 }

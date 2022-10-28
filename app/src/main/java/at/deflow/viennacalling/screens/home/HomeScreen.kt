@@ -1,5 +1,6 @@
 package at.deflow.viennacalling.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,8 +44,6 @@ fun HomeScreen(
     eventsViewModel: EventsViewModel = viewModel(),
 ) {
     val filteredState = eventsViewModel.eventsFilterState
-    eventsViewModel.cacheNewList()
-
     var clickedAdditionalInfo by remember {
         mutableStateOf(0)
     }
@@ -183,6 +182,7 @@ fun MainContent(
             shape = RoundedCornerShape(44),
             onClick = {
                 if (clickedAdditionalInfo != 3) {
+
                     events.eventList =
                         filterEventsJustToday(filteredEventList = events.filteredEventList)
                     onAdditionalInfoClick(3, events.eventList.isEmpty())
@@ -389,7 +389,6 @@ fun filterEventsToday(
 fun filterEventsJustToday(
     filteredEventList: List<Event>,
 ): List<Event> {
-
     val currentDate = LocalDateTime.now()
     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     val formattedDate = currentDate.format(formatter)
@@ -401,6 +400,7 @@ fun filterEventsJustToday(
         val secondDate: Date = sdf.parse(event.startTime) as Date
         secondDate.equals(firstDate)
     }
+
 
     return newEventList
 }

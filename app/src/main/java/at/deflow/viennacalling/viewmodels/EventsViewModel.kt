@@ -37,16 +37,9 @@ class EventsViewModel(
         }
     }
 
-    fun cacheNewList() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.fetchEventsRssFeed(
-                eventList = eventListSearch,
-                eventListInitial = eventListInitial,
-            )
-        }
-    }
-
     fun getEventListForSearch(): List<Event> {
+        eventListSearch.clear()
+        eventListSearch.addAll(eventListInitial)
         return eventListSearch
     }
 

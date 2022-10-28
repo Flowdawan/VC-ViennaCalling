@@ -1,5 +1,6 @@
 package at.deflow.viennacalling.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -44,8 +44,6 @@ fun HomeScreen(
     eventsViewModel: EventsViewModel = viewModel(),
 ) {
     val filteredState = eventsViewModel.eventsFilterState
-    eventsViewModel.cacheNewList()
-
     var clickedAdditionalInfo by remember {
         mutableStateOf(0)
     }
@@ -56,7 +54,7 @@ fun HomeScreen(
 
     val events = EventsClass(
         eventList = eventsViewModel.getAllEvents(),
-        filteredEventList = eventsViewModel.getAllEvents()
+        filteredEventList = eventsViewModel.getAllEvents(),
     )
     Scaffold(
         backgroundColor = MaterialTheme.colors.background,
@@ -124,7 +122,8 @@ fun MainContent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 2.dp)
+            .padding(top = 2.dp),
+        horizontalArrangement = Arrangement.Center,
     ) {
         Button(
             modifier = Modifier
@@ -183,15 +182,16 @@ fun MainContent(
             shape = RoundedCornerShape(44),
             onClick = {
                 if (clickedAdditionalInfo != 3) {
+
                     events.eventList =
-                        filterEventsSeveralDays(filteredEventList = events.filteredEventList)
+                        filterEventsJustToday(filteredEventList = events.filteredEventList)
                     onAdditionalInfoClick(3, events.eventList.isEmpty())
                 }
 
             }
         ) {
             Text(
-                text = "Mehrtägig",
+                text = "Heute",
                 color = checkIfLightModeText(),
             )
         }
@@ -202,10 +202,10 @@ fun MainContent(
                 .fillMaxWidth()
                 .padding(
                     PaddingValues(
-                        5.dp,
-                        8.dp + 40.dp,
-                        padding.calculateTopPadding(),
-                        padding.calculateBottomPadding()
+                        start = 5.dp,
+                        top = padding.calculateTopPadding() + 40.dp,
+                        bottom = padding.calculateBottomPadding(),
+                        end = 5.dp
                     )
                 ),
         ) {
@@ -222,10 +222,10 @@ fun MainContent(
                 .fillMaxWidth()
                 .padding(
                     PaddingValues(
-                        5.dp,
-                        8.dp + 40.dp,
-                        padding.calculateTopPadding(),
-                        padding.calculateBottomPadding()
+                        start = 5.dp,
+                        top = padding.calculateTopPadding() + 54.dp,
+                        bottom = padding.calculateBottomPadding(),
+                        end = 5.dp
                     )
                 ),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -315,49 +315,44 @@ fun DropdownMenu(
                     expanded = !expanded
                 }
             }) {
-                Text("Home")
+                Text("Home", color = checkIfLightModeText())
             }
             DropdownMenuItem(onClick = {
                 if (filteredState.appliedFilter != 1) {
                     filteredState.appliedFilter = 1
                     onFilterClicked()
-                    events.filteredEventList = eventsViewModel.filterEventsByCategory(
-                        categoryId = "73",
-                        subCategory = "90,+64,+91,+73"
-                    )
+                    events.filteredEventList =
+                        eventsViewModel.filterBySightseeing()
                     events.eventList = events.filteredEventList
                     expanded = !expanded
                 }
             }) {
-                Text("Attraktionen")
+                Text("Attraktionen", color = checkIfLightModeText())
             }
             DropdownMenuItem(onClick = {
                 if (filteredState.appliedFilter != 2) {
                     filteredState.appliedFilter = 2
                     onFilterClicked()
                     events.filteredEventList =
-                        eventsViewModel.filterEventsByCategory(
-                            categoryId = "68",
-                            subCategory = "68"
-                        )
+                        eventsViewModel.filterByCulture()
                     events.eventList = events.filteredEventList
                     expanded = !expanded
                 }
 
             }) {
-                Text("Kultur & Freizeit")
+                Text("Kultur & Freizeit", color = checkIfLightModeText())
             }
             DropdownMenuItem(onClick = {
                 if (filteredState.appliedFilter != 3) {
                     filteredState.appliedFilter = 3
                     onFilterClicked()
                     events.filteredEventList =
-                        eventsViewModel.filterEventsByCategory(categoryId = "6", subCategory = "")
+                        eventsViewModel.filterByParty()
                     events.eventList = events.filteredEventList
                     expanded = !expanded
                 }
             }) {
-                Text("Party")
+                Text("Party", color = checkIfLightModeText())
             }
         }
     }
@@ -366,7 +361,7 @@ fun DropdownMenu(
 data class EventsClass(
     var eventList: List<Event>,
     var filteredEventList: List<Event>,
-)
+    )
 
 fun Modifier.filterButton(): Modifier =
     height(40.dp)
@@ -376,8 +371,6 @@ fun Modifier.filterButton(): Modifier =
 fun filterEventsToday(
     filteredEventList: List<Event>,
 ): List<Event> {
-    val copyEventList = filteredEventList
-
     val currentDate = LocalDateTime.now()
     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     val formattedDate = currentDate.format(formatter)
@@ -385,7 +378,7 @@ fun filterEventsToday(
     val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN)
     val firstDate: Date = sdf.parse(formattedDate) as Date
 
-    val newEventList = copyEventList.filter { event ->
+    val newEventList = filteredEventList.filter { event ->
         val secondDate: Date = sdf.parse(event.startTime) as Date
         secondDate.after(firstDate) || secondDate.equals(firstDate)
     }
@@ -393,12 +386,21 @@ fun filterEventsToday(
     return newEventList
 }
 
-fun filterEventsSeveralDays(
+fun filterEventsJustToday(
     filteredEventList: List<Event>,
 ): List<Event> {
-    val copyEventList = filteredEventList
-    val newEventList = copyEventList.filter { event ->
-        event.endTime.isNotEmpty()
+    val currentDate = LocalDateTime.now()
+    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    val formattedDate = currentDate.format(formatter)
+
+    val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN)
+    val firstDate: Date = sdf.parse(formattedDate) as Date
+
+    val newEventList = filteredEventList.filter { event ->
+        val secondDate: Date = sdf.parse(event.startTime) as Date
+        secondDate.equals(firstDate)
     }
+
+
     return newEventList
 }

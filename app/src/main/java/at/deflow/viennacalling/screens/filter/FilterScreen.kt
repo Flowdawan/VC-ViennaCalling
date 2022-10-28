@@ -1,6 +1,7 @@
 package at.deflow.viennacalling.screens.filter
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -61,6 +62,9 @@ fun FilterScreen(
                     modifier = Modifier
                         .width(133.dp)
                         .height(57.dp)
+                        .clickable {
+                            navController.navigate(route = AppScreens.HomeScreen.name)
+                        }
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,
@@ -109,10 +113,10 @@ fun MainContent(
             .fillMaxWidth()
             .padding(
                 PaddingValues(
-                    5.dp,
-                    8.dp + 59.dp,
-                    padding.calculateTopPadding(),
-                    padding.calculateBottomPadding()
+                    start = 5.dp,
+                    top = padding.calculateTopPadding() + 65.dp,
+                    bottom = padding.calculateBottomPadding(),
+                    end = 5.dp
                 )
             ),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -169,8 +173,8 @@ fun SearchBar(state: MutableState<TextFieldValue>) {
         placeholder = { Text("Search events...") },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 5.dp)
-            .shadow(3.dp, CircleShape),
+            .padding(top = 5.dp, end = 5.dp, start = 5.dp)
+            .shadow(4.dp, CircleShape),
         textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
         leadingIcon = {
             Icon(

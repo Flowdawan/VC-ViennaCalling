@@ -1,5 +1,4 @@
-- New Structure
-- Add searchbar
-- Fixed minor bugs
-- Possibility to filtering by categories
-- Minor redesign
+- New Architecture for fetching data
+- Minor UI fixes
+- New ways to filter
+- Minify app now

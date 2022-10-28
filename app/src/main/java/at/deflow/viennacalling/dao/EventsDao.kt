@@ -74,9 +74,6 @@ interface EventsDao {
 
                 // API response
                 response.body()!!.forEach { event ->
-                    Log.d(TAG, event.title)
-                    Log.d(TAG, URLDecoder.decode(event.title))
-
                     if(event.title == "" || (event.startTime == "" && event.description == "")) {
                         return@forEach
                     }
@@ -88,13 +85,13 @@ interface EventsDao {
 
                     if (event.startTime != "" && event.startTime.first() != 'T') {
                         startDate =
-                            LocalDateTime.parse(event.startTime.take(19) ?: "").format(formatter)
+                            LocalDateTime.parse(event.startTime.take(19)).format(formatter)
                                 .toString()
                     }
 
                     if (event.endTime != "" && event.endTime.first() != 'T') {
                         endDate =
-                            LocalDateTime.parse(event.endTime.take(19) ?: "").format(formatter)
+                            LocalDateTime.parse(event.endTime.take(19)).format(formatter)
                                 .toString()
                     }
 
@@ -134,7 +131,7 @@ interface EventsDao {
             }
 
             override fun onFailure(call: Call<ArrayList<Event>?>, t: Throwable) {
-                Log.d(TAG, "Failed to fetch data");
+                Log.d(TAG, "Failed to fetch data")
             }
         })
     }

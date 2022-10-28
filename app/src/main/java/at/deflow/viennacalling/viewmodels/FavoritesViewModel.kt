@@ -1,12 +1,9 @@
 package at.deflow.viennacalling.viewmodels
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import at.deflow.viennacalling.models.Event
 import at.deflow.viennacalling.repository.EventsRepository
-import at.deflow.viennacalling.ui.theme.Purple700
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,8 +20,8 @@ class FavoritesViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-                repository.getAllEvents().collect { eventList ->
-                    _favoriteEvents.value = eventList
+            repository.getAllEvents().collect { eventList ->
+                _favoriteEvents.value = eventList
             }
         }
     }
@@ -48,7 +45,7 @@ class FavoritesViewModel(
     fun isEventInList(event: Event): Boolean {
         var isInList = false
         _favoriteEvents.value.forEach { eventItem ->
-            if(event.id == eventItem.id){
+            if (event.id == eventItem.id) {
                 isInList = true
             }
         }

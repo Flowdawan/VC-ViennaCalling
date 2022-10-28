@@ -22,12 +22,10 @@ android {
         signingConfig signingConfigs.debug
     }
     
-    compileOptions.encoding 'UTF-8'
-
     buildTypes {
         release {
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -79,8 +77,6 @@ dependencies {
 
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-simplexml:$retrofit_version"
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
     // Room Database
@@ -88,9 +84,6 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-
-    // Jsoup for extracting html from String
-    implementation("org.jsoup:jsoup:$jsoup_version")
 
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
 }

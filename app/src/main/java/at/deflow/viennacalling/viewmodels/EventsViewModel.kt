@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import at.deflow.viennacalling.models.Event
@@ -20,6 +21,8 @@ class EventsViewModel(
         private set
 
     private val _eventList = mutableStateListOf<Event>()
+    private val eventListInitial = ArrayList<Event>()
+
     private var eventListSearch = mutableStateListOf<Event>()
 
     val eventList: List<Event>
@@ -29,7 +32,8 @@ class EventsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchEventsRssFeed(
                 eventList = _eventList,
-            )
+                eventListInitial = eventListInitial,
+                )
         }
     }
 
@@ -37,6 +41,7 @@ class EventsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchEventsRssFeed(
                 eventList = eventListSearch,
+                eventListInitial = eventListInitial,
             )
         }
     }
@@ -48,9 +53,12 @@ class EventsViewModel(
 
     fun fetchAllEventsNew(): List<Event> {
         _eventList.clear()
+        eventListInitial.clear()
+
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchEventsRssFeed(
                 eventList = _eventList,
+                eventListInitial = eventListInitial,
             )
         }
         return _eventList
@@ -60,13 +68,33 @@ class EventsViewModel(
         return _eventList
     }
 
-    fun filterEventsByCategory(categoryId: String = "6", subCategory: String = ""): List<Event> {
+    fun removeAllFilter(): List<Event> {
         _eventList.clear()
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.fetchEventsRssFeed(
-                eventList = _eventList,
-            )
-        }
+        _eventList.addAll(eventListInitial)
+        return _eventList
+    }
+
+    fun filterByParty(): List<Event> {
+        _eventList.clear()
+        _eventList.addAll(eventListInitial.filter { event ->
+            event.category == "party"
+        })
+        return _eventList
+    }
+
+    fun filterBySightseeing(): List<Event> {
+        _eventList.clear()
+        _eventList.addAll(eventListInitial.filter { event ->
+            event.category == "sightseeing"
+        })
+        return _eventList
+    }
+
+    fun filterByCulture(): List<Event> {
+        _eventList.clear()
+        _eventList.addAll(eventListInitial.filter { event ->
+            event.category == "culture"
+        })
         return _eventList
     }
 }

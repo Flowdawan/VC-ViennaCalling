@@ -2,6 +2,7 @@ package at.deflow.viennacalling.screens.eventdetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -58,20 +59,12 @@ fun EventDetailScreen(
                     modifier = Modifier
                         .width(133.dp)
                         .height(57.dp)
+                        .clickable {
+                            navController.navigate(route = AppScreens.HomeScreen.name)
+                        }
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,
-                actions = {
-                    IconButton(onClick = {
-                        navController.navigate(route = AppScreens.FavoriteScreen.name)
-                    }) {
-                        Icon(
-                            tint = checkIfLightModeText(),
-                            imageVector = Icons.Default.FavoriteBorder,
-                            contentDescription = "Favorite"
-                        )
-                    }
-                }
             )
         }
     ) { padding ->

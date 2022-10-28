@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URLDecoder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -35,7 +36,10 @@ interface EventsDao {
     suspend fun getEventById(id: Long): Event
 
 
-    fun fetchEventRssFeed(eventList: MutableList<Event>) {
+    fun fetchEventRssFeed(
+        eventList: MutableList<Event>,
+        eventListInitial: ArrayList<Event>,
+    ) {
 
         // If there are no images we select random one of these stock photos)
         val eventImagesListDefault = listOf(
@@ -66,9 +70,16 @@ interface EventsDao {
             ) {
 
                 val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+                Log.d(TAG, "HI")
 
                 // API response
                 response.body()!!.forEach { event ->
+                    Log.d(TAG, event.title)
+                    Log.d(TAG, URLDecoder.decode(event.title))
+
+                    if(event.title == "" || (event.startTime == "" && event.description == "")) {
+                        return@forEach
+                    }
                     var startDate = ""
                     var endDate = ""
 
@@ -117,8 +128,8 @@ interface EventsDao {
                                 else -> eventImagesListDefault.random()
                             }
                     )
-                    Log.d(TAG, newEvent.toString())
                     eventList.add(newEvent)
+                    eventListInitial.add(newEvent)
                 }
             }
 

@@ -20,8 +20,8 @@ class FavoritesViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-                repository.getAllEvents().collect { eventList ->
-                    _favoriteEvents.value = eventList
+            repository.getAllEvents().collect { eventList ->
+                _favoriteEvents.value = eventList
             }
         }
     }
@@ -45,7 +45,7 @@ class FavoritesViewModel(
     fun isEventInList(event: Event): Boolean {
         var isInList = false
         _favoriteEvents.value.forEach { eventItem ->
-            if(event.id == eventItem.id){
+            if (event.id == eventItem.id) {
                 isInList = true
             }
         }

@@ -1,6 +1,7 @@
 package at.deflow.viennacalling.screens.favorite
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -50,6 +51,9 @@ fun FavoriteScreen(
                     modifier = Modifier
                         .width(133.dp)
                         .height(57.dp)
+                        .clickable {
+                            navController.navigate(route = AppScreens.HomeScreen.name)
+                        }
                 )
             },
                 backgroundColor = MaterialTheme.colors.secondary,
@@ -83,10 +87,10 @@ fun MainContent(
     LazyColumn(
         modifier = Modifier.padding(
             PaddingValues(
-                5.dp,
-                2.dp,
-                padding.calculateTopPadding(),
-                padding.calculateBottomPadding()
+                start = 5.dp,
+                top = padding.calculateTopPadding() + 40.dp,
+                bottom = padding.calculateBottomPadding(),
+                end = 5.dp
             )
         ),
     ) {

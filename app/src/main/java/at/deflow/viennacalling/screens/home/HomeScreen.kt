@@ -1,6 +1,5 @@
 package at.deflow.viennacalling.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -373,8 +371,6 @@ fun Modifier.filterButton(): Modifier =
 fun filterEventsToday(
     filteredEventList: List<Event>,
 ): List<Event> {
-    val copyEventList = filteredEventList
-
     val currentDate = LocalDateTime.now()
     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     val formattedDate = currentDate.format(formatter)
@@ -382,7 +378,7 @@ fun filterEventsToday(
     val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN)
     val firstDate: Date = sdf.parse(formattedDate) as Date
 
-    val newEventList = copyEventList.filter { event ->
+    val newEventList = filteredEventList.filter { event ->
         val secondDate: Date = sdf.parse(event.startTime) as Date
         secondDate.after(firstDate) || secondDate.equals(firstDate)
     }
@@ -393,7 +389,6 @@ fun filterEventsToday(
 fun filterEventsJustToday(
     filteredEventList: List<Event>,
 ): List<Event> {
-    val copyEventList = filteredEventList
 
     val currentDate = LocalDateTime.now()
     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
@@ -402,7 +397,7 @@ fun filterEventsJustToday(
     val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN)
     val firstDate: Date = sdf.parse(formattedDate) as Date
 
-    val newEventList = copyEventList.filter { event ->
+    val newEventList = filteredEventList.filter { event ->
         val secondDate: Date = sdf.parse(event.startTime) as Date
         secondDate.equals(firstDate)
     }

@@ -62,7 +62,6 @@ fun EventRow(
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     color = checkIfLightModeText(),
-
                     text = event.title,
                     style = MaterialTheme.typography.caption,
                 )

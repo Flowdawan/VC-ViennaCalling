@@ -64,17 +64,18 @@ fun HomeScreen(
             )
         },
         topBar = {
-            TopAppBar({
-                DropdownMenu(
-                    filteredState = filteredState,
-                    events = events,
-                    eventsViewModel = eventsViewModel,
-                    onFilterClicked = {
-                        clickedAdditionalInfo = 0
-                        isTimeout = false
-                    }
-                )
-            },
+            TopAppBar(
+                {
+                    DropdownMenu(
+                        filteredState = filteredState,
+                        events = events,
+                        eventsViewModel = eventsViewModel,
+                        onFilterClicked = {
+                            clickedAdditionalInfo = 0
+                            isTimeout = false
+                        }
+                    )
+                },
                 backgroundColor = MaterialTheme.colors.secondary,
                 actions = {
                     IconButton(onClick = {
@@ -361,7 +362,7 @@ fun DropdownMenu(
 data class EventsClass(
     var eventList: List<Event>,
     var filteredEventList: List<Event>,
-    )
+)
 
 fun Modifier.filterButton(): Modifier =
     height(40.dp)

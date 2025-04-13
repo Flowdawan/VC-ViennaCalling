@@ -7,7 +7,7 @@ buildscript {
         lifecycle_version = '2.7.0'
         retrofit_version = '2.9.0'
         room_version = '2.6.1'
-        jsoup_version = '1.17.0'
+        jsoup_version = '1.16.1'
     }
     dependencies {
         classpath 'com.google.gms:google-services:4.4.2'

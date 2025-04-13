@@ -113,7 +113,7 @@ interface EventsDao {
                         startHour = event.startHour,
                         startMin = event.startMin,
                         point = event.point,
-                        streetAddress = event.st    reetAddress,
+                        streetAddress = event.streetAddress,
                         plz = event.plz,
                         images = if (event.images != "") event.images
                         else

@@ -70,7 +70,6 @@ interface EventsDao {
             ) {
 
                 val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-                Log.d(TAG, "HI")
 
                 // API response
                 response.body()!!.forEach { event ->

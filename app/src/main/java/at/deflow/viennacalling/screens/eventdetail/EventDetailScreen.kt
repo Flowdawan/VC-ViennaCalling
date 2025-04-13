@@ -51,19 +51,20 @@ fun EventDetailScreen(
             )
         },
         topBar = {
-            TopAppBar({
-                Image(
-                    painterResource(checkIfLightModeIcon()),
-                    contentDescription = "Vienna Calling Logo",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(133.dp)
-                        .height(57.dp)
-                        .clickable {
-                            navController.navigate(route = AppScreens.HomeScreen.name)
-                        }
-                )
-            },
+            TopAppBar(
+                {
+                    Image(
+                        painterResource(checkIfLightModeIcon()),
+                        contentDescription = "Vienna Calling Logo",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .width(133.dp)
+                            .height(57.dp)
+                            .clickable {
+                                navController.navigate(route = AppScreens.HomeScreen.name)
+                            }
+                    )
+                },
                 backgroundColor = MaterialTheme.colors.secondary,
             )
         }
@@ -97,16 +98,35 @@ fun MainContent(event: Event, favoritesViewModel: FavoritesViewModel, padding: P
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(240.dp)
+                            .height(260.dp)
+                            .background(MaterialTheme.colors.secondaryVariant)
+                            .padding(bottom = 8.dp)
+                            .shadow(8.dp, RoundedCornerShape(0.dp))
                     ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(event.images)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = "Event Cover",
-                            contentScale = ContentScale.Crop,
-                        )
+                        Box {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(event.images)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "Event Cover",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(
+                                                Color.Transparent,
+                                                MaterialTheme.colors.background
+                                            ),
+                                            startY = 100f
+                                        )
+                                    )
+                            )
+                        }
                     }
                     Divider(
                         color = MaterialTheme.colors.surface,

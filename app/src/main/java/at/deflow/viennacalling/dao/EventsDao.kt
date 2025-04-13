@@ -70,7 +70,6 @@ interface EventsDao {
             ) {
 
                 val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-                Log.d(TAG, "HI")
 
                 // API response
                 response.body()!!.forEach { event ->
@@ -114,7 +113,7 @@ interface EventsDao {
                         startHour = event.startHour,
                         startMin = event.startMin,
                         point = event.point,
-                        streetAddress = event.streetAddress,
+                        streetAddress = event.st    reetAddress,
                         plz = event.plz,
                         images = if (event.images != "") event.images
                         else

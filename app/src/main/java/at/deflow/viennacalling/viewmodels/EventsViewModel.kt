@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import at.deflow.viennacalling.models.Event
@@ -33,7 +32,7 @@ class EventsViewModel(
             repository.fetchEventsRssFeed(
                 eventList = _eventList,
                 eventListInitial = eventListInitial,
-                )
+            )
         }
     }
 

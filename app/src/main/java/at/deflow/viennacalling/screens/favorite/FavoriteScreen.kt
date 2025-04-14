@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
@@ -30,39 +30,38 @@ import at.deflow.viennacalling.widgets.FavoriteButton
 import at.deflow.viennacalling.widgets.checkIfLightModeIcon
 import at.deflow.viennacalling.widgets.checkIfLightModeText
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
     navController: NavController = rememberNavController(),
     favoritesViewModel: FavoritesViewModel,
 ) {
     Scaffold(
-        backgroundColor = MaterialTheme.colors.background,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            BottomNavigationBar(
-                navController = navController,
-            )
+            BottomNavigationBar(navController = navController)
         },
         topBar = {
-            TopAppBar({
-                Image(
-                    painterResource(checkIfLightModeIcon()),
-                    contentDescription = "Vienna Calling Logo",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(133.dp)
-                        .height(57.dp)
-                        .clickable {
-                            navController.navigate(route = AppScreens.HomeScreen.name)
-                        }
-                )
-            },
-                backgroundColor = MaterialTheme.colors.secondary,
+            TopAppBar(
+                title = {
+                    Image(
+                        painter = painterResource(checkIfLightModeIcon()),
+                        contentDescription = "Vienna Calling Logo",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .width(133.dp)
+                            .height(57.dp)
+                            .clickable {
+                                navController.navigate(route = AppScreens.HomeScreen.name)
+                            }
+                    )
+                },
                 actions = {
-                    IconButton(onClick = { /* TODO */ }) {
+                    IconButton(onClick = { /* Maybe add search or share later */ }) {
                         Icon(
-                            tint = checkIfLightModeText(),
                             imageVector = Icons.Default.Favorite,
-                            contentDescription = "Favorite"
+                            contentDescription = "Favorite",
+                            tint = checkIfLightModeText()
                         )
                     }
                 }
@@ -72,7 +71,7 @@ fun FavoriteScreen(
         MainContent(
             navController = navController,
             favoritesViewModel = favoritesViewModel,
-            padding = padding,
+            padding = padding
         )
     }
 }
@@ -81,7 +80,7 @@ fun FavoriteScreen(
 fun MainContent(
     navController: NavController,
     favoritesViewModel: FavoritesViewModel,
-    padding: PaddingValues,
+    padding: PaddingValues
 ) {
     val eventList: List<Event> by favoritesViewModel.favoriteEvents.collectAsState()
     LazyColumn(
@@ -95,7 +94,8 @@ fun MainContent(
         ),
     ) {
         items(items = eventList) { event ->
-            EventRow(event = event,
+            EventRow(
+                event = event,
                 onItemClick = { eventId ->
                     navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
                 }
@@ -110,7 +110,6 @@ fun MainContent(
                             favoritesViewModel.addEvent(event)
                         }
                     }
-
                 )
             }
         }

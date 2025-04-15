@@ -28,3 +28,16 @@
 -keepclassmembers,allowobfuscation class * {
   @com.google.gson.annotations.SerializedName <fields>;
 }
+
+# --- Retrofit & Gson (safe usage) ---
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class retrofit2.** { *; }
+-keep interface retrofit2.** { *; }
+
+# Keep models used by Retrofit (like Event)
+-keepclassmembers class at.deflow.viennacalling.models.** {
+    <fields>;
+    <methods>;
+}
+-keep class at.deflow.viennacalling.models.** { *; }

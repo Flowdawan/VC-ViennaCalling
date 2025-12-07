@@ -2,19 +2,43 @@ package at.deflow.viennacalling.screens.filter
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -28,24 +52,24 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import at.deflow.viennacalling.models.Event
 import at.deflow.viennacalling.navigation.AppScreens
 import at.deflow.viennacalling.navigation.bottomnav.BottomNavigationBar
 import at.deflow.viennacalling.ui.theme.Purple700
 import at.deflow.viennacalling.viewmodels.EventsViewModel
 import at.deflow.viennacalling.viewmodels.FavoritesViewModel
-import at.deflow.viennacalling.widgets.*
+import at.deflow.viennacalling.widgets.CircularIndeterminatorProgressBar
+import at.deflow.viennacalling.widgets.EventRow
+import at.deflow.viennacalling.widgets.FavoriteButton
+import at.deflow.viennacalling.widgets.checkIfLightModeIcon
+import at.deflow.viennacalling.widgets.checkIfLightModeText
 
-private const val TAG = "FilterScreen"
 
 @Composable
 fun FilterScreen(
-    navController: NavController = rememberNavController(),
+    navController: NavController,
     favoritesViewModel: FavoritesViewModel,
     eventsViewModel: EventsViewModel
 ) {
-
     Scaffold(
         backgroundColor = MaterialTheme.colors.background,
         bottomBar = {
@@ -98,65 +122,85 @@ fun MainContent(
     padding: PaddingValues,
     eventsViewModel: EventsViewModel
 ) {
-    val eventList = eventsViewModel.getEventListForSearch()
-    val initialEventList = eventList.toList()
-    var searchedList: List<Event>
-
+    val uiState by eventsViewModel.uiState.collectAsState()
     val textState = remember { mutableStateOf(TextFieldValue("")) }
 
-    CircularIndeterminatorProgressBar(isDisplayed = initialEventList.isEmpty())
+    CircularIndeterminatorProgressBar(isDisplayed = uiState.isLoading)
 
     SearchBar(state = textState)
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                PaddingValues(
-                    start = 5.dp,
-                    top = padding.calculateTopPadding() + 65.dp,
-                    bottom = padding.calculateBottomPadding(),
-                    end = 5.dp
-                )
-            ),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        val searchedText = textState.value.text
-        searchedList = if (searchedText.isEmpty()) {
-            initialEventList
-        } else {
-            eventList.filter { event ->
-                event.title.contains(searchedText.trim(), ignoreCase = true) ||
-                        event.streetAddress.contains(searchedText.trim(), ignoreCase = true)
-            }
-        }
-        items(items = searchedList) { event ->
-            var isInListColor by remember {
-                if (favoritesViewModel.isEventInList(event)) {
-                    mutableStateOf(Purple700)
-                } else {
-                    mutableStateOf(Color.DarkGray)
+    if (uiState.errorMessage != null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    PaddingValues(
+                        start = 5.dp,
+                        top = padding.calculateTopPadding() + 16.dp,
+                        end = 5.dp
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = uiState.errorMessage!!, color = checkIfLightModeText())
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { eventsViewModel.retry() }) {
+                    Text("Erneut versuchen")
                 }
             }
-            EventRow(
-                event = event,
-                onItemClick = { eventId ->
-                    navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
-                }) {
-                FavoriteButton(
-                    event = event,
-                    isAlreadyInListColor = isInListColor,
-                    onFavoriteClick = { event ->
-                        if (favoritesViewModel.isEventInList(event)) {
-                            favoritesViewModel.removeEvent(event)
-                            isInListColor = Color.DarkGray
-                        } else {
-                            favoritesViewModel.addEvent(event)
-                            isInListColor = Purple700
-                        }
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    PaddingValues(
+                        start = 5.dp,
+                        top = padding.calculateTopPadding() + 65.dp,
+                        bottom = padding.calculateBottomPadding(),
+                        end = 5.dp
+                    )
+                ),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            val searchedText = textState.value.text
+            val searchedList = if (searchedText.isEmpty()) {
+                uiState.events
+            } else {
+                uiState.events.filter { event ->
+                    event.title.contains(searchedText.trim(), ignoreCase = true) ||
+                            event.streetAddress.contains(searchedText.trim(), ignoreCase = true)
+                }
+            }
+            items(items = searchedList) { event ->
+                var isInListColor by remember {
+                    if (favoritesViewModel.isEventInList(event)) {
+                        mutableStateOf(Purple700)
+                    } else {
+                        mutableStateOf(Color.DarkGray)
                     }
-                )
+                }
+                EventRow(
+                    event = event,
+                    onItemClick = { eventId ->
+                        navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
+                    }) {
+                    FavoriteButton(
+                        event = event,
+                        isAlreadyInListColor = isInListColor,
+                        onFavoriteClick = { event ->
+                            if (favoritesViewModel.isEventInList(event)) {
+                                favoritesViewModel.removeEvent(event)
+                                isInListColor = Color.DarkGray
+                            } else {
+                                favoritesViewModel.addEvent(event)
+                                isInListColor = Purple700
+                            }
+                        }
+                    )
+                }
             }
         }
     }

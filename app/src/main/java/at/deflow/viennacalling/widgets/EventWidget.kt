@@ -315,7 +315,7 @@ fun CircularIndeterminatorProgressBar(isDisplayed: Boolean) {
             horizontalArrangement = Arrangement.Center
         ) {
             CircularProgressIndicator(
-                color = Color.White
+                color = checkIfLightModeText()
             )
         }
     }

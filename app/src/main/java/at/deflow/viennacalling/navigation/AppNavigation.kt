@@ -16,7 +16,11 @@ import at.deflow.viennacalling.screens.filter.FilterScreen
 import at.deflow.viennacalling.screens.home.HomeScreen
 import at.deflow.viennacalling.screens.setting.SettingsScreen
 import at.deflow.viennacalling.screens.splash.SplashScreen
-import at.deflow.viennacalling.viewmodels.*
+import at.deflow.viennacalling.viewmodels.EventsViewModel
+import at.deflow.viennacalling.viewmodels.EventsViewModelFactory
+import at.deflow.viennacalling.viewmodels.FavoritesViewModel
+import at.deflow.viennacalling.viewmodels.FavoritesViewModelFactory
+import at.deflow.viennacalling.viewmodels.ThemeViewModel
 
 
 @Composable

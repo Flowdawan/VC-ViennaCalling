@@ -1,8 +1,6 @@
 package at.deflow.viennacalling.models
 
-import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 

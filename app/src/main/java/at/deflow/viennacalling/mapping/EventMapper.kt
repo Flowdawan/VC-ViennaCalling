@@ -3,6 +3,7 @@ package at.deflow.viennacalling.mapping
 import at.deflow.viennacalling.models.Event
 import at.deflow.viennacalling.retrofit.ApiEvent
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -25,21 +26,22 @@ fun ApiEvent.toEvent(): Event {
     )
 
     val outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMAN)
-    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.GERMAN)
-    val fallbackFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.GERMAN)
+    val isoFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+    val fallbackFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.GERMAN)
 
-    val startDate = this.startTime
-        ?.takeIf { it.isNotBlank() }
-        ?.let { value ->
-            runCatching { LocalDate.parse(value, inputFormatter).format(outputFormatter) }
-                .getOrElse { runCatching { LocalDate.parse(value, fallbackFormatter).format(outputFormatter) }.getOrDefault("") }
-        } ?: ""
-    val endDate = this.endTime
-        ?.takeIf { it.isNotBlank() }
-        ?.let { value ->
-            runCatching { LocalDate.parse(value, inputFormatter).format(outputFormatter) }
-                .getOrElse { runCatching { LocalDate.parse(value, fallbackFormatter).format(outputFormatter) }.getOrDefault("") }
-        } ?: ""
+    fun parseDate(raw: String?): String {
+        if (raw.isNullOrBlank()) return ""
+        // Some API records send malformed end dates like "T00:00:00+01:00" without a date part.
+        if (!raw.contains("-")) return ""
+        return runCatching { OffsetDateTime.parse(raw, isoFormatter).toLocalDate().format(outputFormatter) }
+            .getOrElse {
+                runCatching { LocalDate.parse(raw, fallbackFormatter).format(outputFormatter) }
+                    .getOrDefault("")
+            }
+    }
+
+    val startDate = parseDate(this.startTime)
+    val endDate = parseDate(this.endTime)
 
     return Event(
         id = this.link ?: "", // Use link as a stable, unique ID

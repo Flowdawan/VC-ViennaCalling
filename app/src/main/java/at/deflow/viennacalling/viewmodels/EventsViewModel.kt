@@ -1,5 +1,6 @@
 package at.deflow.viennacalling.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import at.deflow.viennacalling.models.Event
@@ -9,11 +10,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import retrofit2.HttpException
+import javax.net.ssl.SSLHandshakeException
 
 class EventsViewModel(
     private val repository: EventsRepository
@@ -75,15 +79,28 @@ class EventsViewModel(
                 _uiState.update { it.copy(events = events, dateFilter = 0, categoryFilter = 0) }
             } catch (e: HttpException) {
                 val errorBody = try { e.response()?.errorBody()?.string() } catch (e: Exception) { "Could not read error body." }
+                Log.e(TAG, "HTTP error while fetching events", e)
                 _uiState.update { it.copy(errorMessage = "Fehler: HTTP ${e.code()} ${e.message()}. Body: $errorBody") }
             } catch (e: IOException) {
-                _uiState.update { it.copy(errorMessage = "Netzwerkfehler. Bitte Internetverbindung überprüfen.") }
+                val readableMessage = when (e) {
+                    is UnknownHostException -> "Keine Internetverbindung (DNS/Offline). Bitte Verbindung prüfen."
+                    is SocketTimeoutException -> "Zeitüberschreitung bei der Verbindung. Bitte erneut versuchen."
+                    is SSLHandshakeException -> "SSL/TLS-Fehler bei der Verbindung. Bitte später erneut versuchen."
+                    else -> "Netzwerkfehler: ${e.message ?: "unbekannt"}. Bitte Internetverbindung überprüfen."
+                }
+                Log.e(TAG, "Network error while fetching events", e)
+                _uiState.update { it.copy(errorMessage = readableMessage) }
             } catch (e: Exception) {
+                Log.e(TAG, "Unexpected error while fetching events", e)
                 _uiState.update { it.copy(errorMessage = "Unbekannter Fehler: ${e.message}") }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "EventsViewModel"
     }
 }
 
@@ -94,3 +111,6 @@ data class EventsUiState(
     val categoryFilter: Int = 0, // 0: Home, 1: Attractions, 2: Culture, 3: Party
     val dateFilter: Int = 0, // 0: All, 1: From today, 2: Just today
 )
+
+
+

@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
@@ -30,14 +34,13 @@ import at.deflow.viennacalling.widgets.FavoriteButton
 import at.deflow.viennacalling.widgets.checkIfLightModeIcon
 import at.deflow.viennacalling.widgets.checkIfLightModeText
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
     navController: NavController = rememberNavController(),
     favoritesViewModel: FavoritesViewModel,
 ) {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        backgroundColor = MaterialTheme.colors.background,
         bottomBar = {
             BottomNavigationBar(navController = navController)
         },

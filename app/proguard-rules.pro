@@ -41,3 +41,6 @@
     <methods>;
 }
 -keep class at.deflow.viennacalling.models.** { *; }
+
+# Keep API DTOs used by Retrofit/Gson to avoid field obfuscation
+-keep class at.deflow.viennacalling.retrofit.ApiEvent { *; }

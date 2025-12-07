@@ -1,13 +1,13 @@
 // Top-level build.gradle
 buildscript {
     ext {
-        compose_version = '1.6.5'
-        navigation_version = '2.8.9'
-        coil_version = '2.5.0'
-        lifecycle_version = '2.7.0'
-        retrofit_version = '2.9.0'
-        room_version = '2.7.0'
-        jsoup_version = '1.16.1'
+        compose_version = '1.10.0'
+        navigation_version = '2.9.6'
+        coil_version = '2.7.0'
+        lifecycle_version = '2.10.0'
+        retrofit_version = '3.0.0'
+        room_version = '2.8.4'
+        jsoup_version = '1.21.2'
     }
     dependencies {
         classpath 'com.google.gms:google-services:4.4.2'
@@ -15,8 +15,8 @@ buildscript {
 }
 
 plugins {
-    id 'com.android.application' version '8.9.1' apply false
-    id 'com.android.library' version '8.9.1' apply false
+    id 'com.android.application' version '8.13.1' apply false
+    id 'com.android.library' version '8.13.1' apply false
     id 'org.jetbrains.kotlin.android' version '2.0.21' apply false
     id 'com.google.devtools.ksp' version '2.0.21-1.0.27' apply false
     id 'org.jetbrains.kotlin.plugin.compose' version '2.0.21' apply false

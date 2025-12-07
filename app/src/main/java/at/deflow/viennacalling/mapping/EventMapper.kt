@@ -25,23 +25,24 @@ fun ApiEvent.toEvent(): Event {
     )
 
     val outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMAN)
-    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.GERMAN)
-
-    val pointId = this.point?.replace("[.+\\s]".toRegex(), "") ?: ""
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.GERMAN)
+    val fallbackFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.GERMAN)
 
     val startDate = this.startTime
         ?.takeIf { it.isNotBlank() }
         ?.let { value ->
-            runCatching { LocalDate.parse(value, inputFormatter).format(outputFormatter) }.getOrDefault("")
+            runCatching { LocalDate.parse(value, inputFormatter).format(outputFormatter) }
+                .getOrElse { runCatching { LocalDate.parse(value, fallbackFormatter).format(outputFormatter) }.getOrDefault("") }
         } ?: ""
     val endDate = this.endTime
         ?.takeIf { it.isNotBlank() }
         ?.let { value ->
-            runCatching { LocalDate.parse(value, inputFormatter).format(outputFormatter) }.getOrDefault("")
+            runCatching { LocalDate.parse(value, inputFormatter).format(outputFormatter) }
+                .getOrElse { runCatching { LocalDate.parse(value, fallbackFormatter).format(outputFormatter) }.getOrDefault("") }
         } ?: ""
 
     return Event(
-        id = "${this.startTime?.replace("+", "") ?: ""}-$pointId".replace("-$".toRegex(), ""),
+        id = this.link ?: "", // Use link as a stable, unique ID
         title = this.title ?: "Es ist leider kein Titel vorhanden",
         description = this.description ?: "Es ist leider keine Beschreibung vorhanden",
         category = this.category ?: "",

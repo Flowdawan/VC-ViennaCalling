@@ -61,9 +61,6 @@ class EventsViewModel(
         _uiState.update { it.copy(events = filteredEvents, dateFilter = dateFilter, categoryFilter = 0) }
     }
 
-
-    fun getBaseEvents(): List<Event> = eventListInitial
-
     fun retry() = refreshEvents(clearBefore = true)
 
     private fun refreshEvents(clearBefore: Boolean = false) {

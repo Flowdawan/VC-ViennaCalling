@@ -2,24 +2,24 @@ package at.deflow.viennacalling.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Dark
-val Purple200 = Color(0xFFBB86FC)
+// Dark (Anthrazit & Cyan)
+val Purple200 = Color(0xFFBB86FC) // legacy, kept for any legacy references
 val Purple500 = Color(0xFF6200EE)
 val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
-val VcNavTopBottom = Color(0xFF080B29)
-val VcScreenBackground = Color(0xFF211F33)
-val VcEventCard = Color(0xFF081729)
-val VcButtons = Color(0xFF4A4458)
-val VcLightGrayPopUp = Color(0xFF1C1B1F)
-val VcEventDetailBackground = Color(0xFF14141C)
+val VcNavTopBottom = Color(0xFF0F121A)           // top/bottom bars
+val VcScreenBackground = Color(0xFF0C0E12)       // overall background
+val VcEventCard = Color(0xFF1C1F27)              // cards
+val VcButtons = Color(0xFF2BD1D1)                // primary/action cyan
+val VcLightGrayPopUp = Color(0xFF151922)         // surfaces/dialogs
+val VcEventDetailBackground = Color(0xFF10131A)  // detail backgrounds
 
 
-// Light
-val VcNavTopBottomLight = Color(0xFFF9F6FC)
-val VcEventCardLight = Color(0xFFFFFBFE)
-val VcButtonsLight = Color(0xFF938F99)
-val VcLightGrayPopUpLight = Color(0xFFFFFBFE)
-val VcScreenBackgroundLight = Color(0xFFE5E5E5)
-val VcEventDetailBackgroundLight = Color(0xFFF3EDF7)
+// Light (soft grays with cyan accents)
+val VcNavTopBottomLight = Color(0xFFE9F6F6)
+val VcEventCardLight = Color(0xFFFFFFFF)
+val VcButtonsLight = Color(0xFF15B7B7)
+val VcLightGrayPopUpLight = Color(0xFFF5F7FA)
+val VcScreenBackgroundLight = Color(0xFFEEF1F5)
+val VcEventDetailBackgroundLight = Color(0xFFF8FAFB)
 

@@ -12,15 +12,9 @@ android {
     defaultConfig {
         applicationId "at.deflow.viennacalling"
         minSdk 28
-<<<<<<< HEAD
         targetSdk 36
         versionCode 9
-        versionName "1.3.3"
-=======
-        targetSdk 34
-        versionCode 7
-        versionName "1.3.2"
->>>>>>> 4306ee3 (Update build.gradle)
+        versionName "1.3.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

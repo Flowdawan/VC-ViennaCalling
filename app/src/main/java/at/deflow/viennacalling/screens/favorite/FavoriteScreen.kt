@@ -2,24 +2,31 @@ package at.deflow.viennacalling.screens.favorite
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import android.net.Uri
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -87,35 +94,56 @@ fun MainContent(
     padding: PaddingValues
 ) {
     val eventList: List<Event> by favoritesViewModel.favoriteEvents.collectAsState()
-    LazyColumn(
-        modifier = Modifier.padding(
-            PaddingValues(
-                start = 5.dp,
-                top = padding.calculateTopPadding() + 40.dp,
-                bottom = padding.calculateBottomPadding(),
-                end = 5.dp
-            )
-        ),
-    ) {
-        items(items = eventList) { event ->
-            EventRow(
-                event = event,
-                onItemClick = { eventId ->
-                    val safeId = Uri.encode(eventId.ifBlank { event.title })
-                    navController.navigate(route = AppScreens.EventDetailScreen.name + "/$safeId")
-                }
-            ) {
-                FavoriteButton(
-                    event = event,
-                    isAlreadyInListColor = Purple700,
-                    onFavoriteClick = { event ->
-                        if (favoritesViewModel.isEventInList(event)) {
-                            favoritesViewModel.removeEvent(event)
-                        } else {
-                            favoritesViewModel.addEvent(event)
-                        }
-                    }
+    if (eventList.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Noch keine Favoriten.",
+                    style = MaterialTheme.typography.body1,
+                    color = checkIfLightModeText()
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { navController.navigate(AppScreens.HomeScreen.name) }) {
+                    Text("Events entdecken")
+                }
+            }
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.padding(
+                PaddingValues(
+                    start = 5.dp,
+                    top = padding.calculateTopPadding() + 40.dp,
+                    bottom = padding.calculateBottomPadding(),
+                    end = 5.dp
+                )
+            ),
+        ) {
+            items(items = eventList) { event ->
+                EventRow(
+                    event = event,
+                    onItemClick = { eventId ->
+                        val safeId = Uri.encode(eventId.ifBlank { event.title })
+                        navController.navigate(route = AppScreens.EventDetailScreen.name + "/$safeId")
+                    }
+                ) {
+                    FavoriteButton(
+                        event = event,
+                        isAlreadyInListColor = Purple700,
+                        onFavoriteClick = { event ->
+                            if (favoritesViewModel.isEventInList(event)) {
+                                favoritesViewModel.removeEvent(event)
+                            } else {
+                                favoritesViewModel.addEvent(event)
+                            }
+                        }
+                    )
+                }
             }
         }
     }

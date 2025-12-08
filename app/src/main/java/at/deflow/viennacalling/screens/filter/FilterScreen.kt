@@ -216,12 +216,12 @@ fun SearchBar(state: MutableState<TextFieldValue>) {
         onValueChange = { value ->
             state.value = value
         },
-        placeholder = { Text("Search events...") },
+        placeholder = { Text("Events durchsuchen...", color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 5.dp, end = 5.dp, start = 5.dp)
             .shadow(4.dp, CircleShape),
-        textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
+        textStyle = TextStyle(color = MaterialTheme.colors.onSurface, fontSize = 16.sp),
         leadingIcon = {
             Icon(
                 Icons.Default.Search,
@@ -264,3 +264,4 @@ fun SearchBar(state: MutableState<TextFieldValue>) {
         )
     )
 }
+

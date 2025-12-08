@@ -1,4 +1,4 @@
-- Ziel-SDK auf 35 und App-Version auf 1.3.3 angehoben
-- Events werden nun per Coroutine geladen und Fehler werden abgefangen
-- Manuelles Aktualisieren und klare Lade-/Fehlermeldungen im Home-Screen
-- Kleinere UI/UX-Verbesserungen und Refactoring im Event-Handling
+- Version 1.3.5: Stabiler Event-Detail-Flow (keine Crashes bei Links)
+- Neues Anthrazit/Cyan-Theme und überarbeitete Favoriten-Herzfarben
+- Klarere Netzwerk-Fehlertexte und robustere API-Daten (Datumsparsing/ProGuard)
+- About-Text bereinigt, Build-Version angehoben

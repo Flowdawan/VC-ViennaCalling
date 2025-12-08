@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import android.net.Uri
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -176,7 +177,8 @@ fun MainContent(
                     EventRow(
                         event = event,
                         onItemClick = { eventId ->
-                            navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
+                            val safeId = Uri.encode(eventId.ifBlank { event.title })
+                            navController.navigate(route = AppScreens.EventDetailScreen.name + "/$safeId")
                         }) {
                         FavoriteButton(
                             event = event,

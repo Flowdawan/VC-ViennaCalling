@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import android.net.Uri
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -185,7 +186,8 @@ fun MainContent(
                 EventRow(
                     event = event,
                     onItemClick = { eventId ->
-                        navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
+                        val safeId = Uri.encode(eventId.ifBlank { event.title })
+                        navController.navigate(route = AppScreens.EventDetailScreen.name + "/$safeId")
                     }) {
                     FavoriteButton(
                         event = event,

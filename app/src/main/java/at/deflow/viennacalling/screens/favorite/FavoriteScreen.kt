@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import android.net.Uri
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -100,7 +101,8 @@ fun MainContent(
             EventRow(
                 event = event,
                 onItemClick = { eventId ->
-                    navController.navigate(route = AppScreens.EventDetailScreen.name + "/$eventId")
+                    val safeId = Uri.encode(eventId.ifBlank { event.title })
+                    navController.navigate(route = AppScreens.EventDetailScreen.name + "/$safeId")
                 }
             ) {
                 FavoriteButton(

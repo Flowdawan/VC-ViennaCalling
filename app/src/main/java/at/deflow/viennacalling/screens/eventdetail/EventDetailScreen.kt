@@ -1,5 +1,7 @@
 package at.deflow.viennacalling.screens.eventdetail
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +25,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.core.content.ContextCompat.startActivity
 import at.deflow.viennacalling.models.Event
 import at.deflow.viennacalling.ui.theme.Purple700
 import at.deflow.viennacalling.viewmodels.EventsViewModel
@@ -55,8 +61,9 @@ fun EventDetailScreen(
     eventId: String? = null,
 ) {
     val uiState by eventsViewModel.uiState.collectAsState()
-    val event = remember(eventId, uiState.events) {
-        filterEvent(eventId, uiState.events)
+    val decodedEventId = remember(eventId) { eventId?.let { Uri.decode(it) } }
+    val event = remember(decodedEventId, uiState.events) {
+        filterEvent(decodedEventId, uiState.events)
     }
 
     Scaffold(
@@ -134,8 +141,14 @@ fun EventDetailScreen(
                                 style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
-                            Text(text = "${event.streetAddress}, ${event.plz}")
-                            Text(text = "${event.startTime} - ${event.endTime}")
+                            Text(text = if (event.streetAddress.isNotBlank()) "${event.streetAddress}, ${event.plz}" else "Adresse: k. A.")
+                            Text(text = when {
+                                event.startTime.isNotBlank() && event.endTime.isNotBlank() -> "${event.startTime} - ${event.endTime}"
+                                event.startTime.isNotBlank() -> event.startTime
+                                else -> "Datum: k. A."
+                            })
+                            Spacer(modifier = Modifier.height(16.dp))
+                            ActionButtons(event = event)
                         }
                     }
                 }
@@ -210,4 +223,58 @@ fun EventInfoPill(text: String) {
 
 fun filterEvent(eventId: String?, eventList: List<Event>): Event? {
     return eventList.firstOrNull { event -> event.id == eventId }
+}
+
+@Composable
+private fun ActionButtons(event: Event) {
+    val context = LocalContext.current
+    val shareText = buildString {
+        append(event.title)
+        if (event.url.isNotBlank()) append("\n${event.url}") else if (event.link.isNotBlank()) append("\n${event.link}")
+    }
+    val mapQuery = listOf(event.streetAddress, event.plz).filter { it.isNotBlank() }.joinToString(" ")
+    val mapUri = "https://www.google.com/maps/search/?api=1&query=${Uri.encode(mapQuery)}"
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        IconButton(
+            onClick = {
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, shareText)
+                }
+                runCatching { startActivity(context, Intent.createChooser(shareIntent, "Event teilen"), null) }
+            }
+        ) {
+            Icon(Icons.Default.Share, contentDescription = "Teilen", tint = MaterialTheme.colors.onBackground)
+        }
+
+        IconButton(
+            onClick = {
+                if (mapQuery.isNotBlank()) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(mapUri))
+                    runCatching { startActivity(context, intent, null) }
+                }
+            }
+        ) {
+            Icon(Icons.Default.Map, contentDescription = "Karte öffnen", tint = MaterialTheme.colors.onBackground)
+        }
+
+        IconButton(
+            onClick = {
+                val target = when {
+                    event.url.isNotBlank() -> event.url
+                    event.link.isNotBlank() -> event.link
+                    else -> ""
+                }
+                if (target.isNotBlank()) {
+                    runCatching { startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(target)), null) }
+                }
+            }
+        ) {
+            Icon(Icons.Default.Public, contentDescription = "Website öffnen", tint = MaterialTheme.colors.onBackground)
+        }
+    }
 }

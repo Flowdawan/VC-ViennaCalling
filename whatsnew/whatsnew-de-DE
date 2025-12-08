@@ -1,4 +1,4 @@
-- Version 1.3.5: Stabiler Event-Detail-Flow (keine Crashes bei Links)
-- Neues Anthrazit/Cyan-Theme und überarbeitete Favoriten-Herzfarben
-- Klarere Netzwerk-Fehlertexte und robustere API-Daten (Datumsparsing/ProGuard)
-- About-Text bereinigt, Build-Version angehoben
+- Version 1.3.6: Lesbares Suchfeld (Events durchsuchen) und kontrastreiche Kategorie/Action-Buttons im Detail
+- Version 1.3.5: Stabiler Event-Detail-Flow, neues Anthrazit/Cyan-Theme, bessere Netzwerk-Fehler, Kalender/Share/Maps-Aktionen
+- Favoriten: Leerer Zustand mit Shortcut zurück zu Events
+- About-Text bereinigt, API-Robustheit (Datumsparsing/ProGuard) und Build-Version angehoben

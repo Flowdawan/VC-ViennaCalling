@@ -28,6 +28,8 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -52,6 +55,13 @@ import at.deflow.viennacalling.widgets.CircularIndeterminatorProgressBar
 import at.deflow.viennacalling.widgets.checkIfLightModeText
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+import android.provider.CalendarContract
 
 @Composable
 fun EventDetailScreen(
@@ -67,7 +77,7 @@ fun EventDetailScreen(
     }
 
     Scaffold(
-        backgroundColor = MaterialTheme.colors.background,
+        backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.96f),
     ) { padding ->
         if (uiState.isLoading) {
             CircularIndeterminatorProgressBar(isDisplayed = true)
@@ -85,22 +95,40 @@ fun EventDetailScreen(
             }
         } else {
             Box(modifier = Modifier.fillMaxSize()) {
-                // Background Image
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(event.images)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Event Cover",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(350.dp)
-                )
+                // Background Image with gradient for readability
+                Box {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(event.images)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Event Cover",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(350.dp)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(350.dp)
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Black.copy(alpha = 0.35f),
+                                        Color.Black.copy(alpha = 0.65f)
+                                    )
+                                )
+                            )
+                    )
+                }
 
                 // Content
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .padding(bottom = 96.dp)
                 ) {
                     // Spacer for image
                     item {
@@ -113,7 +141,7 @@ fun EventDetailScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(
-                                    MaterialTheme.colors.background,
+                                    MaterialTheme.colors.surface.copy(alpha = 0.96f),
                                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                                 )
                                 .padding(24.dp)
@@ -121,6 +149,7 @@ fun EventDetailScreen(
                             Text(
                                 text = event.title,
                                 style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight.Bold),
+                                color = checkIfLightModeText(),
                                 modifier = Modifier.padding(bottom = 16.dp)
                             )
                             EventInfoPill(event.category)
@@ -128,27 +157,37 @@ fun EventDetailScreen(
                             Text(
                                 text = "About",
                                 style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
+                                color = checkIfLightModeText(),
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
                             Text(
                                 text = event.description,
                                 style = MaterialTheme.typography.body1,
+                                color = checkIfLightModeText(),
                                 lineHeight = 24.sp
                             )
                             Spacer(modifier = Modifier.height(24.dp))
                             Text(
                                 text = "Location & Time",
                                 style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
+                                color = checkIfLightModeText(),
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
-                            Text(text = if (event.streetAddress.isNotBlank()) "${event.streetAddress}, ${event.plz}" else "Adresse: k. A.")
-                            Text(text = when {
-                                event.startTime.isNotBlank() && event.endTime.isNotBlank() -> "${event.startTime} - ${event.endTime}"
-                                event.startTime.isNotBlank() -> event.startTime
-                                else -> "Datum: k. A."
-                            })
+                            Text(
+                                text = if (event.streetAddress.isNotBlank()) "${event.streetAddress}, ${event.plz}" else "Adresse: k. A.",
+                                color = checkIfLightModeText()
+                            )
+                            Text(
+                                text = when {
+                                    event.startTime.isNotBlank() && event.endTime.isNotBlank() -> "${event.startTime} - ${event.endTime}"
+                                    event.startTime.isNotBlank() -> event.startTime
+                                    else -> "Datum: k. A."
+                                },
+                                color = checkIfLightModeText()
+                            )
                             Spacer(modifier = Modifier.height(16.dp))
                             ActionButtons(event = event)
+                            Spacer(modifier = Modifier.height(12.dp))
                         }
                     }
                 }
@@ -208,14 +247,14 @@ private fun TopBar(
 fun EventInfoPill(text: String) {
     if (text.isNotBlank()) {
         Surface(
-            color = MaterialTheme.colors.secondary.copy(alpha = 0.5f),
+            color = MaterialTheme.colors.secondary.copy(alpha = 0.7f),
             shape = RoundedCornerShape(16.dp)
         ) {
             Text(
                 text = text.uppercase(),
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                 style = MaterialTheme.typography.caption.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colors.onSecondary
+                color = checkIfLightModeText(reverse = true)
             )
         }
     }
@@ -241,6 +280,33 @@ private fun ActionButtons(event: Event) {
     ) {
         IconButton(
             onClick = {
+                val startDate = event.startTime
+                val startHour = event.startHour
+                val startMin = event.startMin
+                if (startDate.isNotBlank()) {
+                    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMAN)
+                    runCatching {
+                        val date = LocalDate.parse(startDate, formatter)
+                        val time = runCatching { LocalTime.of(startHour.toInt(), startMin.toInt()) }
+                            .getOrDefault(LocalTime.MIDNIGHT)
+                        val startDateTime = LocalDateTime.of(date, time)
+                        val startMillis = startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                        val intent = Intent(Intent.ACTION_INSERT).apply {
+                            data = CalendarContract.Events.CONTENT_URI
+                            putExtra(CalendarContract.Events.TITLE, event.title)
+                            putExtra(CalendarContract.Events.DESCRIPTION, event.description)
+                            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startMillis)
+                        }
+                        startActivity(context, intent, null)
+                    }
+                }
+            }
+        ) {
+            Icon(Icons.Default.Event, contentDescription = "Zum Kalender", tint = checkIfLightModeText())
+        }
+
+        IconButton(
+            onClick = {
                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, shareText)
@@ -248,7 +314,7 @@ private fun ActionButtons(event: Event) {
                 runCatching { startActivity(context, Intent.createChooser(shareIntent, "Event teilen"), null) }
             }
         ) {
-            Icon(Icons.Default.Share, contentDescription = "Teilen", tint = MaterialTheme.colors.onBackground)
+            Icon(Icons.Default.Share, contentDescription = "Teilen", tint = checkIfLightModeText())
         }
 
         IconButton(
@@ -259,7 +325,7 @@ private fun ActionButtons(event: Event) {
                 }
             }
         ) {
-            Icon(Icons.Default.Map, contentDescription = "Karte öffnen", tint = MaterialTheme.colors.onBackground)
+            Icon(Icons.Default.Map, contentDescription = "Karte öffnen", tint = checkIfLightModeText())
         }
 
         IconButton(
@@ -274,7 +340,15 @@ private fun ActionButtons(event: Event) {
                 }
             }
         ) {
-            Icon(Icons.Default.Public, contentDescription = "Website öffnen", tint = MaterialTheme.colors.onBackground)
+            Icon(Icons.Default.Public, contentDescription = "Website öffnen", tint = checkIfLightModeText())
         }
     }
 }
+
+
+
+
+
+
+
+
